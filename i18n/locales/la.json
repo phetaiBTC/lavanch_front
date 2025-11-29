@@ -34,7 +34,7 @@
   "manage": "ຈັດການ",
   "search": "ຄົ້ນຫາ",
   "deletedAt": "ລຶບເມື່ອ",
-  "inactive": "ອອກວຽກ",
+  "inactive": "ປິດໃຊ້ງານ",
   "active": "ໃຊ້ງານ",
   "status": "ສະຖານະ",
   "is_required": "ບໍ່ໃຫ້ວ່າງ",
@@ -47,5 +47,24 @@
   "confirm":"ຢືນຢັນ",
   "permissions":"ສິດການນຳໃຊ້",
   "permission":"ສິດການນຳໃຊ້",
-  "changePassword":"ປ່ຽນລະຫັດຜ່ານ"
+  "changePassword":"ປ່ຽນລະຫັດຜ່ານ",
+
+  "product":"ສິນຄ້າ",
+  "products":"ສິນຄ້າ",
+  "units":"ຫົວໜ່ວຍ",
+  "items":"ລາຍການ",
+  "categories":"ໝວດໝູ່",
+  "category":"ໝວດໝູ່",
+  "points":"ຄະແນນ",
+  "point":"ຄະແນນ",
+  "customers":"ລູກຄ້າ",
+  "customer":"ລູກຄ້າ",
+  "Dashboard":"ແຜນລາຍງານ",
+  "new":"ໃໝ່",
+  "add":"ເພີ່ມ",
+  "home":"ໜ້າຫຼັກ",
+  "error":"ຜິດພາດ",
+  "invalid credentials":"ລະຫັດຜ່ານ ຫຼື ອີເມວ ບໍ່ຖືກຕ້ອງ",
+  "success":"ສຳເລັດ"
+  
 }

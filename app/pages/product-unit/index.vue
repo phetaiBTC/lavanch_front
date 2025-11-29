@@ -3,13 +3,13 @@
     <div class="grid grid-cols-12 gap-8">
       <!-- UiStats -->
       <UiStats
-        title="users"
-        :count="store.userList.pagination.count"
-        :type="$t('people')"
-        icon="pi pi-users text-xl"
+        title="productUnits"
+        :count="store.productUnitList.pagination.count"
+        :type="$t('items')"
+        icon="pi pi-box text-xl"
       />
 
-      <!-- User Table -->
+      <!-- ProductUnit Table -->
       <div class="col-span-12">
         <div class="card">
           <Tabs value="table">
@@ -17,56 +17,55 @@
               <Tab value="table">{{ $t("table") }}</Tab>
               <Tab value="card">{{ $t("card") }}</Tab>
             </TabList>
+
             <TabPanels>
               <TabPanel value="table">
                 <Toolbar class="mb-6">
                   <template #start>
                     <Button
-                      :label="$t('add') + $t('new') "
+                      :label="$t('add') + $t('new') " 
                       icon="pi pi-plus"
                       severity="secondary"
                       class="mr-2"
+                      @click="onNew"
                     />
                     <Button
                       :label="$t('delete')"
                       icon="pi pi-trash"
                       severity="secondary"
+                      @click="onDeleteSelected"
                     />
                   </template>
+
                   <template #end>
                     <Button
                       label="Export"
                       icon="pi pi-upload"
                       severity="secondary"
+                      @click="onExport"
                     />
                   </template>
                 </Toolbar>
 
-                <UserTable
-                  title="user"
+                <ProductUnitTable
+                  title="productUnits"
                   :loading="store.loading"
-                  :data="store.userList"
+                  :data="store.productUnitList"
                   :sort="query.sort"
                   :checked="query.is_active"
-                  v-model:value="selectedUsers"
+                  v-model:value="selectedUnits"
                   :query="query"
                   @on-search="onQuery.search($event)"
                   @on-change-sort="onQuery.sort($event.sort)"
                   @on-change-active="onQuery.checked($event.is_active)"
                   @on-change-page="onQuery.page($event.page, $event.limit)"
+                  @on-edit="onEdit($event)"
+                  @on-delete="onDelete($event)"
                 />
               </TabPanel>
+
               <TabPanel value="card">
-                <p class="m-0">
-                  Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-                  accusantium doloremque laudantium, totam rem aperiam, eaque
-                  ipsa quae ab illo inventore veritatis et quasi architecto
-                  beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem
-                  quia voluptas sit aspernatur aut odit aut fugit, sed quia
-                  consequuntur magni dolores eos qui ratione voluptatem sequi
-                  nesciunt. Consectetur, adipisci velit, sed quia non numquam
-                  eius modi.
-                </p>
+                <p class="m-0">Product unit card view is under construction…</p>
               </TabPanel>
             </TabPanels>
           </Tabs>
@@ -78,14 +77,14 @@
 
 <script setup lang="ts">
 import { ref, watch, reactive } from "vue";
-import { useUserStore } from "~/stores/user.store";
 import type { IPaginateDto } from "~/types/dto/paginate.dto";
+import type { IProductUnit } from "~/types/entities/product-unit.entity";
 import { sortType, Status } from "~/types/enum/paginate.enum";
 
 const route = useRoute();
 const router = useRouter();
-const store = useUserStore();
-const { findAll } = useUser();
+const store = useProductUnitStore();
+const { findAll } = useProductUnit(); // composable สำหรับ fetch product units
 
 /* -----------------------------------
    INITIAL QUERY (from URL)
@@ -105,13 +104,9 @@ if (!route.query.page) {
 /* -----------------------------------
    HELPERS
 ----------------------------------- */
-const updateUrl = () => {
-  router.replace({ query: { ...query } });
-};
+const updateUrl = () => router.replace({ query: { ...query } });
 
-const load = async () => {
-  await findAll({ ...query });
-};
+const load = async () => await findAll({ ...query });
 
 /* -----------------------------------
    QUERY UPDATER
@@ -123,21 +118,18 @@ const onQuery = {
     updateUrl();
     await load();
   },
-
   sort: async (value: sortType) => {
     query.sort = value;
     query.page = 1;
     updateUrl();
     await load();
   },
-
   checked: async (value: Status) => {
     query.is_active = value;
     query.page = 1;
     updateUrl();
     await load();
   },
-
   page: async (page: number, limit: number) => {
     query.page = page;
     query.limit = limit;
@@ -162,5 +154,24 @@ await load();
 /* -----------------------------------
    TABLE SELECTION
 ----------------------------------- */
-const selectedUsers = ref([]);
+const selectedUnits = ref<IProductUnit[]>([]);
+
+/* -----------------------------------
+   ACTION HANDLERS
+----------------------------------- */
+const onNew = () => {
+  /* Open new product unit form */
+};
+const onEdit = (data: IProductUnit) => {
+  /* Open edit form */
+};
+const onDelete = (data: IProductUnit) => {
+  /* Delete one */
+};
+const onDeleteSelected = () => {
+  /* Delete selected units */
+};
+const onExport = () => {
+  /* Export table */
+};
 </script>

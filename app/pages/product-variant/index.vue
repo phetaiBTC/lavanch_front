@@ -3,13 +3,13 @@
     <div class="grid grid-cols-12 gap-8">
       <!-- UiStats -->
       <UiStats
-        title="users"
-        :count="store.userList.pagination.count"
-        :type="$t('people')"
-        icon="pi pi-users text-xl"
+        title="productVariants"
+        :count="store.productVariantList.pagination.count"
+        :type="$t('items')"
+        icon="pi pi-box text-xl"
       />
 
-      <!-- User Table -->
+      <!-- ProductVariant Table -->
       <div class="col-span-12">
         <div class="card">
           <Tabs value="table">
@@ -17,6 +17,7 @@
               <Tab value="table">{{ $t("table") }}</Tab>
               <Tab value="card">{{ $t("card") }}</Tab>
             </TabList>
+
             <TabPanels>
               <TabPanel value="table">
                 <Toolbar class="mb-6">
@@ -26,48 +27,49 @@
                       icon="pi pi-plus"
                       severity="secondary"
                       class="mr-2"
+                      @click="onNew"
                     />
                     <Button
                       :label="$t('delete')"
                       icon="pi pi-trash"
                       severity="secondary"
+                      @click="onDeleteSelected"
                     />
                   </template>
+
                   <template #end>
                     <Button
                       label="Export"
                       icon="pi pi-upload"
                       severity="secondary"
+                      @click="onExport"
                     />
                   </template>
                 </Toolbar>
 
-                <UserTable
-                  title="user"
+                <ProductVariantTable
+                  title="productVariants"
                   :loading="store.loading"
-                  :data="store.userList"
+                  :data="store.productVariantList"
                   :sort="query.sort"
                   :checked="query.is_active"
-                  v-model:value="selectedUsers"
+                  v-model:value="selectedVariants"
                   :query="query"
                   @on-search="onQuery.search($event)"
                   @on-change-sort="onQuery.sort($event.sort)"
                   @on-change-active="onQuery.checked($event.is_active)"
                   @on-change-page="onQuery.page($event.page, $event.limit)"
+                  @on-edit="onEdit($event)"
+                  @on-delete="onDelete($event)"
                 />
               </TabPanel>
+
               <TabPanel value="card">
                 <p class="m-0">
-                  Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-                  accusantium doloremque laudantium, totam rem aperiam, eaque
-                  ipsa quae ab illo inventore veritatis et quasi architecto
-                  beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem
-                  quia voluptas sit aspernatur aut odit aut fugit, sed quia
-                  consequuntur magni dolores eos qui ratione voluptatem sequi
-                  nesciunt. Consectetur, adipisci velit, sed quia non numquam
-                  eius modi.
+                  Product variant card view is under construction…
                 </p>
               </TabPanel>
+
             </TabPanels>
           </Tabs>
         </div>
@@ -78,14 +80,14 @@
 
 <script setup lang="ts">
 import { ref, watch, reactive } from "vue";
-import { useUserStore } from "~/stores/user.store";
 import type { IPaginateDto } from "~/types/dto/paginate.dto";
+import type { IProductVariantEntity } from "~/types/entities/product-variants.entity";
 import { sortType, Status } from "~/types/enum/paginate.enum";
 
 const route = useRoute();
 const router = useRouter();
-const store = useUserStore();
-const { findAll } = useUser();
+const store = useProductVariantStore();
+const { findAll } = useProductVariant(); // composable สำหรับ fetch product variants
 
 /* -----------------------------------
    INITIAL QUERY (from URL)
@@ -105,54 +107,24 @@ if (!route.query.page) {
 /* -----------------------------------
    HELPERS
 ----------------------------------- */
-const updateUrl = () => {
-  router.replace({ query: { ...query } });
-};
+const updateUrl = () => router.replace({ query: { ...query } });
 
-const load = async () => {
-  await findAll({ ...query });
-};
+const load = async () => await findAll({ ...query });
 
 /* -----------------------------------
    QUERY UPDATER
 ----------------------------------- */
 const onQuery = {
-  search: async (value: string) => {
-    query.search = value;
-    query.page = 1;
-    updateUrl();
-    await load();
-  },
-
-  sort: async (value: sortType) => {
-    query.sort = value;
-    query.page = 1;
-    updateUrl();
-    await load();
-  },
-
-  checked: async (value: Status) => {
-    query.is_active = value;
-    query.page = 1;
-    updateUrl();
-    await load();
-  },
-
-  page: async (page: number, limit: number) => {
-    query.page = page;
-    query.limit = limit;
-    updateUrl();
-    await load();
-  },
+  search: async (value: string) => { query.search = value; query.page = 1; updateUrl(); await load(); },
+  sort: async (value: sortType) => { query.sort = value; query.page = 1; updateUrl(); await load(); },
+  checked: async (value: Status) => { query.is_active = value; query.page = 1; updateUrl(); await load(); },
+  page: async (page: number, limit: number) => { query.page = page; query.limit = limit; updateUrl(); await load(); },
 };
 
 /* -----------------------------------
    SYNC URL WHEN QUERY CHANGES
 ----------------------------------- */
-watch(
-  () => ({ ...query }),
-  () => updateUrl()
-);
+watch(() => ({ ...query }), () => updateUrl());
 
 /* -----------------------------------
    FIRST LOAD
@@ -162,5 +134,14 @@ await load();
 /* -----------------------------------
    TABLE SELECTION
 ----------------------------------- */
-const selectedUsers = ref([]);
+const selectedVariants = ref<IProductVariantEntity[]>([]);
+
+/* -----------------------------------
+   ACTION HANDLERS
+----------------------------------- */
+const onNew = () => { /* Open new product variant form */ };
+const onEdit = (data: IProductVariantEntity) => { /* Open edit form */ };
+const onDelete = (data: IProductVariantEntity) => { /* Delete one */ };
+const onDeleteSelected = () => { /* Delete selected variants */ };
+const onExport = () => { /* Export table */ };
 </script>

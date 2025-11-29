@@ -22,15 +22,15 @@ export const useAuth = () => {
       if (res.access_token) {
         const token = useCookie("access_token", { path: "/" });
         token.value = res.access_token;
-      }
-      toast.add({
-        severity: "success",
-        summary: "Success",
-        detail: "Login success",
-        life: 3000,
-      });
+        toast.add({
+          severity: "success",
+          summary: "Success",
+          detail: "Login success",
+          life: 3000,
+        });
 
-      navigateTo("/");
+        navigateTo("/");
+      }
     }, setLoading);
   };
 
