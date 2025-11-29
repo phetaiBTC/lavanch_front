@@ -1,5 +1,6 @@
 // ~/composables/useFormHandler.ts
 export const useFormHandler = () => {
+  const { t } = useI18n();
   const toast = useToast();
 
   const handleError = (err: any) => {
@@ -7,8 +8,8 @@ export const useFormHandler = () => {
 
     toast.add({
       severity: "error",
-      summary: "Error",
-      detail: msg,
+      summary: t("error"),
+      detail: t(msg),
       life: 3000,
     });
 

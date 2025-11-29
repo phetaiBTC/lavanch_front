@@ -1,4 +1,5 @@
 <script setup lang="ts">
+
 import { computed, ref, watch, type Ref } from "vue";
 
 // สมมติว่ามี composable useLayout() ที่คืนค่าพวกนี้ออกมา
@@ -75,7 +76,7 @@ function isOutsideClicked(event: MouseEvent): boolean {
       <div class="layout-main">
         <NuxtPage />
       </div>
-      <app-footer />
+      <layouts-app-footer />
     </div>
 
     <div class="layout-mask animate-fadein"></div>
