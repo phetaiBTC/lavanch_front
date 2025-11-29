@@ -1,52 +1,45 @@
 <template>
-  <div
-    class="flex justify-center items-center bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 p-6"
-  >
-    <div class="max-w-2xl w-full">
-      <div
-        class="bg-white/80 backdrop-blur-lg p-8 md:p-12 rounded-lg shadow-lg"
-      >
+  <div class="flex justify-center items-center p-6">
+    <div class="max-w-xl w-full">
+      <div class="bg-white p-10 rounded-2xl shadow-md border border-gray-100">
         <h1
-          class="text-4xl md:text-5xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 mb-4"
+          class="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-6"
         >
-          Welcome to Lavanch POS
+          Lavanch POS
         </h1>
 
-        <div class="text-center mb-8">
-          <p class="text-2xl md:text-3xl font-semibold text-gray-700 mb-2">
-            ຫນ້ານີ້ຍັງບໍ່ພ້ອມໃຊ້ງານ
+        <div class="text-center mb-10">
+          <p class="text-xl font-medium text-gray-700 mb-1">
+            ຫນ້ານີ້ກໍາລັງພັດທະນາ
           </p>
-          <p class="text-lg text-gray-600">ກະລຸນາລໍຖ້າທີມພັດທະນາອັບເດດ</p>
+          <p class="text-gray-500">ກະລຸນາລໍຖ້າການອັບເດດຈາກທີມພັດທະນາ</p>
         </div>
 
-        <div class="flex justify-center mb-8">
+        <!-- Status -->
+        <div class="flex justify-center mb-10">
           <span
-            class="inline-flex items-center px-6 py-3 rounded-full bg-blue-100 text-blue-700 font-medium"
+            class="inline-flex items-center px-5 py-2.5 rounded-full bg-gray-100 text-gray-700 text-sm font-medium"
           >
             <span
-              class="w-2 h-2 bg-blue-500 rounded-full mr-2 animate-pulse"
+              class="w-2 h-2 bg-blue-500 rounded-full mr-2 animate-ping"
             ></span>
-            Under Development
+            Development in Progress
           </span>
         </div>
 
-        <!-- Progress Bar -->
-        <div class="mb-8">
+        <!-- Clean Progress Bar -->
+        <div>
           <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
             <div
-              class="h-full bg-gradient-to-r from-blue-600 to-pink-600 rounded-full animate-pulse"
+              class="h-full bg-blue-500 rounded-full transition-all"
               style="width: 50%"
             ></div>
           </div>
-          <p class="text-center text-sm text-gray-500 mt-2">
-            Development in progress... 50%
-          </p>
+          <p class="text-center text-xs text-gray-500 mt-2">50% Completed</p>
         </div>
       </div>
 
-      <p class="text-center text-gray-500 mt-6 text-sm">
-        Thank you for your patience | ຂອບໃຈສໍາລັບຄວາມອົດທົນຂອງທ່ານ
-      </p>
+      <p class="text-center text-gray-400 mt-6 text-xs">Lavanch POS © 2025</p>
     </div>
   </div>
 </template>
