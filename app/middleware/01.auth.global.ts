@@ -1,6 +1,6 @@
 export default defineNuxtRouteMiddleware((to, from) => {
   const token = useCookie("access_token");
-  console.log(token);
+  // console.log(token);
   // หน้า public (ไม่ต้อง login)
   const publicPages = [
     "/auth/login",
