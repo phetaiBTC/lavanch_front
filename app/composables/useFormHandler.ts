@@ -16,6 +16,15 @@ export const useFormHandler = () => {
     throw err;
   };
 
+  const showSuccess = (message: string = "Operation successful") => {
+    toast.add({
+      severity: "success",
+      summary: t("success"),
+      detail: t(message),
+      life: 3000,
+    });
+  };
+
   const run = async <T>(
     func: () => Promise<T>,
     loading: (v: boolean) => void
@@ -30,5 +39,5 @@ export const useFormHandler = () => {
     }
   };
 
-  return { run };
+  return { run, showSuccess };
 };

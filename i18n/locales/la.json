@@ -48,7 +48,6 @@
   "permissions":"ສິດການນຳໃຊ້",
   "permission":"ສິດການນຳໃຊ້",
   "changePassword":"ປ່ຽນລະຫັດຜ່ານ",
-
   "product":"ສິນຄ້າ",
   "products":"ສິນຄ້າ",
   "units":"ຫົວໜ່ວຍ",
@@ -65,6 +64,80 @@
   "home":"ໜ້າຫຼັກ",
   "error":"ຜິດພາດ",
   "invalid credentials":"ລະຫັດຜ່ານ ຫຼື ອີເມວ ບໍ່ຖືກຕ້ອງ",
-  "success":"ສຳເລັດ"
-  
+  "success":"ສຳເລັດ",
+  "variants":"ຕົວເລືອກ",
+  "log":"ບັນທຶກ",
+  "card":"ບັດ",
+  "select":"ເລືອກ",
+  "notes":"ໝາຍເຫດ",
+  "branches": {
+    "branch": "ສາຂາ",
+    "sidebar": {
+      "branch_label": "ຈັດການສາຂາ",
+      "branch_expenses_label": "ລາຍຈ່າຍສາຂາ",
+      "categories_expenses_label": "ໝວດໝູ່ລາຍຈ່າຍ",
+      "wallet_adjustment_label": "ການປັບປຸງກະເປົາເງິນ",
+      "wallet_transactions_label": "ປະຫັວດທຸລະກຳ"
+    },
+    "fields": {
+      "name": "ຊື່",
+      "address": "ທີ່ຢູ່",
+      "phone": "ເບີໂທລະສັບ",
+      "email": "ອີເມວ",
+      "wallet_balance": "ຍອດເງິນ",
+      "code": "ລະຫັດ",
+      "description": "ລາຍລະອຽດ",
+      "notes": "ໝາຍເຫດ",
+      "receipt_image": "ຮູບໃບບິນ",
+      "expense_no": "ເລກທີລາຍຈ່າຍ",
+      "branch": "ສາຂາ",
+      "expense_category": "ໝວດໝູ່",
+      "category_name": "ຊື່ໝວດໝູ່",
+      "amount": "ຈຳນວນເງິນ",
+      "expense_date": "ວັນທີລາຍຈ່າຍ",
+      "adjustment_no": "ເລກທີປັບປຸງ",
+      "adjustment_type": "ປະເພດການປັບປຸງ",
+      "reason": "ເຫດຜົນ",
+      "adjustment_date": "ວັນທີປັບປຸງ",
+      "transaction_type": "ປະເພດທຸລະກຳ",
+      "balance_before": "ຍອດເງິນກ່ອນ",
+      "balance_after": "ຍອດເງິນຫຼັງ",
+      "reference_type": "ປະເພດອ້າງອີງ",
+      "reference_no": "ເລກທີອ້າງອີງ",
+      "transaction_date": "ວັນທີທຸລະກຳ",
+      "shift": "ກະ",
+      "shift_name": "ຊື່ກະ",
+      "start_time": "ເວລາເລີ່ມ",
+      "end_time": "ເວລາສິ້ນສຸດ",
+      "status": "ສະຖານະ",
+      "active": "ເປີດໃຊ້ງານ",
+      "deposit": "ຝາກເງິນ",
+      "withdraw": "ຖອນເງິນ",
+      "found": "ພົບເງິນເພີ່ມ",
+      "lost": "ສູນເສຍເງິນ"
+    },
+    "status": {
+      "pending": "ລໍຖ້າອະນຸມັດ",
+      "approved": "ອະນຸມັດແລ້ວ",
+      "rejected": "ປະຕິເສດ",
+      "completed": "ສຳເລັດ"
+    },
+    "adjustment_type": {
+      "increase": "ເພີ່ມ",
+      "decrease": "ຫຼຸດ"
+    },
+    "transaction_type": {
+      "deposit": "ຝາກເງິນ",
+      "withdrawal": "ຖອນເງິນ",
+      "credit": "ເພີ່ມ",
+      "debit": "ຫັກ",
+      "expense": "ລາຍຈ່າຍ",
+      "adjustment": "ປັບປຸງ",
+      "transfer_in": "ໂອນເຂົ້າ",
+      "transfer_out": "ໂອນອອກ"
+    },
+    "shifts": {
+      "title": "ຈັດການກະ"
+    }
+   }
 }
