@@ -2,7 +2,7 @@ import { z } from "zod";
 import { BaseEntity } from "~/shared/entities/base.entity";
 
 export const CategoryEntity = BaseEntity.extend({
-  name: z.string().nullable().optional(),
+  name: z.string(),
   description: z.string().nullable().optional(),
   parent: z.number().nullable().optional(),
   children: z.array(z.any()).optional(), // or better: z.array(CategoryEntity)

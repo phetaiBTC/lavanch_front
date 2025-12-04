@@ -13,6 +13,12 @@
     :rowsPerPageOptions="[5, 10, 25]"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
   >
+    <template #loading>
+      <div class="flex flex-column align-items-center justify-content-center h-full">
+        <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+        <span class="mt-2">{{ $t("loading") }}...</span>
+      </div>
+    </template>
     <template #header>
       <div class="flex flex-wrap gap-2 items-center justify-between">
         <h4 class="m-0">{{ $t("manage") + " " + $t(title) }}</h4>
