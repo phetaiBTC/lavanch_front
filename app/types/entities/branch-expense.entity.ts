@@ -15,6 +15,16 @@ export const BranchExpenseEntity = BaseEntity.extend({
   approved_by: z.number().nullable().optional(),
   status: z.string(),
   wallet_transaction_id: z.number().nullable().optional(),
+  // Relations
+  branch: z.object({ id: z.number(), name: z.string() }).optional(),
+  expense_category: z.object({ id: z.number(), name: z.string() }).optional(),
 });
 
 export type IBranchExpenseEntity = z.infer<typeof BranchExpenseEntity>;
+
+export interface IBranchExpenseSummary {
+  total_amount_all: number;
+  count_pending: number;
+  count_approved: number;
+  count_rejected: number;
+}

@@ -77,6 +77,49 @@
   "card":"Card",
   "select":"Select",
   "notes":"Notes",
+  "no_data":"No data available",
+  "clear_filters":"Clear Filters",
+  "date_from":"From Date",
+  "date_to":"To Date",
+  "view":"View",
+  "approve":"Approve",
+  "reject":"Reject",
+  "branchExpenses": {
+    "fields": {
+      "expense_no": "Expense No.",
+      "category": "Category",
+      "amount": "Amount",
+      "expense_date": "Expense Date",
+      "description": "Description",
+      "notes": "Notes"
+    },
+    "summary": {
+      "total_amount": "Total Amount",
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "sections": {
+      "form_data": "Expense Information",
+      "receipt_images": "Receipt Images"
+    },
+    "placeholders": {
+      "search_branch": "Search branch name...",
+      "select_category": "Select category",
+      "enter_amount": "Enter amount",
+      "select_date": "Select date",
+      "enter_description": "Enter description",
+      "enter_notes": "Enter notes"
+    },
+    "messages": {
+      "no_categories": "No categories available",
+      "drag_drop": "Drag and drop files here",
+      "or_click": "or click to select"
+    },
+    "actions": {
+      "create_category": "Create Category"
+    }
+  },
   "branches": {
     "branch": "Branch",
     "sidebar": {
