@@ -27,4 +27,5 @@ export interface IBranchExpenseSummary {
   count_pending: number;
   count_approved: number;
   count_rejected: number;
+  total_count: number;
 }

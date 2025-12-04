@@ -8,18 +8,30 @@
           :count="formatCurrency(summary?.total_amount_all || 0)"
           type=""
           icon="pi pi-wallet text-xl"
-          class="bg-gradient-to-r from-blue-500 to-blue-600 text-white"
+          class="from-blue-500 to-blue-600 text-white"
         />
       </div>
       
       <div class="col-span-12 sm:col-span-6 lg:col-span-3">
         <UiStats
+          :title="$t('branchExpenses.summary.total_records')"
+          :count="summary?.total_count || 0"
+          :type="$t('items')"
+          icon="pi pi-list text-xl"
+          class="from-purple-500 to-purple-600 text-white"
+        />
+      </div>
+      
+      <div class="col-span-12 sm:col-span-6 lg:col-span-3">
+        
+         <UiStats
           :title="$t('branchExpenses.summary.pending')"
           :count="summary?.count_pending || 0"
           :type="$t('items')"
           icon="pi pi-clock text-xl"
-          class="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white"
+          class="from-yellow-500 to-yellow-600 text-white"
         />
+       
       </div>
       
       <div class="col-span-12 sm:col-span-6 lg:col-span-3">
@@ -28,7 +40,7 @@
           :count="summary?.count_approved || 0"
           :type="$t('items')"
           icon="pi pi-check text-xl"
-          class="bg-gradient-to-r from-green-500 to-green-600 text-white"
+          class="from-green-500 to-green-600 text-white"
         />
       </div>
       
@@ -38,7 +50,7 @@
           :count="summary?.count_rejected || 0"
           :type="$t('items')"
           icon="pi pi-times text-xl"
-          class="bg-gradient-to-r from-red-500 to-red-600 text-white"
+          class="from-red-500 to-red-600 text-white"
         />
       </div>
     </div>
@@ -94,15 +106,20 @@
 
 <script setup lang="ts">
 import { ref, watch, reactive, onMounted } from "vue";
+// Explicit component imports to avoid runtime 404 resolution issues
+import BranchExpenseTable from "~/components/branch/BranchExpenseTable.vue";
+import BranchDialogsBranchExpensesCreateDialog from "~/components/branch/dialogs/branch_expenses/create-dialog.vue";
 import { useBranchExpenseStore } from "~/stores/branch-expense.store";
 import type { IPaginateDto } from "~/types/dto/paginate.dto";
 import type { IBranchExpenseEntity, IBranchExpenseSummary } from "~/types/entities/branch-expense.entity";
 import type { IBranchEntity } from "~/types/entities/branch.entity";
 import type { IExpenseCategoryEntity } from "~/types/entities/expense-category.entity";
+import type { PaginatedResponse } from "~/shared/entities/paginate.entity";
 import { sortType, Status } from "~/types/enum/paginate.enum";
 import { useBranchExpense } from "~/composables/branch-expense";
 import { useBranch } from "~/composables/branch";
 import { useExpenseCategory } from "~/composables/expense-category";
+
 import { useConfirm } from "primevue/useconfirm";
 const route = useRoute();
 const router = useRouter();
@@ -197,8 +214,6 @@ watch(
   () => updateUrl()
 );
 
-await load();
-
 const selectedExpenses = ref([]);
 const dialogVisible = ref(false);
 
@@ -208,15 +223,37 @@ const categoryOptions = ref<IExpenseCategoryEntity[]>([]);
 
 // Load options on mount
 onMounted(async () => {
+  // Load initial data
+  await load();
+  
   // Load branches
-  const { findAll: findAllBranches } = useBranch();
-  const branchesRes = await findAllBranches({ page: 1, limit: 100, is_active: Status.ACTIVE });
-  branchOptions.value = branchesRes?.data || [];
+  try {
+    const { findAll: findAllBranches } = useBranch();
+    const branchesRes = await findAllBranches({ page: 1, limit: 100, is_active: Status.ACTIVE });
+    branchOptions.value = branchesRes?.data || [];
+    console.log('Branches loaded:', branchOptions.value.length);
+  } catch (error) {
+    console.error('Failed to load branches:', error);
+  }
 
   // Load categories
-  const { findAll: findAllCategories } = useExpenseCategory();
-  const categoriesRes = await findAllCategories({ page: 1, limit: 100, is_active: Status.ACTIVE });
-  categoryOptions.value = categoriesRes?.data || [];
+  try {
+    const res = await useApi().get<PaginatedResponse<IExpenseCategoryEntity>>(
+      "/expense-categories",
+      { 
+        query: { 
+          page: 1, 
+          limit: 100, 
+          is_active: Status.ACTIVE 
+        } 
+      }
+    );
+    console.log('Categories API response:', res);
+    categoryOptions.value = res?.data || [];
+    console.log('Categories loaded:', categoryOptions.value.length);
+  } catch (error) {
+    console.error('Failed to load categories:', error);
+  }
 });
 
 const formatCurrency = (amount: number) => {

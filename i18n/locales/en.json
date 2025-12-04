@@ -48,6 +48,7 @@
   "sendVerify":"Send verify",
   "send":"Send",
   "confirm":"Confirm",
+  "retry":"Retry",
   "confirm_delete":"Are you sure you want to delete?",
   "delete_message":"Are you sure you want to delete {name}?",
   "delete_multiple_message":"Are you sure you want to delete {count} selected branches?",
@@ -81,6 +82,8 @@
   "clear_filters":"Clear Filters",
   "date_from":"From Date",
   "date_to":"To Date",
+  "date_range":"Date Range",
+  "search_placeholder":"Search by expense no. or branch name...",
   "view":"View",
   "approve":"Approve",
   "reject":"Reject",
@@ -95,6 +98,7 @@
     },
     "summary": {
       "total_amount": "Total Amount",
+      "total_records": "Total Records",
       "pending": "Pending",
       "approved": "Approved",
       "rejected": "Rejected"
@@ -106,6 +110,7 @@
     "placeholders": {
       "search_branch": "Search branch name...",
       "select_category": "Select category",
+      "loading_categories": "Loading categories...",
       "enter_amount": "Enter amount",
       "select_date": "Select date",
       "enter_description": "Enter description",
@@ -114,10 +119,12 @@
     "messages": {
       "no_categories": "No categories available",
       "drag_drop": "Drag and drop files here",
-      "or_click": "or click to select"
+      "or_click": "or click to select",
+      "uploading": "Uploading..."
     },
     "actions": {
-      "create_category": "Create Category"
+      "create_category": "Create Category",
+      "choose_image": "Choose Image"
     }
   },
   "branches": {
@@ -184,14 +191,17 @@
      "total_branches": "Total Branches"
     },
     "adjustment_type": {
-      "increase": "Increase",
-      "decrease": "Decrease"
+     
+      "add" :"Add",
+      "deduct":"Deduct"
     },
     "transaction_type": {
       "deposit": "Deposit",
-      "withdrawal": "Withdrawal",
+      "withdraw": "Withdrawal",
       "credit": "Credit",
       "debit": "Debit",
+      "found": "Found",
+      "lost": "Lost",
       "expense": "Expense",
       "adjustment": "Adjustment",
       "transfer_in": "Transfer In",

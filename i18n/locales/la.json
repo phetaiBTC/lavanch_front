@@ -46,8 +46,9 @@
   "reset_password": "ປ່ຽນລະຫັດຜ່ານ",
   "verify": "ຢືນຢັນ",
   "sendVerify": "ສົ່ງຄຳຢືນຢັນ",
-  "send": "ສົ່ງ",
+  "send":"ສົ່ງ",
   "confirm":"ຢືນຢັນ",
+  "retry":"ລອງໃໝ່",
   "confirm_delete":"ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລຶບ?",
   "delete_message":"ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລຶບ {name}?",
   "delete_multiple_message":"ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລຶບ {count} ສາຂາທີ່ເລືອກ?",
@@ -78,6 +79,55 @@
   "select":"ເລືອກ",
   "notes":"ໝາຍເຫດ",
   "no_data":"ບໍ່ມີຂໍ້ມູນ",
+  "clear_filters":"ລຶບຕົວກອງ",
+  "date_from":"ຈາກວັນທີ",
+  "date_to":"ຫາວັນທີ",
+  "date_range":"ຊ່ວງວັນທີ",
+  "search_placeholder":"ຄົ້ນຫາດ້ວຍເລກທີ ຫຼື ຊື່ສາຂາ...",
+  "view":"ເບິ່ງ",
+  "approve":"ອະນຸມັດ",
+  "reject":"ປະຕິເສດ",
+  "branchExpenses": {
+    "fields": {
+      "expense_no": "ເລກທີລາຍຈ່າຍ",
+      "category": "ປະເພດລາຍຈ່າຍ",
+      "amount": "ຈຳນວນເງິນ",
+      "expense_date": "ວັນທີລາຍຈ່າຍ",
+      "description": "ລາຍລະອຽດ",
+      "notes": "ໝາຍເຫດ"
+    },
+    "summary": {
+      "total_amount": "ຈຳນວນເງິນທັງໝົດ",
+      "total_amount_all": "ຍອດລວມທັງໝົດ",
+      "total_records": "ຈຳນວນທັງໝົດ",
+      "pending": "ລໍຖ້າອະນຸມັດ",
+      "approved": "ອະນຸມັດແລ້ວ",
+      "rejected": "ປະຕິເສດແລ້ວ"
+    },
+    "sections": {
+      "form_data": "ຂໍ້ມູນລາຍຈ່າຍ",
+      "receipt_images": "ຮູບໃບບິນ"
+    },
+    "placeholders": {
+      "search_branch": "ຄົ້ນຫາຊື່ສາຂາ...",
+      "select_category": "ເລືອກປະເພດລາຍຈ່າຍ",
+      "loading_categories": "ກຳລັງໂຫລດປະເພດລາຍຈ່າຍ...",
+      "enter_amount": "ປ້ອນຈຳນວນເງິນ",
+      "select_date": "ເລືອກວັນທີ",
+      "enter_description": "ປ້ອນລາຍລະອຽດ",
+      "enter_notes": "ປ້ອນໝາຍເຫດ"
+    },
+    "messages": {
+      "no_categories": "ບໍ່ມີປະເພດລາຍຈ່າຍ",
+      "drag_drop": "ລາກແລະວາງໄຟລ໌ທີ່ນີ້",
+      "or_click": "ຫຼືຄລິກເພື່ອເລືອກ",
+      "uploading": "ກຳລັງອັບໂຫລດ..."
+    },
+    "actions": {
+      "create_category": "ສ້າງປະເພດລາຍຈ່າຍ",
+      "choose_image": "ເລືອກຮູບພາບ"
+    }
+  },
   "branches": {
     "branch": "ສາຂາ",
     "sidebar": {
@@ -136,8 +186,9 @@
       "completed": "ສຳເລັດ"
     },
     "adjustment_type": {
-      "increase": "ເພີ່ມ",
-      "decrease": "ຫຼຸດ"
+      
+      "add" :"ເພີ່ມ",
+      "deduct":"ຫຼຸດ"
     },
     "summary": {
      "total_wallet_balance": "ຍອດກະເປົາເງິນທັງໝົດ",
@@ -147,11 +198,13 @@
     },
     "transaction_type": {
       "deposit": "ຝາກເງິນ",
-      "withdrawal": "ຖອນເງິນ",
+      "withdraw": "ຖອນເງິນ",
       "credit": "ເພີ່ມ",
       "debit": "ຫັກ",
       "expense": "ລາຍຈ່າຍ",
       "adjustment": "ປັບປຸງ",
+      "found": "ພົບເງິນ",
+      "lost": "ສູນເສຍ",
       "transfer_in": "ໂອນເຂົ້າ",
       "transfer_out": "ໂອນອອກ"
     },
