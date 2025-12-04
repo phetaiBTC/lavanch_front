@@ -1,7 +1,7 @@
 import type { PaginatedResponse } from "~/shared/entities/paginate.entity";
 import type { IPaginateDto } from "~/types/dto/paginate.dto";
 import type { IWalletAdjustmentEntity } from "~/types/entities/wallet-adjustment.entity";
-import { useWalletAdjustmentStore } from "~/stores/wallet-adjustment.store";
+
 export const useWalletAdjustment = () => {
   const store = useWalletAdjustmentStore();
   const { setLoading, setWalletAdjustmentList } = store;

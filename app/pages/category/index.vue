@@ -23,10 +23,11 @@
                 <Toolbar class="mb-6">
                   <template #start>
                     <Button
-                      :label="$t('add') + $t('new') "
+                      :label="$t('add') + $t('new')"
                       icon="pi pi-plus"
                       severity="secondary"
                       class="mr-2"
+                      @click="is_manage()"
                     />
                     <Button
                       :label="$t('delete')"
@@ -56,33 +57,45 @@
                   @on-change-sort="onQuery.sort($event.sort)"
                   @on-change-active="onQuery.checked($event.is_active)"
                   @on-change-page="onQuery.page($event.page, $event.limit)"
+                  @on-edit="is_manage"
                 />
               </TabPanel>
 
               <TabPanel value="card">
-                <p class="m-0">
-                  Category card view is under construction…
-                </p>
+                <p class="m-0">Category card view is under construction…</p>
               </TabPanel>
-
             </TabPanels>
           </Tabs>
         </div>
       </div>
     </div>
   </div>
+
+  <CategoryManage :visible="visible" :category="categoryData" />
 </template>
 
 <script setup lang="ts">
 import { ref, watch, reactive } from "vue";
 import type { IPaginateDto } from "~/types/dto/paginate.dto";
 import { sortType, Status } from "~/types/enum/paginate.enum";
+import type { ICategoryEntity } from "~/types/entities/category.entity";
+import type {
+  CreateCategoriesDto,
+  UpdateCategoriesDto,
+} from "~/types/dto/categories.dto";
 
 const route = useRoute();
 const router = useRouter();
 const store = useCategoryStore();
 const { findAll } = useCategory(); // composable สำหรับ fetch categories
-
+const categoryData = ref<CreateCategoriesDto | UpdateCategoriesDto>({
+  id: 0,
+  name: "",
+  description: "",
+  parent: 0,
+  children: [],
+});
+const visible = ref<boolean>(false);
 /* -----------------------------------
    INITIAL QUERY (from URL)
 ----------------------------------- */
@@ -150,13 +163,23 @@ watch(
   () => updateUrl()
 );
 
+const { data, pending, error } = useAsyncData("categories", () =>
+  findAll({ ...query })
+);
+
 /* -----------------------------------
    FIRST LOAD
 ----------------------------------- */
-await load();
+// await load();
 
 /* -----------------------------------
    TABLE SELECTION
 ----------------------------------- */
 const selectedCategories = ref([]);
+
+const is_manage = (data?: ICategoryEntity) => {
+  categoryData.value = data ? { ...data } : {};
+  console.log("git")
+  visible.value = true;
+};
 </script>
