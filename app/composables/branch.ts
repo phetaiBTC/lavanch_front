@@ -85,7 +85,9 @@ export const useBranch = () => {
 
   const deleteMultiple = async (ids: number[]) => {
     return await run(async () => {
-      const res = await useApi().delete<{ message: string; deletedIds: number[] }>("/branches/multiple", { ids });
+      const res = await useApi().delete<{ message: string; deletedIds: number[] }>("/branches/multiple", {
+        body: { ids }
+      });
       return res;
     }, setLoading);
   };

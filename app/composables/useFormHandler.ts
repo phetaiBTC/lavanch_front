@@ -4,14 +4,27 @@ export const useFormHandler = () => {
   const toast = useToast();
 
   const handleError = (err: any) => {
-    const msg = err?.response?._data?.message || "Something went wrong";
-
-    toast.add({
-      severity: "error",
-      summary: t("error"),
-      detail: t(msg),
-      life: 3000,
-    });
+    const message = err?.response?._data?.message || err?.data?.message || "Something went wrong";
+    
+    // Handle array of validation errors
+    if (Array.isArray(message)) {
+      message.forEach((msg: string) => {
+        toast.add({
+          severity: "error",
+          summary: t("error"),
+          detail: msg,
+          life: 5000,
+        });
+      });
+    } else {
+      // Handle single error message
+      toast.add({
+        severity: "error",
+        summary: t("error"),
+        detail: typeof message === 'string' ? message : "Something went wrong",
+        life: 3000,
+      });
+    }
 
     throw err;
   };

@@ -5,36 +5,48 @@
     :header="$t('edit') + ' ' + $t('branches.sidebar.branch_label')"
     :modal="true"
     :closable="true"
-    :style="{ width: '600px' }"
-    
+    :dismissableMask="true"
+    :draggable="false"
+    class="w-full mx-4"
+    :style="{ maxWidth: '600px' }"
+    :breakpoints="{ '960px': '90vw', '640px': '95vw' }"
   >
-    <div class="flex flex-col gap-4 p-4">
+    <div class="flex flex-col gap-4 sm:gap-5 p-2 sm:p-4">
       <!-- Branch Name -->
       <div class="flex flex-col gap-2">
-        <label for="name">{{ $t("branches.fields.name") }} *</label>
+        <label for="name" class="font-semibold text-gray-700 text-sm sm:text-base">
+          {{ $t("branches.fields.name") }} <span class="text-red-500">*</span>
+        </label>
         <InputText
           id="name"
           v-model="form.name"
           :placeholder="$t('branches.fields.name')"
           class="w-full"
+          :class="{ 'p-invalid': errors.name }"
         />
+        <small v-if="errors.name" class="text-red-500">{{ errors.name }}</small>
       </div>
 
       <!-- Address -->
       <div class="flex flex-col gap-2">
-        <label for="address">{{ $t("branches.fields.address") }}</label>
+        <label for="address" class="font-semibold text-gray-700 text-sm sm:text-base">
+          {{ $t("branches.fields.address") }}
+        </label>
         <Textarea
           id="address"
           v-model="form.address"
           :placeholder="$t('branches.fields.address')"
-          rows="2"
+          rows="3"
           class="w-full"
+          autoResize
         />
       </div>
 
       <!-- Village (Searchable Dropdown) -->
       <div class="flex flex-col gap-2">
-        <label for="village">{{ $t("village") }}</label>
+        <label for="village" class="font-semibold text-gray-700 text-sm sm:text-base">
+          {{ $t("village") }}
+        </label>
         <Select
           id="village"
           v-model="form.village_id"
@@ -50,9 +62,9 @@
           :emptyMessage="loadingAddresses ? $t('Loading...') : $t('No addresses available')"
         >
           <template #option="slotProps">
-            <div class="flex flex-col">
-              <span class="font-semibold">{{ slotProps.option.village_name }}</span>
-              <span class="text-sm text-gray-500">{{ slotProps.option.district_name }}, {{ slotProps.option.province_name }}</span>
+            <div class="flex flex-col py-1">
+              <span class="font-semibold text-sm">{{ slotProps.option.village_name }}</span>
+              <span class="text-xs text-gray-500">{{ slotProps.option.district_name }}, {{ slotProps.option.province_name }}</span>
             </div>
           </template>
         </Select>
@@ -60,40 +72,58 @@
 
       <!-- Phone -->
       <div class="flex flex-col gap-2">
-        <label for="phone">{{ $t("branches.fields.phone") }}</label>
+        <label for="phone" class="font-semibold text-gray-700 text-sm sm:text-base">
+          {{ $t("branches.fields.phone") }}
+        </label>
         <InputText
           id="phone"
           v-model="form.phone"
           :placeholder="$t('branches.fields.phone')"
           class="w-full"
+          :class="{ 'p-invalid': errors.phone }"
+          maxlength="11"
         />
+        <small v-if="errors.phone" class="text-red-500">{{ errors.phone }}</small>
+        <small class="text-gray-500 text-xs">{{ $t('branches.fields.phone_hint') }}</small>
       </div>
 
-      <!-- Facebook -->
-      <div class="flex flex-col gap-2">
-        <label for="facebook">Facebook</label>
-        <InputText
-          id="facebook"
-          v-model="form.facebook"
-          placeholder="Facebook Page URL"
-          class="w-full"
-        />
-      </div>
+      <!-- Social Media - Collapsible on Mobile -->
+      <div class="flex flex-col gap-4">
+        <div class="flex items-center gap-2">
+          <i class="pi pi-users text-blue-600"></i>
+          <span class="font-semibold text-gray-700 text-sm sm:text-base">{{ $t('branches.fields.social_media') }}</span>
+        </div>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <!-- Facebook -->
+          <div class="flex flex-col gap-2">
+            <label for="facebook" class="text-sm text-gray-600">Facebook</label>
+            <InputText
+              id="facebook"
+              v-model="form.facebook"
+              placeholder="Facebook Page URL"
+              class="w-full text-sm"
+            />
+          </div>
 
-      <!-- TikTok -->
-      <div class="flex flex-col gap-2">
-        <label for="tiktok">TikTok</label>
-        <InputText
-          id="tiktok"
-          v-model="form.tiktok"
-          placeholder="TikTok Handle"
-          class="w-full"
-        />
+          <!-- TikTok -->
+          <div class="flex flex-col gap-2">
+            <label for="tiktok" class="text-sm text-gray-600">TikTok</label>
+            <InputText
+              id="tiktok"
+              v-model="form.tiktok"
+              placeholder="TikTok Handle"
+              class="w-full text-sm"
+            />
+          </div>
+        </div>
       </div>
 
       <!-- Shift Selection -->
       <div class="flex flex-col gap-2" v-if="shifts && shifts.length > 0">
-        <label for="shifts_id">{{ $t("branches.fields.shift") }}</label>
+        <label for="shifts_id" class="font-semibold text-gray-700 text-sm sm:text-base">
+          {{ $t("branches.fields.shift") }}
+        </label>
         <Select
           id="shifts_id"
           v-model="form.shifts_id"
@@ -103,10 +133,13 @@
           class="w-full"
         >
           <template #option="slotProps">
-            {{ slotProps.option.start_time }} - {{ slotProps.option.end_time }}
+            <div class="flex items-center gap-2">
+              <i class="pi pi-clock text-blue-600 text-sm"></i>
+              <span class="text-sm">{{ slotProps.option.start_time }} - {{ slotProps.option.end_time }}</span>
+            </div>
           </template>
           <template #value="slotProps">
-            <span v-if="slotProps.value">
+            <span v-if="slotProps.value" class="text-sm">
               {{ shifts.find(s => s.id === slotProps.value)?.start_time }} - 
               {{ shifts.find(s => s.id === slotProps.value)?.end_time }}
             </span>
@@ -116,16 +149,22 @@
     </div>
 
     <template #footer>
-      <Button
-        :label="$t('cancel')"
-        severity="secondary"
-        @click="handleClose"
-      />
-      <Button
-        :label="$t('save')"
-        :loading="saving"
-        @click="handleSave"
-      />
+      <div class="flex flex-col-reverse sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
+        <Button
+          :label="$t('cancel')"
+          severity="secondary"
+          @click="handleClose"
+          class="w-full sm:w-auto"
+          outlined
+        />
+        <Button
+          :label="$t('save')"
+          :loading="saving"
+          @click="handleSave"
+          class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700"
+          icon="pi pi-check"
+        />
+      </div>
     </template>
   </Dialog>
 </template>
@@ -152,6 +191,7 @@ const toast = useToast();
 const saving = ref(false);
 const loadingAddresses = ref(false);
 const addressOptions = ref<IAddressOption[]>([]);
+const errors = ref<Record<string, string>>({});
 
 const form = ref<Partial<IBranchEntity>>({
   name: "",
@@ -189,6 +229,7 @@ watch(
         tiktok: newBranch.tiktok || "",
         shifts_id: newBranch.shifts_id || null,
       };
+      errors.value = {};
     }
   },
   { immediate: true }
@@ -198,12 +239,28 @@ const handleClose = () => {
   emit("update:visible", false);
 };
 
-const handleSave = async () => {
+const validateForm = () => {
+  errors.value = {};
+  
   if (!form.value.name?.trim()) {
+    errors.value.name = "Branch name is required";
+    return false;
+  }
+  
+  if (form.value.phone && !/^\d{10,11}$/.test(form.value.phone)) {
+    errors.value.phone = "Phone must be 10-11 digits";
+    return false;
+  }
+  
+  return true;
+};
+
+const handleSave = async () => {
+  if (!validateForm()) {
     toast.add({
       severity: "warn",
       summary: "Validation Error",
-      detail: "Please enter branch name",
+      detail: "Please fix the errors before saving",
       life: 3000,
     });
     return;
@@ -212,6 +269,11 @@ const handleSave = async () => {
   saving.value = true;
   try {
     emit("save", form.value);
+    // Only close if save was successful
+    // The parent component will close the dialog
+  } catch (error) {
+    // Error is already handled by useFormHandler
+    // Don't close dialog so user can fix errors
   } finally {
     saving.value = false;
   }

@@ -9,18 +9,20 @@
     scrollHeight="400px"
     :loading="loading"
     :rows="10"
+    responsiveLayout="scroll"
+    class="branch-table"
   >
     <template #header>
-      <div class="flex flex-wrap gap-2 items-center justify-between">
-        <h4 class="m-0">{{ $t("manage") + " " + $t(title) }}</h4>
-        <div class="flex gap-2">
+      <div class="flex flex-col sm:flex-row gap-3 sm:gap-2 items-start sm:items-center justify-between p-2">
+        <h4 class="m-0 text-lg font-semibold text-gray-800">{{ $t("manage") + " " + $t(title) }}</h4>
+        <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
           <Select
             v-model="statusFilter"
             :options="statusOptions"
             optionLabel="label"
             optionValue="value"
             :placeholder="$t('status')"
-            class="w-40"
+            class="w-full sm:w-40"
             @change="emit('onChangeStatus', statusFilter)"
           />
           <ToggleButton
@@ -30,6 +32,7 @@
             on-label="a-z"
             onIcon="pi pi-sort-alpha-down"
             offIcon="pi pi-sort-alpha-down-alt"
+            class="w-full sm:w-auto"
             @change="
               emit('onChangeSort', {
                 sort: sort === sortType.DESC ? sortType.ASC : sortType.DESC,
@@ -40,9 +43,10 @@
             :value="checked"
             @update:value="emit('update:checked', $event)"
             onIcon="pi pi-trash"
-            :off-label="$t('active')"
-            :on-label="$t('inactive')"
+            :off-label="$t('inactive')"
+            :on-label="$t('active')"
             offIcon="pi pi-check"
+            class="w-full sm:w-auto"
             @change="
               emit('onChangeActive', {
                 is_active:
@@ -50,17 +54,24 @@
               })
             "
           />
-          <IconField>
-            <InputIcon>
-              <i class="pi pi-search" />
-            </InputIcon>
-            <InputText
-              v-model="search"
-              :placeholder="$t('search') + '...'"
-              @keydown.enter="emit('onSearch', search)"
+          <div class="flex gap-2 w-full sm:w-auto">
+            <IconField class="flex-1 sm:flex-initial">
+              <InputIcon>
+                <i class="pi pi-search" />
+              </InputIcon>
+              <InputText
+                v-model="search"
+                :placeholder="$t('search') + '...'"
+                class="w-full"
+                @keydown.enter="emit('onSearch', search)"
+              />
+            </IconField>
+            <Button 
+              icon="pi pi-search" 
+              @click="emit('onSearch', search)"
+              class="bg-blue-600 hover:bg-blue-700 border-blue-600"
             />
-          </IconField>
-          <Button icon="pi pi-search" @click="emit('onSearch', search)" />
+          </div>
         </div>
       </div>
     </template>
@@ -88,14 +99,34 @@
         {{ data.address || "-" }}
       </template>
     </Column>
-    <Column
-      field="village"
-      style="min-width: 200px"
-      :header="$t('village')"
+     <Column
+      field="facebook"
+      style="min-width: 250px"
+      :header="$t('branches.fields.facebook')"
       sortable
     >
       <template #body="{ data }">
-        <span v-if="data.full_address">
+        <a class="text-blue-700" :href="data.facebook || '#'" target="_blank">{{ data.facebook || "-" }}</a>
+      </template>
+    </Column>
+    <Column
+      field="tiktok"
+      style="min-width: 250px"
+      :header="$t('branches.fields.tiktok')"
+      sortable
+    >
+      <template #body="{ data }">
+        <a class="text-blue-700" :href="data.tiktok || '#'" target="_blank">{{ data.tiktok || "-" }}</a>
+      </template>
+    </Column>
+    <Column
+      field="village"
+      style="min-width: 200px"
+      :header="$t('branches.fields.village')"
+      sortable
+    >
+      <template #body="{ data }">
+        <span v-if="data.full_address" >
           {{ data.full_address.village_name }},
           {{ data.full_address.district_name }},
           {{ data.full_address.province_name }}
@@ -113,12 +144,12 @@
     </Column>
     <Column
       field="phone"
-      style="min-width: 150px"
+      style="min-width: 150px;"
       :header="$t('branches.fields.phone')"
       sortable
     >
       <template #body="{ data }">
-        {{ data.phone || "-" }}
+       {{ data.phone || "-" }}
       </template>
     </Column>
     <Column
@@ -274,4 +305,50 @@ watch(selection, (val) => {
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+/* Mobile responsive table styling */
+@media (max-width: 640px) {
+  :deep(.p-datatable .p-datatable-thead) {
+    display: none;
+  }
+  
+  :deep(.p-datatable .p-datatable-tbody > tr) {
+    border-bottom: 2px solid #e5e7eb;
+    display: block;
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    background: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  :deep(.p-datatable .p-datatable-tbody > tr > td) {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border: none;
+  }
+  
+  :deep(.p-datatable .p-datatable-tbody > tr > td:before) {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #4b5563;
+  }
+}
+
+/* Blue theme overrides */
+:deep(.p-tag.p-tag-success) {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+:deep(.p-button.bg-blue-600) {
+  background-color: #2563eb;
+  border-color: #2563eb;
+}
+
+:deep(.p-button.bg-blue-600:hover) {
+  background-color: #1d4ed8;
+  border-color: #1d4ed8;
+}
+</style>

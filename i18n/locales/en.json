@@ -48,6 +48,10 @@
   "sendVerify":"Send verify",
   "send":"Send",
   "confirm":"Confirm",
+  "confirm_delete":"Are you sure you want to delete?",
+  "delete_message":"Are you sure you want to delete {name}?",
+  "delete_multiple_message":"Are you sure you want to delete {count} selected branches?",
+  "selected_items":"Selected items",
   "permissions":"Permissions",
   "permission":"Permission",
   "changePassword":"Change password",
@@ -86,7 +90,12 @@
       "name": "Name",
       "address": "Address",
       "phone": "Phone",
+      "phone_hint": "10-11 digits only",
       "email": "Email",
+      "facebook": "Facebook",
+      "tiktok": "Tiktok",
+      "village": "Village",
+      "social_media": "Social Media",
       "wallet_balance": "Wallet Balance",
       "code": "Code",
       "description": "Description",
@@ -124,6 +133,12 @@
       "approved": "Approved",
       "rejected": "Rejected",
       "completed": "Completed"
+    },
+    "summary": {
+     "total_wallet_balance": "Total Wallet Balance",
+     "active_branches": "Active Branches",
+     "inactive_branches": "Inactive Branches",
+     "total_branches": "Total Branches"
     },
     "adjustment_type": {
       "increase": "Increase",

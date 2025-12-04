@@ -48,6 +48,10 @@
   "sendVerify": "ສົ່ງຄຳຢືນຢັນ",
   "send": "ສົ່ງ",
   "confirm":"ຢືນຢັນ",
+  "confirm_delete":"ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລຶບ?",
+  "delete_message":"ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລຶບ {name}?",
+  "delete_multiple_message":"ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລຶບ {count} ສາຂາທີ່ເລືອກ?",
+  "selected_items":"ລາຍການທີ່ເລືອກ",
   "permissions":"ສິດການນຳໃຊ້",
   "permission":"ສິດການນຳໃຊ້",
   "changePassword":"ປ່ຽນລະຫັດຜ່ານ",
@@ -86,8 +90,13 @@
       "name": "ຊື່",
       "address": "ທີ່ຢູ່",
       "phone": "ເບີໂທລະສັບ",
+      "phone_hint": "10-11 ຕົວເລກເທົ່ານັ້ນ",
       "email": "ອີເມວ",
       "wallet_balance": "ຍອດເງິນ",
+      "facebook": "ເຟສບຸກ",
+      "tiktok": "ທິດຕອກ",
+      "village": "ບ້ານ",
+      "social_media": "ສື່ສັງຄົມອອນໄລນ໌",
       "code": "ລະຫັດ",
       "description": "ລາຍລະອຽດ",
       "notes": "ໝາຍເຫດ",
@@ -108,8 +117,8 @@
       "reference_type": "ປະເພດອ້າງອີງ",
       "reference_no": "ເລກທີອ້າງອີງ",
       "transaction_date": "ວັນທີທຸລະກຳ",
-      "shift": "ກະ",
-      "shift_name": "ຊື່ກະ",
+      "shift": "ເວລາ",
+      "shift_name": "ຊື່ເວລາ",
       "start_time": "ເວລາເລີ່ມ",
       "end_time": "ເວລາສິ້ນສຸດ",
       "status": "ສະຖານະ",
@@ -129,6 +138,12 @@
       "increase": "ເພີ່ມ",
       "decrease": "ຫຼຸດ"
     },
+    "summary": {
+     "total_wallet_balance": "ຍອດກະເປົາເງິນທັງໝົດ",
+     "active_branches": "ສາຂາທີ່ໃຊ້ງານ",
+     "inactive_branches": "ສາຂາທີ່ປິດໃຊ້ງານ",
+     "total_branches": "ສາຂາທັງໝົດ"
+    },
     "transaction_type": {
       "deposit": "ຝາກເງິນ",
       "withdrawal": "ຖອນເງິນ",
@@ -140,7 +155,7 @@
       "transfer_out": "ໂອນອອກ"
     },
     "shifts": {
-      "title": "ຈັດການກະ"
+      "title": "ຈັດການເວລາ"
     }
    }
 }
