@@ -14,6 +14,15 @@ const model = ref<MenuItem[]>([
       { label: t("users"), icon: "pi pi-fw pi-users", to: "/user" }, // คนหลายคน
       { label: t("roles"), icon: "pi pi-fw pi-shield", to: "/role" }, // บทบาท / Role
     ],
+  },{
+    label: t("branches.branch"),
+    items: [
+      { label: t("branches.sidebar.branch_label"), icon: "pi pi-fw pi-sitemap", to: "/branch" }, // คนหลายคน
+      { label: t("branches.sidebar.branch_expenses_label"), icon: "pi pi-money-bill", to: "/branch_expenses" }, // คนหลายคน
+      { label: t("branches.sidebar.categories_expenses_label"), icon: "pi pi-tags", to: "/categories_expenses" }, // คนหลายคน
+      { label: t("branches.sidebar.wallet_adjustment_label"), icon: "pi pi-sync", to: "/wallet_adjustment" }, // คนหลายคน
+      { label: t("branches.sidebar.wallet_transactions_label"), icon: "pi pi-history", to: "/wallet_transactions" }, // คนหลายคน
+    ],
   },
   {
     label: t("products"),

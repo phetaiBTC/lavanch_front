@@ -45,7 +45,8 @@
             </div>
           </header>
           <user-change-password
-            v-model:visible="visible"
+            :visible="visible"
+            @update:visible="$emit('update:visible', $event)"
           ></user-change-password>
         </div>
       </div>
