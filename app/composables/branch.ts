@@ -2,6 +2,20 @@ import type { PaginatedResponse } from "~/shared/entities/paginate.entity";
 import type { IPaginateDto } from "~/types/dto/paginate.dto";
 import type { IBranchEntity } from "~/types/entities/branch.entity";
 import { useBranchStore } from "~/stores/branch.store";
+
+export interface IBranchWalletBalance {
+  branch_id: number;
+  branch_name: string;
+  wallet_balance: number;
+}
+
+export interface IBranchSummaryResponse {
+  total_wallet_balance_per_branch: IBranchWalletBalance[];
+  total_wallet_balance_all_branches: number;
+  active_count: number;
+  inactive_count: number;
+}
+
 export const useBranch = () => {
   const store = useBranchStore();
   const { setLoading, setBranchList } = store;
@@ -55,5 +69,44 @@ export const useBranch = () => {
     }, setLoading);
   };
 
-  return { findAll, findOne, create, update, softDelete, restore };
+  const getSummary = async () => {
+    return await run(async () => {
+      const res = await useApi().get<IBranchSummaryResponse>("/branches/summary");
+      return res;
+    }, setLoading);
+  };
+
+  const toggleStatus = async (id: number) => {
+    return await run(async () => {
+      const res = await useApi().patch<{ message: string; is_active: boolean }>(`/branches/${id}/status`, {});
+      return res;
+    }, setLoading);
+  };
+
+  const deleteMultiple = async (ids: number[]) => {
+    return await run(async () => {
+      const res = await useApi().delete<{ message: string; deletedIds: number[] }>("/branches/multiple", { ids });
+      return res;
+    }, setLoading);
+  };
+
+  const hardDelete = async (id: number) => {
+    return await run(async () => {
+      const res = await useApi().delete<{ message: string }>(`/branches/hard/${id}`);
+      return res;
+    }, setLoading);
+  };
+
+  return { 
+    findAll, 
+    findOne, 
+    create, 
+    update, 
+    softDelete,
+    hardDelete,
+    restore, 
+    getSummary, 
+    toggleStatus, 
+    deleteMultiple 
+  };
 };

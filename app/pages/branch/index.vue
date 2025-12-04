@@ -1,13 +1,48 @@
 <template>
   <div>
+
+      <!-- Summary Cards using UiStats -->
+    <div class="grid grid-cols-12 gap-6 mb-8">
+      <!-- Total Wallet Balance -->
+      <UiStats
+        title="Total Wallet Balance"
+        :count="summary?.total_wallet_balance_all_branches || 0"
+        icon="pi pi-wallet text-xl"
+      />
+      
+      <!-- Active Branches -->
+      <UiStats
+        title="Active Branches"
+        :count="summary?.active_count || 0"
+        type="active"
+        icon="pi pi-check-circle text-xl"
+      />
+      
+      <!-- Inactive Branches -->
+      <UiStats
+        title="Inactive Branches"
+        :count="summary?.inactive_count || 0"
+        type="inactive"
+        icon="pi pi-times-circle text-xl"
+      />
+      
+      <!-- Total Branches -->
+      <UiStats
+        title="Total Branches"
+        :count="(summary?.active_count || 0) + (summary?.inactive_count || 0)"
+        type="total"
+        icon="pi pi-sitemap text-xl"
+      />
+    </div>
+
     <div class="grid grid-cols-12 gap-8">
       <!-- Stats -->
-      <UiStats
+      <!-- <UiStats
         title="branches.branch"
         :count="store.branchList.pagination.count"
         :type="$t('items')"
         icon="pi pi-sitemap text-xl"
-      />
+      /> -->
 
       <!-- Branch Table -->
       <div class="col-span-12">
@@ -31,8 +66,9 @@
                     <Button
                       :label="$t('delete')"
                       icon="pi pi-trash"
-                      severity="secondary"
+                      severity="danger"
                       :disabled="selectedBranches.length === 0"
+                      @click="handleDeleteMultiple"
                     />
                   </template>
                   <template #end>
@@ -55,10 +91,13 @@
                   @on-search="onQuery.search($event)"
                   @on-change-sort="onQuery.sort($event.sort)"
                   @on-change-active="onQuery.checked($event.is_active)"
+                  @on-change-status="onQuery.status($event)"
                   @on-change-page="onQuery.page($event.page, $event.limit)"
                   @on-edit="openEditDialog"
                   @on-delete="handleDelete"
                   @on-restore="handleRestore"
+                  @on-toggle-status="handleToggleStatus"
+                  @on-hard-delete="handleHardDelete"
                 />
               </TabPanel>
               
@@ -135,16 +174,19 @@ import type { IPaginateDto } from "~/types/dto/paginate.dto";
 import type { IBranchEntity } from "~/types/entities/branch.entity";
 import type { IShiftsEntity } from "~/types/entities/shifts.entity";
 import { sortType, Status } from "~/types/enum/paginate.enum";
-import { useBranch } from "~/composables/branch";
+import { useBranch, type IBranchSummaryResponse } from "~/composables/branch";
 import { useShifts } from "~/composables/shifts";
 const route = useRoute();
 const router = useRouter();
 const store = useBranchStore();
 console.log('Branch store:', store.branchList);
 const shiftsStore = useShiftsStore();
-const { findAll, create, update, softDelete, restore } = useBranch();
+const { findAll, create, update, softDelete, hardDelete, restore, getSummary, toggleStatus, deleteMultiple } = useBranch();
 const { findAll: findAllShifts, create: createShift, update: updateShift, softDelete: deleteShift, restore: restoreShift } = useShifts();
 const { showSuccess } = useFormHandler();
+
+// Summary data
+const summary = ref<IBranchSummaryResponse | null>(null);
 
 // Dialog states for branches
 const createBranchDialogVisible = ref(false);
@@ -167,6 +209,7 @@ const query = reactive<IPaginateDto>({
   search: String(route.query.search ?? ""),
   sort: (route.query.sort as sortType) ?? sortType.ASC,
   is_active: (route.query.is_active as Status) ?? Status.ACTIVE,
+  status: (route.query.status as any) ?? "all",
 });
 
 /* Query for shifts */
@@ -190,6 +233,11 @@ const load = async () => {
   await findAll({ ...query });
 };
 
+const loadSummary = async () => {
+  const result = await getSummary();
+  summary.value = result || null;
+};
+
 const loadShifts = async () => {
   await findAllShifts({ ...shiftsQuery });
 };
@@ -209,6 +257,12 @@ const onQuery = {
   },
   checked: async (value: Status) => {
     query.is_active = value;
+    query.page = 1;
+    updateUrl();
+    await load();
+  },
+  status: async (value: string) => {
+    query.status = value as any;
     query.page = 1;
     updateUrl();
     await load();
@@ -235,9 +289,10 @@ watch(
 );
 
 await load();
+await loadSummary();
 await loadShifts();
 
-const selectedBranches = ref([]);
+const selectedBranches = ref<IBranchEntity[]>([]);
 const selectedShifts = ref([]);
 
 // Branch CRUD handlers
@@ -255,6 +310,7 @@ const handleCreateBranch = async (data: Partial<IBranchEntity>) => {
   createBranchDialogVisible.value = false;
   showSuccess("Branch created successfully");
   await load();
+  await loadSummary();
 };
 
 const handleUpdateBranch = async (data: Partial<IBranchEntity>) => {
@@ -263,6 +319,7 @@ const handleUpdateBranch = async (data: Partial<IBranchEntity>) => {
     updateBranchDialogVisible.value = false;
     showSuccess("Branch updated successfully");
     await load();
+    await loadSummary();
   }
 };
 
@@ -276,12 +333,57 @@ const handleConfirmDeleteBranch = async (branch: IBranchEntity) => {
   deleteBranchDialogVisible.value = false;
   showSuccess("Branch deleted successfully");
   await load();
+  await loadSummary();
 };
 
 const handleRestore = async (branch: IBranchEntity) => {
   await restore(branch.id);
   showSuccess("Branch restored successfully");
   await load();
+  await loadSummary();
+};
+
+const handleToggleStatus = async (branch: IBranchEntity) => {
+  try {
+    const result = await toggleStatus(branch.id);
+    showSuccess(result?.message || "Branch status toggled successfully");
+    await load();
+    await loadSummary();
+  } catch (error) {
+    console.error('Failed to toggle branch status:', error);
+  }
+};
+
+const handleDeleteMultiple = async () => {
+  if (selectedBranches.value.length === 0) return;
+  
+  const confirmed = confirm(`Are you sure you want to delete ${selectedBranches.value.length} selected branches?`);
+  if (!confirmed) return;
+  
+  try {
+    const ids = selectedBranches.value.map((branch: IBranchEntity) => branch.id);
+    const result = await deleteMultiple(ids);
+    showSuccess(result?.message || `Successfully deleted ${selectedBranches.value.length} branches`);
+    selectedBranches.value = []; // Clear selection
+    await load();
+    await loadSummary();
+  } catch (error) {
+    console.error('Failed to delete multiple branches:', error);
+  }
+};
+
+const handleHardDelete = async (branch: IBranchEntity) => {
+  const confirmed = confirm(`Are you sure you want to permanently delete "${branch.name}"? This action cannot be undone.`);
+  if (!confirmed) return;
+  
+  try {
+    await hardDelete(branch.id);
+    showSuccess("Branch permanently deleted successfully");
+    await load();
+    await loadSummary();
+  } catch (error) {
+    console.error('Failed to permanently delete branch:', error);
+  }
 };
 
 // Shift CRUD handlers

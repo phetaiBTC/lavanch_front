@@ -14,6 +14,15 @@
       <div class="flex flex-wrap gap-2 items-center justify-between">
         <h4 class="m-0">{{ $t("manage") + " " + $t(title) }}</h4>
         <div class="flex gap-2">
+          <Select
+            v-model="statusFilter"
+            :options="statusOptions"
+            optionLabel="label"
+            optionValue="value"
+            :placeholder="$t('status')"
+            class="w-40"
+            @change="emit('onChangeStatus', statusFilter)"
+          />
           <ToggleButton
             :value="sort"
             @update:value="emit('update:sort', $event)"
@@ -161,6 +170,16 @@
       <template #body="slotProps">
         <div class="flex flex-row gap-2">
           <Button
+            v-if="!slotProps.data.deletedAt"
+            :icon="slotProps.data.is_active ? 'pi pi-check-circle' : 'pi pi-times-circle'"
+            outlined
+            rounded
+            :severity="slotProps.data.is_active ? 'success' : 'warning'"
+            v-tooltip.top="slotProps.data.is_active ? $t('deactivate') : $t('activate')"
+            @click="emit('onToggleStatus', slotProps.data)"
+          />
+          <Button
+            v-if="!slotProps.data.deletedAt"
             icon="pi pi-pencil"
             outlined
             rounded
@@ -174,14 +193,24 @@
             severity="danger"
             @click="emit('onDelete', slotProps.data)"
           />
-          <Button
-            v-else
-            icon="pi pi-replay"
-            outlined
-            rounded
-            severity="success"
-            @click="emit('onRestore', slotProps.data)"
-          />
+          <template v-else>
+            <Button
+              icon="pi pi-replay"
+              outlined
+              rounded
+              severity="success"
+              v-tooltip.top="$t('restore')"
+              @click="emit('onRestore', slotProps.data)"
+            />
+            <Button
+              icon="pi pi-trash"
+              outlined
+              rounded
+              severity="danger"
+              v-tooltip.top="$t('hardDelete')"
+              @click="emit('onHardDelete', slotProps.data)"
+            />
+          </template>
         </div>
       </template>
     </Column>
@@ -202,7 +231,16 @@ import type { PaginatedResponse } from "~/shared/entities/paginate.entity";
 import { sortType, Status } from "~/types/enum/paginate.enum";
 import type { IPaginateDto } from "~/types/dto/paginate.dto";
 
+const { t } = useI18n();
 const search = ref("");
+const statusFilter = ref("all");
+
+const statusOptions = [
+  { label: t("active"), value: "active" },
+  { label: t("inactive"), value: "inactive" },
+  { label: t("all"), value: "all" },
+];
+
 const props = defineProps<{
   data: PaginatedResponse<IBranchEntity>;
   value: IBranchEntity[];
@@ -219,11 +257,14 @@ const emit = defineEmits([
   "update:checked",
   "onChangeSort",
   "onChangeActive",
+  "onChangeStatus",
   "onChangePage",
   "onSearch",
   "onEdit",
   "onDelete",
   "onRestore",
+  "onToggleStatus",
+  "onHardDelete",
 ]);
 
 const selection = ref<IBranchEntity[]>(props.value);
