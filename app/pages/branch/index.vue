@@ -6,7 +6,7 @@
       <!-- Total Wallet Balance -->
       <UiStats
         :title="$t('branches.summary.total_wallet_balance')"
-        :count="summaryTotalWalletBalance"
+        :count="Number(summaryTotalWalletBalance) || 0" 
         icon="pi pi-wallet text-xl"
       />
       

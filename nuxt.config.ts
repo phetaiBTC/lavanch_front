@@ -7,9 +7,20 @@ export default defineNuxtConfig({
   vite: {
     plugins: [tailwindcss()],
   },
+  //   imports: {
+  //   autoImport: true,
+  //   dirs: [
+  //     'composables',       // default
+  //     'composables/core',  // เพิ่ม folder ย่อย
+  //     'composables/category/comman',
+  //     'composables/product',
+  //     // ... folder อื่นๆ
+  //   ],
+
+  // },
   runtimeConfig: {
     public: {
-      apiBase: process.env.API_BASE_URL || "http://192.168.127.159:4000/api",
+      apiBase: process.env.API_BASE_URL || "https://lavanchback-production.up.railway.app/api",
     },
     // apiKey: process.env.API_KEY || "",
   },

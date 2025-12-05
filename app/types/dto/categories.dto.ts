@@ -7,7 +7,7 @@ export const CreateCategoriesDto = CategoryEntity.pick({
   parent: true,
   children: true,
 });
-export type CreateCategoriesDto = z.infer<typeof CreateCategoriesDto>;
+export type ICreateCategoriesDto = z.infer<typeof CreateCategoriesDto>;
 
 export const UpdateCategoriesDto = CategoryEntity.pick({
   id: true,
@@ -16,4 +16,4 @@ export const UpdateCategoriesDto = CategoryEntity.pick({
   parent: true,
   children: true,
 }).partial();
-export type UpdateCategoriesDto = z.infer<typeof UpdateCategoriesDto>;
+export type IUpdateCategoriesDto = z.infer<typeof UpdateCategoriesDto>;

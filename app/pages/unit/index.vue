@@ -153,7 +153,10 @@ watch(
 /* -----------------------------------
    FIRST LOAD
 ----------------------------------- */
-await load();
+// await load();
+const { data, pending, error } = useAsyncData("units", () =>
+  findAll({ ...query })
+);
 
 /* -----------------------------------
    TABLE SELECTION
