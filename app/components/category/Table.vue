@@ -19,7 +19,7 @@
           <ToggleButton
             :value="sort"
             @update:value="emit('update:sort', $event)"
-                        off-label="z-a"
+            off-label="z-a"
             on-label="a-z"
             onIcon="pi pi-sort-alpha-down"
             offIcon="pi pi-sort-alpha-down-alt"
@@ -83,33 +83,21 @@
     />
 
     <!-- Parent -->
-    <Column
-      style="min-width: 180px"
-      :header="$t('parent')"
-      sortable
-    >
+    <Column style="min-width: 180px" :header="$t('parent')" sortable>
       <template #body="{ data }">
         {{ data.parent || "-" }}
       </template>
     </Column>
 
     <!-- Children count -->
-    <Column
-      style="min-width: 120px"
-      :header="$t('children')"
-      sortable
-    >
+    <Column style="min-width: 120px" :header="$t('children')" sortable>
       <template #body="{ data }">
         {{ data.children?.length || 0 }}
       </template>
     </Column>
 
     <!-- Active status -->
-    <Column
-      style="min-width: 120px"
-      field="is_active"
-      :header="$t('status')"
-    >
+    <Column style="min-width: 120px" field="is_active" :header="$t('status')">
       <template #body="{ data }">
         <Tag
           :value="data.is_active ? $t('active') : $t('inactive')"
@@ -156,10 +144,10 @@
           />
           <Button
             icon="pi pi-trash"
+            severity="danger"
             outlined
             rounded
-            severity="danger"
-            @click="emit('onDelete', data)"
+            @click="requireConfirmation(data)"
           />
         </div>
       </template>
@@ -174,6 +162,33 @@
     :rowsPerPageOptions="[5, 10, 20, 30]"
     @page="emit('onChangePage', { page: $event.page + 1, limit: $event.rows })"
   />
+
+  <ConfirmDialog group="headless">
+    <template #container="{ message, acceptCallback, rejectCallback }">
+      <div
+        class="flex flex-col items-center p-8 bg-surface-0 dark:bg-surface-900 rounded"
+      >
+        <div
+          class="rounded-full bg-primary text-primary-contrast inline-flex justify-center items-center h-24 w-24 -mt-20"
+        >
+          <i class="pi pi-question text-4xl!"></i>
+        </div>
+        <span class="font-bold text-2xl block mb-2 mt-6">{{
+          message.header
+        }}</span>
+        <p class="mb-0">{{ message.message }}</p>
+        <div class="flex items-center gap-2 mt-6">
+          <Button label="Yes" @click="acceptCallback" class="w-32"></Button>
+          <Button
+            label="Cancel"
+            variant="outlined"
+            @click="rejectCallback"
+            class="w-32"
+          ></Button>
+        </div>
+      </div>
+    </template>
+  </ConfirmDialog>
 </template>
 
 <script setup lang="ts">
@@ -183,7 +198,8 @@ import type { PaginatedResponse } from "~/shared/entities/paginate.entity";
 import type { ICategoryEntity } from "~/types/entities/category.entity";
 
 const search = ref("");
-
+const confirm = useConfirm();
+const toast = useToast();
 const props = defineProps<{
   data: PaginatedResponse<ICategoryEntity>;
   value: ICategoryEntity[];
@@ -211,6 +227,24 @@ const selection = ref<ICategoryEntity[]>(props.value);
 watch(selection, (val) => {
   emit("update:value", val);
 });
+
+const rowToDelete = ref<number>(0);
+const requireConfirmation = (data: ICategoryEntity) => {
+  rowToDelete.value = data.id;
+
+  confirm.require({
+    group: "headless",
+    header: "Are you sure?",
+    message: "Please confirm to proceed.",
+    accept: () => {
+      emit("onDelete", rowToDelete.value);
+      rowToDelete.value = 0;
+    },
+    reject: () => {
+      rowToDelete.value = 0;
+    },
+  });
+};
 </script>
 
 <style scoped></style>
