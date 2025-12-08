@@ -10,7 +10,7 @@
     </template>
     <div class="col-span-12">
       <div class="card">
-        <BaseTool @add="" @delete-all=""></BaseTool>
+        <BaseTool @add="navigateTo('/role/from')" @delete-all=""></BaseTool>
         <BaseCrud
           title="role"
           :loading="store.loading"
@@ -23,6 +23,8 @@
           @on-change-sort="onQuery.sort($event.sort)"
           @on-change-active="onQuery.checked($event.is_active)"
           @on-change-page="onQuery.page($event.page, $event.limit)"
+          @on-edit="navigateTo(`/role/from/${$event}`)"
+          @on-delete=""
         >
           <template #columns>
             <Column
@@ -52,6 +54,7 @@
 </template>
 
 <script setup lang="ts">
+import path from "path";
 import { ref, watch, reactive } from "vue";
 import type { IPaginateDto } from "~/types/dto/paginate.dto";
 import { sortType, Status } from "~/types/enum/paginate.enum";

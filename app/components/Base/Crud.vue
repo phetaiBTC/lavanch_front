@@ -24,7 +24,7 @@
     <template #header>
       <div class="flex flex-wrap gap-2 items-center justify-between">
         <h4>{{ $t("manage") + " " + $t(title) }}</h4>
-        <div class="flex gap-2" >
+        <div class="flex gap-2">
           <ToggleButton
             :value="sort"
             @update:value="emit('update:sort', $event)"
@@ -103,19 +103,25 @@
     <Column :exportable="false" frozen alignFrozen="right">
       <template #body="slotProps">
         <div class="flex flex-row gap-2">
-          <Button icon="pi pi-pencil" outlined rounded class="mr-2" @click="" />
+          <Button
+            icon="pi pi-pencil"
+            outlined
+            rounded
+            class="mr-2"
+            @click="emit('onEdit', slotProps.data.id)"
+          />
           <Button
             icon="pi pi-trash"
             outlined
             rounded
             severity="danger"
-            @click=""
+            @click="onDelete(slotProps.data.id)"
           />
         </div>
       </template>
     </Column>
   </DataTable>
-
+  <BaseDelete v-model:visible="deteleData.visible" :id="deteleData.id" />
   <Paginator
     :first="(query.page! - 1) * query.limit!"
     :rows="query.limit"
@@ -131,6 +137,10 @@ import { type PaginatedResponse } from "../../shared/entities/paginate.entity";
 import { sortType, Status } from "~/types/enum/paginate.enum";
 import type { IPaginateDto } from "~/types/dto/paginate.dto";
 const search = ref("");
+const deteleData = ref({
+  id: 0,
+  visible: false,
+});
 const props = defineProps<{
   data: PaginatedResponse<any>;
   value: IUserEntity[];
@@ -149,9 +159,14 @@ const emit = defineEmits([
   "onChangeActive",
   "onChangePage",
   "onSearch",
+  "onEdit",
+  "onDelete",
 ]);
 const selection = ref<IUserEntity[]>(props.value);
-
+const onDelete = (id: number) => {
+  deteleData.value.id = id;
+  deteleData.value.visible = true;
+}
 watch(selection, (val) => {
   emit("update:value", val);
 });
