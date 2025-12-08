@@ -6,3 +6,5 @@ export const BaseEntity = z.object({
   updatedAt: z.string(),
   deletedAt: z.string().nullable(),
 });
+
+export type IBaseEntity = z.infer<typeof BaseEntity>;

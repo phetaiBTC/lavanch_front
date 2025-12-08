@@ -5,3 +5,5 @@ export const RoleEntity = BaseEntity.extend({
   code: z.string(),
   permissions: z.array(PermissionEntity),
 });
+
+export type IRole = z.infer<typeof RoleEntity>;

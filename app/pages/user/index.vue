@@ -17,7 +17,10 @@
           </TabList>
           <TabPanels>
             <TabPanel value="table">
-              <BaseTool @add="" @delete-all=""></BaseTool>
+              <BaseTool
+                @add="navigateTo('/user/from')"
+                @delete-all=""
+              ></BaseTool>
               <UserTable
                 title="user"
                 :loading="store.loading"
