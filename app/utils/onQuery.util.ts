@@ -1,16 +1,18 @@
+import type { Router } from "vue-router";
 import type { IPaginateDto } from "~/types/dto/paginate.dto";
 import type { sortType, Status } from "~/types/enum/paginate.enum";
 
 type QueryUtilArgs = {
   query: IPaginateDto;
   load: () => Promise<void>;
-  updateUrl: () => void;
+  // updateUrl: () => void;
+  router: Router;
 };
 
 export const onQueryUtil = (data: QueryUtilArgs) => {
   const reload = async (resetPage: boolean = true): Promise<void> => {
     if (resetPage) data.query.page = 1;
-    data.updateUrl();
+    data.router.replace({ query: { ...data.query } });
     await data.load();
   };
 

@@ -6,6 +6,7 @@
         icon="pi pi-plus"
         severity="secondary"
         class="mr-2"
+        @click="emit('add')"
       />
       <Button
         :label="$t('delete')"
@@ -24,7 +25,10 @@
 
 <script setup lang="ts">
 const props = defineProps<{}>();
-const emit = defineEmits<{}>();
+const emit = defineEmits<{
+  (e: "add"): void;
+  (e: "deleteAll"): void;
+}>();
 </script>
 
 <style scoped></style>
