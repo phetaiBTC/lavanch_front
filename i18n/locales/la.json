@@ -36,6 +36,9 @@
   "deletedAt": "ລຶບເມື່ອ",
   "inactive": "ປິດໃຊ້ງານ",
   "active": "ໃຊ້ງານ",
+  "all": "ທັງໝົດ",
+  "activate": "ເປີດໃຊ້ງານ",
+  "deactivate": "ປິດໃຊ້ງານ",
   "status": "ສະຖານະ",
   "is_required": "ບໍ່ໃຫ້ວ່າງ",
   "confirm_password": "ຢືນຢັນລະຫັດຜ່ານ",
@@ -43,8 +46,13 @@
   "reset_password": "ປ່ຽນລະຫັດຜ່ານ",
   "verify": "ຢືນຢັນ",
   "sendVerify": "ສົ່ງຄຳຢືນຢັນ",
-  "send": "ສົ່ງ",
+  "send":"ສົ່ງ",
   "confirm":"ຢືນຢັນ",
+  "retry":"ລອງໃໝ່",
+  "confirm_delete":"ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລຶບ?",
+  "delete_message":"ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລຶບ {name}?",
+  "delete_multiple_message":"ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລຶບ {count} ສາຂາທີ່ເລືອກ?",
+  "selected_items":"ລາຍການທີ່ເລືອກ",
   "permissions":"ສິດການນຳໃຊ້",
   "permission":"ສິດການນຳໃຊ້",
   "changePassword":"ປ່ຽນລະຫັດຜ່ານ",
@@ -70,6 +78,56 @@
   "card":"ບັດ",
   "select":"ເລືອກ",
   "notes":"ໝາຍເຫດ",
+  "no_data":"ບໍ່ມີຂໍ້ມູນ",
+  "clear_filters":"ລຶບຕົວກອງ",
+  "date_from":"ຈາກວັນທີ",
+  "date_to":"ຫາວັນທີ",
+  "date_range":"ຊ່ວງວັນທີ",
+  "search_placeholder":"ຄົ້ນຫາດ້ວຍເລກທີ ຫຼື ຊື່ສາຂາ...",
+  "view":"ເບິ່ງ",
+  "approve":"ອະນຸມັດ",
+  "reject":"ປະຕິເສດ",
+  "branchExpenses": {
+    "fields": {
+      "expense_no": "ເລກທີລາຍຈ່າຍ",
+      "category": "ປະເພດລາຍຈ່າຍ",
+      "amount": "ຈຳນວນເງິນ",
+      "expense_date": "ວັນທີລາຍຈ່າຍ",
+      "description": "ລາຍລະອຽດ",
+      "notes": "ໝາຍເຫດ"
+    },
+    "summary": {
+      "total_amount": "ຈຳນວນເງິນທັງໝົດ",
+      "total_amount_all": "ຍອດລວມທັງໝົດ",
+      "total_records": "ຈຳນວນທັງໝົດ",
+      "pending": "ລໍຖ້າອະນຸມັດ",
+      "approved": "ອະນຸມັດແລ້ວ",
+      "rejected": "ປະຕິເສດແລ້ວ"
+    },
+    "sections": {
+      "form_data": "ຂໍ້ມູນລາຍຈ່າຍ",
+      "receipt_images": "ຮູບໃບບິນ"
+    },
+    "placeholders": {
+      "search_branch": "ຄົ້ນຫາຊື່ສາຂາ...",
+      "select_category": "ເລືອກປະເພດລາຍຈ່າຍ",
+      "loading_categories": "ກຳລັງໂຫລດປະເພດລາຍຈ່າຍ...",
+      "enter_amount": "ປ້ອນຈຳນວນເງິນ",
+      "select_date": "ເລືອກວັນທີ",
+      "enter_description": "ປ້ອນລາຍລະອຽດ",
+      "enter_notes": "ປ້ອນໝາຍເຫດ"
+    },
+    "messages": {
+      "no_categories": "ບໍ່ມີປະເພດລາຍຈ່າຍ",
+      "drag_drop": "ລາກແລະວາງໄຟລ໌ທີ່ນີ້",
+      "or_click": "ຫຼືຄລິກເພື່ອເລືອກ",
+      "uploading": "ກຳລັງອັບໂຫລດ..."
+    },
+    "actions": {
+      "create_category": "ສ້າງປະເພດລາຍຈ່າຍ",
+      "choose_image": "ເລືອກຮູບພາບ"
+    }
+  },
   "branches": {
     "branch": "ສາຂາ",
     "sidebar": {
@@ -83,8 +141,13 @@
       "name": "ຊື່",
       "address": "ທີ່ຢູ່",
       "phone": "ເບີໂທລະສັບ",
+      "phone_hint": "10-11 ຕົວເລກເທົ່ານັ້ນ",
       "email": "ອີເມວ",
       "wallet_balance": "ຍອດເງິນ",
+      "facebook": "ເຟສບຸກ",
+      "tiktok": "ທິດຕອກ",
+      "village": "ບ້ານ",
+      "social_media": "ສື່ສັງຄົມອອນໄລນ໌",
       "code": "ລະຫັດ",
       "description": "ລາຍລະອຽດ",
       "notes": "ໝາຍເຫດ",
@@ -105,8 +168,8 @@
       "reference_type": "ປະເພດອ້າງອີງ",
       "reference_no": "ເລກທີອ້າງອີງ",
       "transaction_date": "ວັນທີທຸລະກຳ",
-      "shift": "ກະ",
-      "shift_name": "ຊື່ກະ",
+      "shift": "ເວລາ",
+      "shift_name": "ຊື່ເວລາ",
       "start_time": "ເວລາເລີ່ມ",
       "end_time": "ເວລາສິ້ນສຸດ",
       "status": "ສະຖານະ",
@@ -123,21 +186,30 @@
       "completed": "ສຳເລັດ"
     },
     "adjustment_type": {
-      "increase": "ເພີ່ມ",
-      "decrease": "ຫຼຸດ"
+      
+      "add" :"ເພີ່ມ",
+      "deduct":"ຫຼຸດ"
+    },
+    "summary": {
+     "total_wallet_balance": "ຍອດກະເປົາເງິນທັງໝົດ",
+     "active_branches": "ສາຂາທີ່ໃຊ້ງານ",
+     "inactive_branches": "ສາຂາທີ່ປິດໃຊ້ງານ",
+     "total_branches": "ສາຂາທັງໝົດ"
     },
     "transaction_type": {
       "deposit": "ຝາກເງິນ",
-      "withdrawal": "ຖອນເງິນ",
+      "withdraw": "ຖອນເງິນ",
       "credit": "ເພີ່ມ",
       "debit": "ຫັກ",
       "expense": "ລາຍຈ່າຍ",
       "adjustment": "ປັບປຸງ",
+      "found": "ພົບເງິນ",
+      "lost": "ສູນເສຍ",
       "transfer_in": "ໂອນເຂົ້າ",
       "transfer_out": "ໂອນອອກ"
     },
     "shifts": {
-      "title": "ຈັດການກະ"
+      "title": "ຈັດການເວລາ"
     }
    }
 }

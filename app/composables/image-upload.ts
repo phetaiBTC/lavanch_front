@@ -2,12 +2,7 @@ import type { IImageEntity } from "~/types/entities/image.entity";
 import { ref } from "vue";
 
 export const useImageUpload = () => {
-  const { run } = useFormHandler();
   const loading = ref(false);
-
-  const setLoading = (value: boolean) => {
-    loading.value = value;
-  };
 
   /**
    * Upload multiple images
@@ -15,7 +10,8 @@ export const useImageUpload = () => {
    * @returns Array of image URLs
    */
   const uploadImages = async (files: File[]): Promise<IImageEntity[]> => {
-    const result = await run(async () => {
+    try {
+      loading.value = true;
       const formData = new FormData();
       files.forEach((file) => {
         formData.append("files", file);
@@ -27,10 +23,13 @@ export const useImageUpload = () => {
         },
       });
 
-      return res;
-    }, setLoading);
-
-    return result || [];
+      return res || [];
+    } catch (error) {
+      console.error('Failed to upload images:', error);
+      throw error;
+    } finally {
+      loading.value = false;
+    }
   };
 
   /**
@@ -48,10 +47,16 @@ export const useImageUpload = () => {
    * @param id - Image ID to delete
    */
   const deleteImage = async (id: number) => {
-    return await run(async () => {
+    try {
+      loading.value = true;
       const res = await useApi().delete(`/images/${id}`);
       return res;
-    }, setLoading);
+    } catch (error) {
+      console.error('Failed to delete image:', error);
+      throw error;
+    } finally {
+      loading.value = false;
+    }
   };
 
   return {

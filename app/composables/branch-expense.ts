@@ -1,6 +1,6 @@
 import type { PaginatedResponse } from "~/shared/entities/paginate.entity";
 import type { IPaginateDto } from "~/types/dto/paginate.dto";
-import type { IBranchExpenseEntity } from "~/types/entities/branch-expense.entity";
+import type { IBranchExpenseEntity, IBranchExpenseSummary } from "~/types/entities/branch-expense.entity";
 import { useBranchExpenseStore } from "~/stores/branch-expense.store";
 export const useBranchExpense = () => {
   const store = useBranchExpenseStore();
@@ -14,6 +14,16 @@ export const useBranchExpense = () => {
         { query }
       );
       setBranchExpenseList(res);
+      return res;
+    }, setLoading);
+  };
+
+  const getSummary = async (query: IPaginateDto) => {
+    return await run(async () => {
+      const res = await useApi().get<IBranchExpenseSummary>(
+        "/branch-expenses/summary",
+        { query }
+      );
       return res;
     }, setLoading);
   };
@@ -45,12 +55,12 @@ export const useBranchExpense = () => {
   const reject = async (id: number) => {
     return await run(async () => {
       const res = await useApi().patch<IBranchExpenseEntity>(
-        `/branch-expenses/${id}/approve`,
-        { action: "REJECT" }
+        `/branch-expenses/${id}/reject`,
+        {}
       );
       return res;
     }, setLoading);
   };
 
-  return { findAll, findOne, create, approve, reject };
+  return { findAll, getSummary, findOne, create, approve, reject };
 };

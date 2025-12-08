@@ -5,7 +5,7 @@
         <h1
           class="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-6"
         >
-          Lavanch POS
+          ເວບໄຊທ໌ນີ້ໃຊ້ ddd
         </h1>
 
         <div class="text-center mb-10">

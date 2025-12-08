@@ -22,7 +22,7 @@
                 <Toolbar class="mb-6">
                   <template #start>
                     <Button
-                      :label="$t('add') + $t('new') "
+                      :label="$t('add') + $t('new')"
                       icon="pi pi-plus"
                       severity="secondary"
                       class="mr-2"
@@ -154,10 +154,13 @@ watch(
   () => updateUrl()
 );
 
+const { data, pending, error } = useAsyncData("user", () =>
+  findAll({ ...query })
+);
 /* -----------------------------------
    FIRST LOAD
 ----------------------------------- */
-await load();
+// await load();
 
 /* -----------------------------------
    TABLE SELECTION

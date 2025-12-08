@@ -60,7 +60,7 @@
     >
       <template #body="{ data }">
         <Tag
-          :severity="data.adjustment_type === 'INCREASE' ? 'success' : 'danger'"
+          :severity="data.adjustment_type === 'ADD' ? 'success' : 'danger'"
           :value="$t(`branches.adjustment_type.${data.adjustment_type.toLowerCase()}`)"
         />
       </template>

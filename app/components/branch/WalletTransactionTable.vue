@@ -45,7 +45,7 @@
       <template #body="{ data }">
         <Tag
           :severity="
-            data.transaction_type === 'DEPOSIT' || data.transaction_type === 'CREDIT'
+            data.transaction_type === 'DEPOSIT' || data.transaction_type === 'LOST'
               ? 'success'
               : 'danger'
           "

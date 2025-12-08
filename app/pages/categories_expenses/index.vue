@@ -24,8 +24,9 @@
               <Button
                 :label="$t('delete')"
                 icon="pi pi-trash"
-                severity="secondary"
+                severity="danger"
                 :disabled="selectedCategories.length === 0"
+                @click="handleDeleteMultiple"
               />
             </template>
             <template #end>
@@ -37,7 +38,7 @@
             </template>
           </Toolbar>
 
-          <BranchExpenseCategoryTable
+            <BranchExpenseCategoryTable
             title="branches.sidebar.categories_expenses_label"
             :loading="store.loading"
             :data="store.expenseCategoryList"
@@ -52,6 +53,8 @@
             @on-edit="openEditDialog"
             @on-delete="handleDelete"
             @on-restore="handleRestore"
+            @on-toggle-status="handleToggleStatus"
+            @on-hard-delete="handleHardDelete"
           />
         </div>
       </div>
@@ -72,6 +75,16 @@
       :category="selectedCategoryForDelete"
       @delete="handleConfirmDeleteCategory"
     />
+    <BranchDialogsCategoriesDeleteMultipleDialog
+      v-model:visible="deleteMultipleCategoryDialogVisible"
+      :categories="selectedCategoriesForDelete"
+      @delete="handleConfirmDeleteMultiple"
+    />
+    <BranchDialogsCategoriesHardDeleteDialog
+      v-model:visible="hardDeleteCategoryDialogVisible"
+      :category="selectedCategoryForHardDelete"
+      @delete="handleConfirmHardDelete"
+    />
   </div>
 </template>
 
@@ -85,15 +98,19 @@ import { useExpenseCategory } from "~/composables/expense-category";
 const route = useRoute();
 const router = useRouter();
 const store = useExpenseCategoryStore();
-const { findAll, create, update, softDelete, restore } = useExpenseCategory();
+const { findAll, create, update, softDelete, hardDelete, restore, toggleStatus, deleteMultiple } = useExpenseCategory();
 const { showSuccess } = useFormHandler();
 
 // Dialog states
 const createCategoryDialogVisible = ref(false);
 const updateCategoryDialogVisible = ref(false);
 const deleteCategoryDialogVisible = ref(false);
+const deleteMultipleCategoryDialogVisible = ref(false);
+const hardDeleteCategoryDialogVisible = ref(false);
 const selectedCategory = ref<IExpenseCategoryEntity | null>(null);
 const selectedCategoryForDelete = ref<IExpenseCategoryEntity | null>(null);
+const selectedCategoriesForDelete = ref<IExpenseCategoryEntity[]>([]);
+const selectedCategoryForHardDelete = ref<IExpenseCategoryEntity | null>(null);
 
 const query = reactive<IPaginateDto>({
   page: Number(route.query.page ?? 1),
@@ -192,6 +209,64 @@ const handleRestore = async (category: IExpenseCategoryEntity) => {
   await restore(category.id);
   showSuccess("Category restored successfully");
   await load();
+};
+
+const handleToggleStatus = async (category: IExpenseCategoryEntity) => {
+  try {
+    const result = await toggleStatus(category.id);
+    showSuccess(result?.message || "Category status toggled successfully");
+    await load();
+  } catch (error) {
+    console.error('Failed to toggle category status:', error);
+  }
+};
+
+const handleDeleteMultiple = async () => {
+  if (selectedCategories.value.length === 0) return;
+  
+  selectedCategoriesForDelete.value = selectedCategories.value;
+  deleteMultipleCategoryDialogVisible.value = true;
+};
+
+const handleConfirmDeleteMultiple = async (categories: IExpenseCategoryEntity[]) => {
+  try {
+    const ids = categories.map((category: IExpenseCategoryEntity) => category.id);
+    const result = await deleteMultiple(ids);
+    deleteMultipleCategoryDialogVisible.value = false;
+    selectedCategories.value = []; // Clear selection
+    showSuccess(result?.message || `Successfully deleted ${categories.length} categories`);
+    await load();
+  } catch (error: any) {
+    console.error('Failed to delete multiple categories:', error);
+    useToast().add({
+      severity: 'error',
+      summary: 'Error',
+      detail: error?.message || 'Failed to delete categories',
+      life: 3000,
+    });
+  }
+};
+
+const handleHardDelete = async (category: IExpenseCategoryEntity) => {
+  selectedCategoryForHardDelete.value = category;
+  hardDeleteCategoryDialogVisible.value = true;
+};
+
+const handleConfirmHardDelete = async (category: IExpenseCategoryEntity) => {
+  try {
+    await hardDelete(category.id);
+    hardDeleteCategoryDialogVisible.value = false;
+    showSuccess("Category permanently deleted successfully");
+    await load();
+  } catch (error: any) {
+    console.error('Failed to permanently delete category:', error);
+    useToast().add({
+      severity: 'error',
+      summary: 'Error',
+      detail: error?.message || 'Failed to permanently delete category',
+      life: 3000,
+    });
+  }
 };
 </script>
 
