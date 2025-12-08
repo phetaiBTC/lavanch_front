@@ -23,8 +23,8 @@
     </template>
     <template #header>
       <div class="flex flex-wrap gap-2 items-center justify-between">
-        <h4 class="m-0">{{ $t("manage") + " " + $t(title) }}</h4>
-        <div class="flex gap-2">
+        <h4>{{ $t("manage") + " " + $t(title) }}</h4>
+        <div class="flex gap-2" >
           <ToggleButton
             :value="sort"
             @update:value="emit('update:sort', $event)"
@@ -77,24 +77,7 @@
         {{ slotProps.index + 1 }}
       </template>
     </Column>
-    <Column
-      style="min-width: 150px"
-      field="code"
-      frozen
-      :header="$t('name')"
-      :sortable="true"
-    ></Column>
-    <Column
-      style="min-width: 150px"
-      field="code"
-      frozen
-      :header="$t('permission')"
-      :sortable="true"
-    >
-      <template #body="{ data }">
-        <i class="pi pi-user-edit mr-1"></i>{{ data.permissions.length }}
-      </template>
-    </Column>
+    <slot name="columns"></slot>
     <Column
       style="min-width: 150px"
       field="createdAt"
@@ -143,14 +126,14 @@
 </template>
 
 <script setup lang="ts">
+import type { IUserEntity } from "~/types/entities/user.entity";
 import { type PaginatedResponse } from "../../shared/entities/paginate.entity";
 import { sortType, Status } from "~/types/enum/paginate.enum";
 import type { IPaginateDto } from "~/types/dto/paginate.dto";
-import type { IRole } from "~/types/entities/role.entity";
 const search = ref("");
 const props = defineProps<{
-  data: PaginatedResponse<IRole>;
-  value: IRole[];
+  data: PaginatedResponse<any>;
+  value: IUserEntity[];
   title: string;
   loading: boolean;
   sort?: sortType;
@@ -167,7 +150,7 @@ const emit = defineEmits([
   "onChangePage",
   "onSearch",
 ]);
-const selection = ref<IRole[]>(props.value);
+const selection = ref<IUserEntity[]>(props.value);
 
 watch(selection, (val) => {
   emit("update:value", val);

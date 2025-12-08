@@ -11,8 +11,8 @@
     <div class="col-span-12">
       <div class="card">
         <BaseTool @add="" @delete-all=""></BaseTool>
-        <RoleTable
-          title="user"
+        <BaseCrud
+          title="role"
           :loading="store.loading"
           :data="store.roleList"
           :sort="query.sort"
@@ -23,7 +23,29 @@
           @on-change-sort="onQuery.sort($event.sort)"
           @on-change-active="onQuery.checked($event.is_active)"
           @on-change-page="onQuery.page($event.page, $event.limit)"
-        />
+        >
+          <template #columns>
+            <Column
+              style="min-width: 150px"
+              field="code"
+              frozen
+              :header="$t('name')"
+              :sortable="true"
+            ></Column>
+            <Column
+              style="min-width: 150px"
+              field="code"
+              frozen
+              :header="$t('permission')"
+              :sortable="true"
+            >
+              <template #body="{ data }">
+                <i class="pi pi-user-edit mr-1"></i
+                >{{ data.permissions.length }}
+              </template>
+            </Column>
+          </template>
+        </BaseCrud>
       </div>
     </div>
   </BaseCrudLayout>
@@ -55,5 +77,5 @@ watch(
   () => router.replace({ query: { ...query } })
 );
 
-useAsyncData("user", () => findAll({ ...query }));
+useAsyncData("role", () => findAll({ ...query }));
 </script>

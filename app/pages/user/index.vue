@@ -21,7 +21,7 @@
                 @add="navigateTo('/user/from')"
                 @delete-all=""
               ></BaseTool>
-              <UserTable
+              <BaseCrud
                 title="user"
                 :loading="store.loading"
                 :data="store.userList"
@@ -33,7 +33,40 @@
                 @on-change-sort="onQuery.sort($event.sort)"
                 @on-change-active="onQuery.checked($event.is_active)"
                 @on-change-page="onQuery.page($event.page, $event.limit)"
-              />
+              >
+                <template #columns>
+                  <Column
+                    style="min-width: 150px"
+                    field="username"
+                    frozen
+                    :header="$t('username')"
+                    :sortable="true"
+                  ></Column>
+                  <Column
+                    style="min-width: 150px"
+                    field="email"
+                    :header="$t('email')"
+                    :sortable="true"
+                  >
+                  </Column>
+                  <Column
+                    style="min-width: 150px"
+                    field="is_verified"
+                    :header="$t('is_verified')"
+                    :sortable="true"
+                  >
+                    <template #body="{ data }">
+                      <Tag
+                        icon="pi pi-check"
+                        :severity="data.is_verified ? 'success' : 'danger'"
+                        :value="
+                          data.is_verified ? $t('verified') : $t('unverified')
+                        "
+                      ></Tag>
+                    </template>
+                  </Column>
+                </template>
+              </BaseCrud>
             </TabPanel>
             <TabPanel value="card"> </TabPanel>
           </TabPanels>
