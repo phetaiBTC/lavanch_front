@@ -166,7 +166,7 @@ const selection = ref<IUserEntity[]>(props.value);
 const onDelete = (id: number) => {
   deteleData.value.id = id;
   deteleData.value.visible = true;
-}
+};
 watch(selection, (val) => {
   emit("update:value", val);
 });

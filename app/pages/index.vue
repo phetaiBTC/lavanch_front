@@ -42,9 +42,6 @@
       <p class="text-center text-gray-400 mt-6 text-xs">Lavanch POS © 2025</p>
     </div>
   </div>
-  <BaseCrud :TabList="['jj', 'table']">
-    <template #jj> kk </template>
-  </BaseCrud>
 </template>
 
 <script setup lang="ts"></script>
