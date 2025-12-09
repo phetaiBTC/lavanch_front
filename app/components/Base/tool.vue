@@ -12,7 +12,6 @@
         :label="$t('delete')"
         icon="pi pi-trash"
         severity="danger"
-        variant="outlined"
       />
       <slot name="start"></slot>
     </template>

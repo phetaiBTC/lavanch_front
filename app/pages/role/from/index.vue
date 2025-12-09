@@ -175,13 +175,7 @@ const permissions = ref([
     deletedAt: null,
   },
 ]);
-const mapperPermission = (permissions: IPermissionEntity[]) => {
-  const list = permissions.forEach((permission) => {
-    let groupPermission
-    const [name, method] = permission.code.split("-");
 
-  });
-};
 </script>
 
 <style scoped></style>

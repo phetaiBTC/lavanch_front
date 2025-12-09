@@ -54,7 +54,6 @@
 </template>
 
 <script setup lang="ts">
-import path from "path";
 import { ref, watch, reactive } from "vue";
 import type { IPaginateDto } from "~/types/dto/paginate.dto";
 import { sortType, Status } from "~/types/enum/paginate.enum";
