@@ -19,7 +19,19 @@
           class="w-full"
         />
       </div>
-
+<!-- Show receiver branch only for TRANSFER type -->
+      <div v-if="form.adjustment_type === 'TRANSFER'" class="flex flex-col gap-2">
+        <label for="receiver_branch">{{ $t('to_branch') }} *</label>
+        <Select
+          id="receiver_branch"
+          v-model="form.receiver_branch_id"
+          :options="availableReceiverBranches"
+          optionLabel="name"
+          optionValue="id"
+          :placeholder="$t('select') + ' ' + $t('branch')"
+          class="w-full"
+        />
+      </div>
       <div class="flex flex-col gap-2">
         <label for="adjustment_type">{{ $t('type') }} *</label>
         <Select
@@ -33,6 +45,8 @@
         />
       </div>
 
+      
+
       <div class="flex flex-col gap-2">
         <label for="amount">{{ $t('amount') }} *</label>
         <InputNumber
@@ -40,8 +54,8 @@
           v-model="form.amount"
           :placeholder="$t('amount')"
           mode="currency"
-          currency="USD"
-          locale="en-US"
+          currency="LAK"
+          locale="lo-LA"
           class="w-full"
         />
       </div>
@@ -70,7 +84,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import type { IBranchEntity } from "~/types/entities/branch.entity";
 import { useToast } from "primevue/usetoast";
 
@@ -89,18 +103,27 @@ const adjustmentTypes = [
   { label: "Withdraw", value: "WITHDRAW" },
   { label: "Found", value: "FOUND" },
   { label: "Lost", value: "LOST" },
+  { label: "Transfer", value: "TRANSFER" },
 ];
 
 const form = ref<{
   branch_id: number | null;
   adjustment_type: string | null;
+  receiver_branch_id: number | null;
   amount: number | null;
   description: string;
 }>({
   branch_id: null,
   adjustment_type: null,
+  receiver_branch_id: null,
   amount: null,
   description: "",
+});
+
+// Filter out the selected sender branch from receiver options
+const availableReceiverBranches = computed(() => {
+  if (!form.value.branch_id) return props.branches;
+  return props.branches.filter(branch => branch.id !== form.value.branch_id);
 });
 
 const handleSave = () => {
@@ -114,17 +137,47 @@ const handleSave = () => {
     return;
   }
 
-  emit("save", {
+  // Validate receiver branch for TRANSFER type
+  if (form.value.adjustment_type === 'TRANSFER' && !form.value.receiver_branch_id) {
+    toast.add({
+      severity: "warn",
+      summary: "Validation Error",
+      detail: "Please select receiver branch for transfer",
+      life: 3000,
+    });
+    return;
+  }
+
+  // Prevent transfer to same branch
+  if (form.value.adjustment_type === 'TRANSFER' && form.value.branch_id === form.value.receiver_branch_id) {
+    toast.add({
+      severity: "warn",
+      summary: "Validation Error",
+      detail: "Cannot transfer to the same branch",
+      life: 3000,
+    });
+    return;
+  }
+
+  const payload: any = {
     branch_id: form.value.branch_id,
     adjustment_type: form.value.adjustment_type,
     amount: form.value.amount,
     description: form.value.description,
-  });
+  };
+
+  // Add receiver_branch_id for TRANSFER type
+  if (form.value.adjustment_type === 'TRANSFER') {
+    payload.receiver_branch_id = form.value.receiver_branch_id;
+  }
+
+  emit("save", payload);
 
   // Reset form
   form.value = {
     branch_id: null,
     adjustment_type: null,
+    receiver_branch_id: null,
     amount: null,
     description: "",
   };

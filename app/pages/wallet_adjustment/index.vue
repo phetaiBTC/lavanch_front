@@ -39,6 +39,8 @@
             :query="query"
             @on-search="onQuery.search($event)"
             @on-change-page="onQuery.page($event.page, $event.limit)"
+            @on-filter-type="onQuery.filterAdjustmentType($event)"
+            @on-filter-status="onQuery.filterAdjustmentStatus($event)"
             @on-view="handleView"
             @on-approve="handleApprove"
             @on-reject="handleReject"
@@ -59,7 +61,7 @@
 <script setup lang="ts">
 import { ref, watch, reactive } from "vue";
 import { useWalletAdjustmentStore } from "~/stores/wallet-adjustment.store";
-import type { IPaginateDto } from "~/types/dto/paginate.dto";
+import type { IFindWalletAdjustmentDto, AdjustmentTypeFilter, AdjustmentStatusFilter } from "~/types/dto/find-wallet-adjustment.dto";
 import type { IWalletAdjustmentEntity } from "~/types/entities/wallet-adjustment.entity";
 import type { IBranchEntity } from "~/types/entities/branch.entity";
 import { sortType, Status } from "~/types/enum/paginate.enum";
@@ -68,7 +70,7 @@ import { useBranch } from "~/composables/branch";
 const route = useRoute();
 const router = useRouter();
 const store = useWalletAdjustmentStore();
-const { findAll, createDeposit, createWithdraw, createFound, createLost, approve, reject } = useWalletAdjustment();
+const { findAll, createDeposit, createWithdraw, createFound, createLost, createTransfer, approve, reject } = useWalletAdjustment();
 const { findAll: findAllBranches } = useBranch();
 const { showSuccess } = useFormHandler();
 
@@ -76,11 +78,13 @@ const { showSuccess } = useFormHandler();
 const adjustmentDialogVisible = ref(false);
 const branchOptions = ref<IBranchEntity[]>([]);
 
-const query = reactive<IPaginateDto>({
+const query = reactive<IFindWalletAdjustmentDto>({
   page: Number(route.query.page ?? 1),
   limit: Number(route.query.limit ?? 10),
   search: String(route.query.search ?? ""),
   sort: (route.query.sort as sortType) ?? sortType.DESC,
+  adjustment_type: route.query.adjustment_type as AdjustmentTypeFilter | undefined,
+  adjustment_status: route.query.adjustment_status as AdjustmentStatusFilter | undefined,
 });
 
 if (!route.query.page) {
@@ -108,6 +112,18 @@ const onQuery = {
     updateUrl();
     await load();
   },
+  filterAdjustmentType: async (value: AdjustmentTypeFilter | null) => {
+    query.adjustment_type = value || undefined;
+    query.page = 1;
+    updateUrl();
+    await load();
+  },
+  filterAdjustmentStatus: async (value: AdjustmentStatusFilter | null) => {
+    query.adjustment_status = value || undefined;
+    query.page = 1;
+    updateUrl();
+    await load();
+  },
 };
 
 watch(
@@ -128,26 +144,29 @@ const openCreateDialog = () => {
 };
 
 const handleSaveAdjustment = async (data: any) => {
-  const { branch_id, amount, description, adjustment_type } = data;
-  const payload = { branch_id, amount, description };
+  const { branch_id, receiver_branch_id, amount, description, adjustment_type } = data;
   
   // Call the appropriate method based on adjustment_type
   switch (adjustment_type) {
     case "DEPOSIT":
-      await createDeposit(payload);
+      await createDeposit({ branch_id, amount, description });
       showSuccess("Deposit adjustment created successfully");
       break;
     case "WITHDRAW":
-      await createWithdraw(payload);
+      await createWithdraw({ branch_id, amount, description });
       showSuccess("Withdraw adjustment created successfully");
       break;
     case "FOUND":
-      await createFound(payload);
+      await createFound({ branch_id, amount, description });
       showSuccess("Found money adjustment created successfully");
       break;
     case "LOST":
-      await createLost(payload);
+      await createLost({ branch_id, amount, description });
       showSuccess("Lost money adjustment created successfully");
+      break;
+    case "TRANSFER":
+      await createTransfer({ branch_id, receiver_branch_id, amount, description });
+      showSuccess("Transfer completed successfully");
       break;
   }
   

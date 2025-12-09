@@ -31,8 +31,14 @@
             :data="store.walletTransactionList"
             v-model:value="selectedTransactions"
             :query="query"
+            :branches="branches"
             @on-search="onQuery.search($event)"
             @on-change-page="onQuery.page($event.page, $event.limit)"
+            @on-filter-branch="onQuery.filterBranch($event)"
+            @on-filter-type="onQuery.filterType($event)"
+            @on-filter-status="onQuery.filterStatus($event)"
+            @on-filter-date-from="onQuery.filterDateFrom($event)"
+            @on-filter-date-to="onQuery.filterDateTo($event)"
             @on-view="handleView"
           />
         </div>
@@ -44,20 +50,30 @@
 <script setup lang="ts">
 import { ref, watch, reactive } from "vue";
 import { useWalletTransactionStore } from "~/stores/wallet-transaction.store";
-import type { IPaginateDto } from "~/types/dto/paginate.dto";
+import type { IFindWalletTransactionDto, TransactionTypeFilter, TransactionStatusFilter } from "~/types/dto/find-wallet-transaction.dto";
 import type { IWalletTransactionEntity } from "~/types/entities/wallet-transaction.entity";
-import { sortType } from "~/types/enum/paginate.enum";
+import type { IBranchEntity } from "~/types/entities/branch.entity";
+import { sortType, Status } from "~/types/enum/paginate.enum";
 import { useWalletTransaction } from "~/composables/wallet-transaction";
+import { useBranch } from "~/composables/branch";
 const route = useRoute();
 const router = useRouter();
 const store = useWalletTransactionStore();
 const { findAll } = useWalletTransaction();
+const { findAll: findAllBranches } = useBranch();
 
-const query = reactive<IPaginateDto>({
+const branches = ref<IBranchEntity[]>([]);
+
+const query = reactive<IFindWalletTransactionDto>({
   page: Number(route.query.page ?? 1),
   limit: Number(route.query.limit ?? 10),
   search: String(route.query.search ?? ""),
   sort: (route.query.sort as sortType) ?? sortType.DESC,
+  branch_id: route.query.branch_id ? Number(route.query.branch_id) : undefined,
+  transaction_type: route.query.transaction_type as TransactionTypeFilter | undefined,
+  transaction_status: route.query.transaction_status as TransactionStatusFilter | undefined,
+  date_from: route.query.date_from as string | undefined,
+  date_to: route.query.date_to as string | undefined,
 });
 
 if (!route.query.page) {
@@ -85,6 +101,36 @@ const onQuery = {
     updateUrl();
     await load();
   },
+  filterBranch: async (value: number | null) => {
+    query.branch_id = value || undefined;
+    query.page = 1;
+    updateUrl();
+    await load();
+  },
+  filterType: async (value: TransactionTypeFilter | null) => {
+    query.transaction_type = value || undefined;
+    query.page = 1;
+    updateUrl();
+    await load();
+  },
+  filterStatus: async (value: TransactionStatusFilter | null) => {
+    query.transaction_status = value || undefined;
+    query.page = 1;
+    updateUrl();
+    await load();
+  },
+  filterDateFrom: async (value: string | null) => {
+    query.date_from = value || undefined;
+    query.page = 1;
+    updateUrl();
+    await load();
+  },
+  filterDateTo: async (value: string | null) => {
+    query.date_to = value || undefined;
+    query.page = 1;
+    updateUrl();
+    await load();
+  },
 };
 
 watch(
@@ -92,6 +138,19 @@ watch(
   () => updateUrl()
 );
 
+// Load branches for filter dropdown
+const loadBranches = async () => {
+  const branchesRes = await findAllBranches({ 
+    page: 1, 
+    limit: 100, 
+    search: "", 
+    sort: sortType.ASC, 
+    is_active: Status.ACTIVE 
+  });
+  branches.value = branchesRes?.data || [];
+};
+
+await loadBranches();
 await load();
 
 const selectedTransactions = ref([]);

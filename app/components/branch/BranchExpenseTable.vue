@@ -43,14 +43,22 @@
               @change="handleFilterChange"
             />
 
-            <!-- Date Range -->
+            <!-- Date From -->
             <Calendar
-              v-model="dateRange"
-              selectionMode="range"
-              :placeholder="$t('date_range')"
+              v-model="dateFrom"
+              :placeholder="$t('Date From')"
               dateFormat="yy-mm-dd"
-              @date-select="handleFilterChange"
-              @clear-click="handleFilterChange"
+              :showClear="true"
+              @update:modelValue="handleDateFromChange"
+            />
+            
+            <!-- Date To -->
+            <Calendar
+              v-model="dateTo"
+              :placeholder="$t('Date To')"
+              dateFormat="yy-mm-dd"
+              :showClear="true"
+              @update:modelValue="handleDateToChange"
             />
           <Button
               icon="pi pi-filter-slash"
@@ -224,12 +232,21 @@
       />
 
       <Calendar
-        v-model="dateRange"
-        :placeholder="$t('date_range')"
-        selectionMode="range"
+        v-model="dateFrom"
+        :placeholder="$t('Date From')"
         dateFormat="yy-mm-dd"
+        :showClear="true"
         class="w-full"
-        @date-select="handleFilterChange"
+        @update:modelValue="handleDateFromChange"
+      />
+
+      <Calendar
+        v-model="dateTo"
+        :placeholder="$t('Date To')"
+        dateFormat="yy-mm-dd"
+        :showClear="true"
+        class="w-full"
+        @update:modelValue="handleDateToChange"
       />
 
       <!-- Search -->
@@ -409,7 +426,8 @@ const dt = ref();
 const search = ref("");
 const statusFilter = ref("ALL");
 const categoryFilter = ref("");
-const dateRange = ref<Date[] | null>(null);
+const dateFrom = ref<Date | null>(null);
+const dateTo = ref<Date | null>(null);
 
 const statusOptions = ref([
   { label: "all", value: "ALL" },
@@ -449,15 +467,36 @@ const toggleSelection = (item: IBranchExpenseEntity) => {
   }
 };
 
+const formatDate = (date: Date | Date[] | (Date | null)[] | null | undefined): string | null => {
+  if (!date || Array.isArray(date)) return null;
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+const handleDateFromChange = (value: Date | null) => {
+  dateFrom.value = value;
+  handleFilterChange();
+};
+
+const handleDateToChange = (value: Date | null) => {
+  dateTo.value = value;
+  handleFilterChange();
+};
+
 const handleFilterChange = () => {
   const filters: any = {
     expenseStatus: statusFilter.value,
     expenseCategoryName: categoryFilter.value,
   };
   
-  if (dateRange.value && dateRange.value.length === 2) {
-    filters.createdFrom = dateRange.value[0]?.toISOString().split('T')[0];
-    filters.createdTo = dateRange.value[1]?.toISOString().split('T')[0];
+  if (dateFrom.value) {
+    filters.createdFrom = formatDate(dateFrom.value);
+  }
+  
+  if (dateTo.value) {
+    filters.createdTo = formatDate(dateTo.value);
   }
   
   // Remove empty string values
@@ -473,7 +512,8 @@ const handleFilterChange = () => {
 const clearFilters = () => {
   statusFilter.value = "ALL";
   categoryFilter.value = "";
-  dateRange.value = null;
+  dateFrom.value = null;
+  dateTo.value = null;
   search.value = "";
   handleFilterChange();
 };

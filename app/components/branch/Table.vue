@@ -24,7 +24,7 @@
               optionValue="value"
               :placeholder="$t('status')"
               class="w-full sm:w-40"
-              @change="emit('onChangeStatus', statusFilter)"
+              @update:modelValue="(value) => emit('onChangeStatus', value)"
             />
             <ToggleButton
               :value="sort"
@@ -261,7 +261,7 @@
           optionValue="value"
           :placeholder="$t('status')"
           class="w-full"
-          @change="emit('onChangeStatus', statusFilter)"
+          @update:modelValue="(value) => emit('onChangeStatus', value)"
         />
         <div class="flex gap-2">
           <ToggleButton

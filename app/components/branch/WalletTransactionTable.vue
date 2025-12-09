@@ -13,7 +13,55 @@
     <template #header>
       <div class="flex flex-wrap gap-2 items-center justify-between">
         <h4 class="m-0">{{ $t("manage") + " " + $t(title) }}</h4>
-        <div class="flex gap-2">
+        <div class="flex flex-wrap gap-2">
+          <Select
+            v-model="selectedBranch"
+            :options="branches"
+            optionLabel="name"
+            optionValue="id"
+            :placeholder="$t('branches.fields.branch')"
+            :showClear="true"
+            @update:modelValue="(value) => emit('onFilterBranch', value)"
+            class="w-44"
+          />
+          <Select
+            v-model="selectedTransactionType"
+            :options="transactionTypeOptions"
+            optionLabel="label"
+            optionValue="value"
+            :placeholder="$t('branches.fields.transaction_type')"
+            :showClear="true"
+            @update:modelValue="(value) => emit('onFilterType', value)"
+            class="w-48"
+          />
+          <Select
+            v-model="selectedStatus"
+            :options="statusOptions"
+            optionLabel="label"
+            optionValue="value"
+            :placeholder="$t('status')"
+            :showClear="true"
+            @update:modelValue="(value) => emit('onFilterStatus', value)"
+            class="w-40"
+          />
+         <div class="flex gap-0 items-center">
+  <DatePicker
+    v-model="dateFrom"
+    :placeholder="$t('Date From')"
+    dateFormat="yy-mm-dd"
+    :showClear="true"
+    @update:modelValue="handleDateFromChange"
+    class="w-44 rounded-r-none border-r-0"
+  />
+  <DatePicker
+    v-model="dateTo"
+    :placeholder="$t('Date To')"
+    dateFormat="yy-mm-dd"
+    :showClear="true"
+    @update:modelValue="handleDateToChange"
+    class="w-44 rounded-l-none"
+  />
+</div>
           <IconField>
             <InputIcon>
               <i class="pi pi-search" />
@@ -163,15 +211,24 @@
 <script setup lang="ts">
 import type { IWalletTransactionEntity } from "~/types/entities/wallet-transaction.entity";
 import type { PaginatedResponse } from "~/shared/entities/paginate.entity";
-import type { IPaginateDto } from "~/types/dto/paginate.dto";
+import type { IFindWalletTransactionDto } from "~/types/dto/find-wallet-transaction.dto";
+import { TransactionTypeFilter, TransactionStatusFilter } from "~/types/dto/find-wallet-transaction.dto";
+import type { IBranchEntity } from "~/types/entities/branch.entity";
 
 const search = ref("");
+const selectedBranch = ref<number | null>(null);
+const selectedTransactionType = ref<TransactionTypeFilter | null>(null);
+const selectedStatus = ref<TransactionStatusFilter | null>(null);
+const dateFrom = ref<Date | null>(null);
+const dateTo = ref<Date | null>(null);
+
 const props = defineProps<{
   data: PaginatedResponse<IWalletTransactionEntity>;
   value: IWalletTransactionEntity[];
   title: string;
   loading: boolean;
-  query: IPaginateDto;
+  query: IFindWalletTransactionDto;
+  branches: IBranchEntity[];
 }>();
 
 const emit = defineEmits([
@@ -179,13 +236,72 @@ const emit = defineEmits([
   "onChangePage",
   "onSearch",
   "onView",
+  "onFilterBranch",
+  "onFilterType",
+  "onFilterStatus",
+  "onFilterDateFrom",
+  "onFilterDateTo",
 ]);
 
 const selection = ref<IWalletTransactionEntity[]>(props.value);
 
+const transactionTypeOptions = [
+  { label: "Deposit", value: TransactionTypeFilter.DEPOSIT },
+  { label: "Withdraw", value: TransactionTypeFilter.WITHDRAW },
+  { label: "Transfer In", value: TransactionTypeFilter.TRANSFER_IN },
+  { label: "Transfer Out", value: TransactionTypeFilter.TRANSFER_OUT },
+  { label: "Adjustment", value: TransactionTypeFilter.ADJUSTMENT },
+  { label: "Sale", value: TransactionTypeFilter.SALE },
+  { label: "Expense", value: TransactionTypeFilter.EXPENSE },
+  { label: "Refund", value: TransactionTypeFilter.REFUND },
+];
+
+const statusOptions = [
+  { label: "Pending", value: TransactionStatusFilter.PENDING },
+  { label: "Completed", value: TransactionStatusFilter.COMPLETED },
+  { label: "Cancelled", value: TransactionStatusFilter.CANCELLED },
+];
+
+const formatDate = (date: Date | Date[] | (Date | null)[] | null | undefined): string | null => {
+  if (!date || Array.isArray(date)) return null;
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+const handleDateFromChange = (value: Date | Date[] | (Date | null)[] | null | undefined) => {
+  emit('onFilterDateFrom', formatDate(value));
+};
+
+const handleDateToChange = (value: Date | Date[] | (Date | null)[] | null | undefined) => {
+  emit('onFilterDateTo', formatDate(value));
+};
+
 watch(selection, (val) => {
   emit("update:value", val);
 });
+
+// Initialize filters from query
+watch(() => props.query.branch_id, (val) => {
+  selectedBranch.value = val || null;
+}, { immediate: true });
+
+watch(() => props.query.transaction_type, (val) => {
+  selectedTransactionType.value = val || null;
+}, { immediate: true });
+
+watch(() => props.query.transaction_status, (val) => {
+  selectedStatus.value = val || null;
+}, { immediate: true });
+
+watch(() => props.query.date_from, (val) => {
+  dateFrom.value = val ? new Date(val) : null;
+}, { immediate: true });
+
+watch(() => props.query.date_to, (val) => {
+  dateTo.value = val ? new Date(val) : null;
+}, { immediate: true });
 </script>
 
 <style scoped></style>

@@ -20,7 +20,7 @@
 <script setup lang="ts">
 defineProps<{
   title: string;
-  count: number;
+  count: number | string;
   type?: string;
   icon: string;
 }>();

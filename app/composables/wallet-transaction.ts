@@ -1,5 +1,5 @@
 import type { PaginatedResponse } from "~/shared/entities/paginate.entity";
-import type { IPaginateDto } from "~/types/dto/paginate.dto";
+import type { IFindWalletTransactionDto } from "~/types/dto/find-wallet-transaction.dto";
 import type { IWalletTransactionEntity } from "~/types/entities/wallet-transaction.entity";
 import { useWalletTransactionStore } from "~/stores/wallet-transaction.store";
 export const useWalletTransaction = () => {
@@ -7,7 +7,7 @@ export const useWalletTransaction = () => {
   const { setLoading, setWalletTransactionList } = store;
   const { run } = useFormHandler();
 
-  const findAll = async (query: IPaginateDto) => {
+  const findAll = async (query: IFindWalletTransactionDto) => {
     return await run(async () => {
       const res = await useApi().get<PaginatedResponse<IWalletTransactionEntity>>(
         "/wallet-transactions",

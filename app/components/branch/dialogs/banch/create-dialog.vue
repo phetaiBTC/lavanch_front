@@ -42,29 +42,80 @@
         />
       </div>
 
-      <!-- Village (Searchable Dropdown) -->
+      <!-- Province Selection -->
+      <div class="flex flex-col gap-2">
+        <label for="province" class="font-semibold text-gray-700 text-sm sm:text-base">
+          {{ $t("province") }}
+        </label>
+        <Select
+          id="province"
+          v-model="selectedProvinceId"
+          :options="provinces"
+          optionLabel="name_en"
+          optionValue="id"
+          filter
+          :filterFields="['name_en','name_kh','name']"
+          :placeholder="$t('select') + ' ' + $t('province')"
+          :loading="loadingAddresses"
+          class="w-full"
+        >
+          <template #option="slotProps">
+            <div class="flex items-center gap-2">
+              <i class="pi pi-map text-blue-600 text-xs"></i>
+              <span>{{ slotProps.option.name_en || slotProps.option.name }}</span>
+            </div>
+          </template>
+        </Select>
+       
+      </div>
+
+      <!-- District Selection -->
+      <div class="flex flex-col gap-2">
+        <label for="district" class="font-semibold text-gray-700 text-sm sm:text-base">
+          {{ $t("district") }}
+        </label>
+        <Select
+          id="district"
+          v-model="selectedDistrictId"
+          :options="districts"
+          optionLabel="name_en"
+          optionValue="id"
+          filter
+          :filterFields="['name_en','name_kh','name']"
+          :placeholder="$t('select') + ' ' + $t('district')"
+          :disabled="!selectedProvinceId || districts.length === 0"
+          class="w-full"
+        >
+          <template #option="slotProps">
+            <div class="flex items-center gap-2">
+              <i class="pi pi-building text-blue-600 text-xs"></i>
+              <span>{{ slotProps.option.name_en || slotProps.option.name }}</span>
+            </div>
+          </template>
+        </Select>
+      </div>
+
+      <!-- Village Selection -->
       <div class="flex flex-col gap-2">
         <label for="village" class="font-semibold text-gray-700 text-sm sm:text-base">
           {{ $t("village") }}
         </label>
         <Select
           id="village"
-          v-model="form.village_id"
-          :options="addressOptions"
-          optionLabel="full_address"
-          optionValue="village_id"
-          :placeholder="$t('select') + ' ' + $t('village')"
+          v-model="selectedVillageId"
+          :options="villages"
+          optionLabel="name_en"
+          optionValue="id"
           filter
-          :filterFields="['village_name', 'district_name', 'province_name', 'full_address']"
+          :filterFields="['name_en','name']"
+          :placeholder="$t('select') + ' ' + $t('village')"
+          :disabled="!selectedDistrictId || villages.length === 0"
           class="w-full"
-          :loading="loadingAddresses"
-          :emptyFilterMessage="$t('No results found')"
-          :emptyMessage="loadingAddresses ? $t('Loading...') : $t('No addresses available')"
         >
           <template #option="slotProps">
-            <div class="flex flex-col py-1">
-              <span class="font-semibold text-sm">{{ slotProps.option.village_name }}</span>
-              <span class="text-xs text-gray-500">{{ slotProps.option.district_name }}, {{ slotProps.option.province_name }}</span>
+            <div class="flex items-center gap-2">
+              <i class="pi pi-home text-blue-600 text-xs"></i>
+              <span>{{ slotProps.option.name_en || slotProps.option.name }}</span>
             </div>
           </template>
         </Select>
@@ -170,10 +221,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import type { IBranchEntity } from "~/types/entities/branch.entity";
 import type { IShiftsEntity } from "~/types/entities/shifts.entity";
-import { useAddress, type IAddressOption } from "~/composables/address";
+import { useAddress, type IProvinceEntity, type IDistrictEntity, type IVillageEntity } from "~/composables/address";
 import { useToast } from "primevue/usetoast";
 
 interface Props {
@@ -184,13 +235,20 @@ interface Props {
 const props = defineProps<Props>();
 const emit = defineEmits(["update:visible", "save"]);
 
-const { getAllAddresses } = useAddress();
+const { getProvinces, getDistricts, getVillages } = useAddress();
 const toast = useToast();
 
 const saving = ref(false);
 const loadingAddresses = ref(false);
-const addressOptions = ref<IAddressOption[]>([]);
 const errors = ref<Record<string, string>>({});
+
+// Address selections
+const provinces = ref<IProvinceEntity[]>([]);
+const districts = ref<IDistrictEntity[]>([]);
+const villages = ref<IVillageEntity[]>([]);
+const selectedProvinceId = ref<number | null>(null);
+const selectedDistrictId = ref<number | null>(null);
+const selectedVillageId = ref<number | null>(null);
 
 const form = ref<Partial<IBranchEntity>>({
   name: "",
@@ -205,13 +263,49 @@ const form = ref<Partial<IBranchEntity>>({
 onMounted(async () => {
   loadingAddresses.value = true;
   try {
-    addressOptions.value = await getAllAddresses();
-    console.log('Loaded addresses:', addressOptions.value.length);
+    provinces.value = await getProvinces();
   } catch (error) {
-    console.error('Error loading addresses:', error);
+    console.error('Error loading provinces:', error);
   } finally {
     loadingAddresses.value = false;
   }
+});
+
+// Watch province selection to load districts
+watch(selectedProvinceId, async (newProvinceId) => {
+  selectedDistrictId.value = null;
+  selectedVillageId.value = null;
+  districts.value = [];
+  villages.value = [];
+  form.value.village_id = null;
+  
+  if (newProvinceId) {
+    try {
+      districts.value = await getDistricts(newProvinceId);
+    } catch (error) {
+      console.error('Error loading districts:', error);
+    }
+  }
+});
+
+// Watch district selection to load villages
+watch(selectedDistrictId, async (newDistrictId) => {
+  selectedVillageId.value = null;
+  villages.value = [];
+  form.value.village_id = null;
+  
+  if (newDistrictId) {
+    try {
+      villages.value = await getVillages(newDistrictId);
+    } catch (error) {
+      console.error('Error loading villages:', error);
+    }
+  }
+});
+
+// Watch village selection to update form
+watch(selectedVillageId, (newVillageId) => {
+  form.value.village_id = newVillageId;
 });
 
 const handleClose = () => {
@@ -229,6 +323,11 @@ const resetForm = () => {
     tiktok: "",
     shifts_id: null,
   };
+  selectedProvinceId.value = null;
+  selectedDistrictId.value = null;
+  selectedVillageId.value = null;
+  districts.value = [];
+  villages.value = [];
   errors.value = {};
 };
 

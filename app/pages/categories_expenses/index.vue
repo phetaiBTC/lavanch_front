@@ -49,6 +49,7 @@
             @on-search="onQuery.search($event)"
             @on-change-sort="onQuery.sort($event.sort)"
             @on-change-active="onQuery.checked($event.is_active)"
+            @on-filter-active-status="onQuery.filterActiveStatus($event)"
             @on-change-page="onQuery.page($event.page, $event.limit)"
             @on-edit="openEditDialog"
             @on-delete="handleDelete"
@@ -91,7 +92,7 @@
 <script setup lang="ts">
 import { ref, watch, reactive } from "vue";
 import { useExpenseCategoryStore } from "~/stores/expense-category.store";
-import type { IPaginateDto } from "~/types/dto/paginate.dto";
+import type { IFindExpenseCategoryDto } from "~/types/dto/find-expense-category.dto";
 import type { IExpenseCategoryEntity } from "~/types/entities/expense-category.entity";
 import { sortType, Status } from "~/types/enum/paginate.enum";
 import { useExpenseCategory } from "~/composables/expense-category";
@@ -112,12 +113,13 @@ const selectedCategoryForDelete = ref<IExpenseCategoryEntity | null>(null);
 const selectedCategoriesForDelete = ref<IExpenseCategoryEntity[]>([]);
 const selectedCategoryForHardDelete = ref<IExpenseCategoryEntity | null>(null);
 
-const query = reactive<IPaginateDto>({
+const query = reactive<IFindExpenseCategoryDto>({
   page: Number(route.query.page ?? 1),
   limit: Number(route.query.limit ?? 10),
   search: String(route.query.search ?? ""),
   sort: (route.query.sort as sortType) ?? sortType.ASC,
-  is_active: (route.query.is_active as Status) ?? Status.ACTIVE,
+  is_active: route.query.is_active === 'active' ? Status.ACTIVE : route.query.is_active === 'inactive' ? Status.INACTIVE : Status.ACTIVE,
+  status: route.query.status === 'active' || route.query.status === 'inactive' || route.query.status === 'all' ? route.query.status : undefined,
 });
 
 if (!route.query.page) {
@@ -125,7 +127,15 @@ if (!route.query.page) {
 }
 
 const updateUrl = () => {
-  router.replace({ query: { ...query } });
+  // Clean query before updating URL - remove undefined/empty values
+  const cleanQuery = Object.entries(query).reduce((acc, [key, value]) => {
+    if (value !== undefined && value !== '' && value !== null) {
+      acc[key] = value;
+    }
+    return acc;
+  }, {} as any);
+  
+  router.replace({ query: cleanQuery });
 };
 
 const load = async () => {
@@ -146,7 +156,15 @@ const onQuery = {
     await load();
   },
   checked: async (value: Status) => {
-    query.is_active = value;
+    // Map toggle to backend soft-delete filter `deleted`
+    query.deleted = value === Status.ACTIVE ? 'active' : 'inactive';
+    query.page = 1;
+    updateUrl();
+    await load();
+  },
+  filterActiveStatus: async (value: 'active' | 'inactive' | 'all' | null) => {
+    // Map status select to backend `status` (is_active boolean grouping)
+    query.status = value === null ? undefined : value;
     query.page = 1;
     updateUrl();
     await load();

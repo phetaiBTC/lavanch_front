@@ -1,5 +1,5 @@
 import type { PaginatedResponse } from "~/shared/entities/paginate.entity";
-import type { IPaginateDto } from "~/types/dto/paginate.dto";
+import type { IFindWalletAdjustmentDto } from "~/types/dto/find-wallet-adjustment.dto";
 import type { IWalletAdjustmentEntity } from "~/types/entities/wallet-adjustment.entity";
 
 export const useWalletAdjustment = () => {
@@ -7,7 +7,7 @@ export const useWalletAdjustment = () => {
   const { setLoading, setWalletAdjustmentList } = store;
   const { run } = useFormHandler();
 
-  const findAll = async (query: IPaginateDto) => {
+  const findAll = async (query: IFindWalletAdjustmentDto) => {
     return await run(async () => {
       const res = await useApi().get<PaginatedResponse<IWalletAdjustmentEntity>>(
         "/wallet-adjustments",
@@ -53,6 +53,13 @@ export const useWalletAdjustment = () => {
     }, setLoading);
   };
 
+  const createTransfer = async (data: { branch_id: number; receiver_branch_id: number; amount: number; description?: string }) => {
+    return await run(async () => {
+      const res = await useApi().post<IWalletAdjustmentEntity>("/wallet-adjustments/transfer", data);
+      return res;
+    }, setLoading);
+  };
+
   const approve = async (id: number) => {
     return await run(async () => {
       const res = await useApi().patch<IWalletAdjustmentEntity>(
@@ -73,5 +80,5 @@ export const useWalletAdjustment = () => {
     }, setLoading);
   };
 
-  return { findAll, findOne, createDeposit, createWithdraw, createFound, createLost, approve, reject };
+  return { findAll, findOne, createDeposit, createWithdraw, createFound, createLost, createTransfer, approve, reject };
 };

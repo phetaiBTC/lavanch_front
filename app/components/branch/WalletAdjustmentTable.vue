@@ -14,6 +14,26 @@
       <div class="flex flex-wrap gap-2 items-center justify-between">
         <h4 class="m-0">{{ $t("manage") + " " + $t(title) }}</h4>
         <div class="flex gap-2">
+          <Select
+            v-model="selectedAdjustmentType"
+            :options="adjustmentTypeOptions"
+            optionLabel="label"
+            optionValue="value"
+            :placeholder="$t('branches.fields.adjustment_type')"
+            :showClear="true"
+            @change="emit('onFilterType', selectedAdjustmentType)"
+            class="w-48"
+          />
+          <Select
+            v-model="selectedStatus"
+            :options="statusOptions"
+            optionLabel="label"
+            optionValue="value"
+            :placeholder="$t('status')"
+            :showClear="true"
+            @change="emit('onFilterStatus', selectedStatus)"
+            class="w-44"
+          />
           <IconField>
             <InputIcon>
               <i class="pi pi-search" />
@@ -153,21 +173,27 @@
 <script setup lang="ts">
 import type { IWalletAdjustmentEntity } from "~/types/entities/wallet-adjustment.entity";
 import type { PaginatedResponse } from "~/shared/entities/paginate.entity";
-import type { IPaginateDto } from "~/types/dto/paginate.dto";
+import type { IFindWalletAdjustmentDto } from "~/types/dto/find-wallet-adjustment.dto";
+import { AdjustmentTypeFilter, AdjustmentStatusFilter } from "~/types/dto/find-wallet-adjustment.dto";
 
 const search = ref("");
+const selectedAdjustmentType = ref<AdjustmentTypeFilter | null>(null);
+const selectedStatus = ref<AdjustmentStatusFilter | null>(null);
+
 const props = defineProps<{
   data: PaginatedResponse<IWalletAdjustmentEntity>;
   value: IWalletAdjustmentEntity[];
   title: string;
   loading: boolean;
-  query: IPaginateDto;
+  query: IFindWalletAdjustmentDto;
 }>();
 
 const emit = defineEmits([
   "update:value",
   "onChangePage",
   "onSearch",
+  "onFilterType",
+  "onFilterStatus",
   "onView",
   "onApprove",
   "onReject",
@@ -175,9 +201,29 @@ const emit = defineEmits([
 
 const selection = ref<IWalletAdjustmentEntity[]>(props.value);
 
+const adjustmentTypeOptions = [
+  { label: "Add", value: AdjustmentTypeFilter.ADD },
+  { label: "Deduct", value: AdjustmentTypeFilter.DEDUCT },
+];
+
+const statusOptions = [
+  { label: "Pending", value: AdjustmentStatusFilter.PENDING },
+  { label: "Approved", value: AdjustmentStatusFilter.APPROVED },
+  { label: "Rejected", value: AdjustmentStatusFilter.REJECTED },
+];
+
 watch(selection, (val) => {
   emit("update:value", val);
 });
+
+// Initialize filters from query
+watch(() => props.query.adjustment_type, (val) => {
+  selectedAdjustmentType.value = val || null;
+}, { immediate: true });
+
+watch(() => props.query.adjustment_status, (val) => {
+  selectedStatus.value = val || null;
+}, { immediate: true });
 </script>
 
 <style scoped></style>

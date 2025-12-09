@@ -3,13 +3,20 @@
     <div class="grid grid-cols-12 gap-4 mb-6">
       <!-- Summary Stats -->
       <div class="col-span-12 sm:col-span-6 lg:col-span-3">
-        <UiStats
-          :title="$t('branchExpenses.summary.total_amount')"
-          :count="formatCurrency(summary?.total_amount_all || 0)"
-          type=""
-          icon="pi pi-wallet text-xl"
-          class="from-blue-500 to-blue-600 text-white"
-        />
+        <div class="card mb-0">
+          <div class="flex justify-between">
+            <div>
+              <span class="block text-xl font-medium mb-4">{{ $t('branchExpenses.summary.total_amount') }}</span>
+              <span class="text-primary text-xl font-medium mr-2">{{ formatCurrency(summary?.total_amount_all || 0) }}</span>
+            </div>
+            <div
+              class="flex items-center justify-center rounded-border border-2 text-primary bg-gradient-to-r from-blue-500 to-blue-600 text-white"
+              style="width: 2.5rem; height: 2.5rem"
+            >
+              <i class="pi pi-wallet text-xl"></i>
+            </div>
+          </div>
+        </div>
       </div>
       
       <div class="col-span-12 sm:col-span-6 lg:col-span-3">

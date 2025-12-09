@@ -19,32 +19,37 @@
           <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
             <ToggleButton
               :value="sort"
-              @update:value="emit('update:sort', $event)"
               off-label="z-a"
               on-label="a-z"
               onIcon="pi pi-sort-alpha-down"
               offIcon="pi pi-sort-alpha-down-alt"
               class="w-full sm:w-auto"
-              @change="
-                emit('onChangeSort', {
-                  sort: sort === sortType.DESC ? sortType.ASC : sortType.DESC,
-                })
-              "
+              @update:value="(val: sortType) => emit('onChangeSort', { sort: val })"
             />
             <ToggleButton
               :value="checked"
-              @update:value="emit('update:checked', $event)"
+              @update:value="(val: Status) => {
+                emit('update:checked', val);
+                // Backend expects deleted=true|false for soft-deletes
+                emit('onChangeActive', {
+                  deleted: val === Status.INACTIVE,
+                });
+              }"
               onIcon="pi pi-trash"
               :off-label="$t('inactive')"
               :on-label="$t('active')"
               offIcon="pi pi-check"
               class="w-full sm:w-auto"
-              @change="
-                emit('onChangeActive', {
-                  is_active:
-                    checked === Status.INACTIVE ? Status.ACTIVE : Status.INACTIVE,
-                })
-              "
+            />
+            <Select
+              v-model="selectedActiveFilter"
+              :options="activeFilterOptions"
+              optionLabel="label"
+              optionValue="value"
+              :placeholder="$t('Active Status')"
+              :showClear="true"
+              @update:modelValue="(value) => emit('onFilterActiveStatus', value ?? 'all')"
+              class="w-full sm:w-44"
             />
             <div class="flex gap-2 w-full sm:w-auto">
               <IconField class="flex-1 sm:flex-initial">
@@ -211,20 +216,29 @@
           />
           <ToggleButton
             :value="checked"
-            @update:value="emit('update:checked', $event)"
+            @update:value="(val: Status) => {
+              emit('update:checked', val);
+              emit('onChangeActive', {
+                deleted: val === Status.ACTIVE ? 'active' : 'inactive',
+              });
+            }"
             onIcon="pi pi-trash"
             :off-label="$t('inactive')"
             :on-label="$t('active')"
             offIcon="pi pi-check"
             class="flex-1"
-            @change="
-              emit('onChangeActive', {
-                is_active:
-                  checked === Status.INACTIVE ? Status.ACTIVE : Status.INACTIVE,
-              })
-            "
           />
         </div>
+        <Select
+          v-model="selectedActiveFilter"
+          :options="activeFilterOptions"
+          optionLabel="label"
+          optionValue="value"
+          :placeholder="$t('Active Status')"
+          :showClear="true"
+          @update:modelValue="(value) => emit('onFilterActiveStatus', value ?? 'all')"
+          class="w-full"
+        />
         <div class="flex gap-2">
           <IconField class="flex-1">
             <InputIcon>
@@ -287,7 +301,7 @@
         <div class="space-y-2 mb-4">
           <!-- Code -->
           <div v-if="item.code" class="flex items-center gap-2">
-            <i class="pi pi-hashtag text-gray-400 text-xs flex-shrink-0"></i>
+            <i class="pi pi-hashtag text-gray-400 text-xs shrink-0"></i>
             <div class="flex-1">
               <span class="text-xs text-gray-500 block">{{ $t('branches.fields.code') }}</span>
               <span class="text-sm text-gray-700">{{ item.code }}</span>
@@ -296,7 +310,7 @@
 
           <!-- Description -->
           <div v-if="item.description" class="flex items-start gap-2">
-            <i class="pi pi-align-left text-gray-400 text-xs mt-1 flex-shrink-0"></i>
+            <i class="pi pi-align-left text-gray-400 text-xs mt-1 shrink-0"></i>
             <div class="flex-1">
               <span class="text-xs text-gray-500 block">{{ $t('branches.fields.description') }}</span>
               <span class="text-sm text-gray-700">{{ item.description }}</span>
@@ -392,9 +406,12 @@
 import type { IExpenseCategoryEntity } from "~/types/entities/expense-category.entity";
 import type { PaginatedResponse } from "~/shared/entities/paginate.entity";
 import { sortType, Status } from "~/types/enum/paginate.enum";
-import type { IPaginateDto } from "~/types/dto/paginate.dto";
+import type { IFindExpenseCategoryDto } from "~/types/dto/find-expense-category.dto";
 
 const search = ref("");
+// Matches backend `status` filter: 'active' | 'inactive' | 'all'
+const selectedActiveFilter = ref<'active' | 'inactive' | 'all' | null>(null);
+
 const props = defineProps<{
   data: PaginatedResponse<IExpenseCategoryEntity>;
   value: IExpenseCategoryEntity[];
@@ -402,7 +419,7 @@ const props = defineProps<{
   loading: boolean;
   sort?: sortType;
   checked?: Status;
-  query: IPaginateDto;
+  query: IFindExpenseCategoryDto;
 }>();
 
 const emit = defineEmits([
@@ -413,6 +430,7 @@ const emit = defineEmits([
   "onChangeActive",
   "onChangePage",
   "onSearch",
+  "onFilterActiveStatus",
   "onEdit",
   "onDelete",
   "onRestore",
@@ -421,6 +439,12 @@ const emit = defineEmits([
 ]);
 
 const selection = ref<IExpenseCategoryEntity[]>(props.value);
+
+const activeFilterOptions = [
+  { label: "Active", value: 'active' },
+  { label: "Inactive", value: 'inactive' },
+  { label: "All", value: 'all' },
+];
 
 const toggleSelection = (item: IExpenseCategoryEntity) => {
   const index = selection.value.findIndex(s => s.id === item.id);
@@ -434,6 +458,11 @@ const toggleSelection = (item: IExpenseCategoryEntity) => {
 watch(selection, (val) => {
   emit("update:value", val);
 });
+
+// Initialize filter from query using `status`
+watch(() => props.query.status, (val) => {
+  selectedActiveFilter.value = val === undefined ? null : val;
+}, { immediate: true });
 </script>
 
 <style scoped>

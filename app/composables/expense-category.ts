@@ -1,5 +1,5 @@
 import type { PaginatedResponse } from "~/shared/entities/paginate.entity";
-import type { IPaginateDto } from "~/types/dto/paginate.dto";
+import type { IFindExpenseCategoryDto } from "~/types/dto/find-expense-category.dto";
 import type { IExpenseCategoryEntity } from "~/types/entities/expense-category.entity";
 import { useExpenseCategoryStore } from "~/stores/expense-category.store";
 
@@ -7,12 +7,20 @@ export const useExpenseCategory = () => {
   const store = useExpenseCategoryStore();
   const { setLoading, setExpenseCategoryList } = store;
   
-  const findAll = async (query: IPaginateDto) => {
+  const findAll = async (query: IFindExpenseCategoryDto) => {
     try {
       setLoading(true);
+      // Clean query to remove undefined/null and ensure proper serialization
+      const cleanQuery = Object.entries(query).reduce((acc, [key, value]) => {
+        if (value !== undefined && value !== null && value !== '') {
+          acc[key] = value;
+        }
+        return acc;
+      }, {} as any);
+      
       const res = await useApi().get<PaginatedResponse<IExpenseCategoryEntity>>(
         "/expense-categories",
-        { query }
+        { query: cleanQuery }
       );
       console.log('Expense categories findAll response:', res);
       setExpenseCategoryList(res);
