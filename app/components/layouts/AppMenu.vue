@@ -68,6 +68,13 @@ const model = ref<MenuItem[]>([
       },
     ],
   },
+  {
+    label: t("currency"),
+    items: [
+      { label: t("currency"), icon: "pi pi-fw pi-money-bill", to: "/currency" },
+      { label: t("currencyRate") ,icon: "pi pi-fw pi-sync", to: "/currency-rate" },
+    ]
+  }
   // {
   //   label: "UI Components",
   //   items: [

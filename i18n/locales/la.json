@@ -211,5 +211,12 @@
     "shifts": {
       "title": "ຈັດການເວລາ"
     }
-   }
+   },
+"currencies":"ສະກຸນເງິນ",
+"currency":"ສະກຸນເງິນ",
+"currencyRate":"ເລດເງິນ",
+"from_currency":"ຈາກ",
+"to_currency":"ໄປເປັນ",
+"rate":"ເລດ",
+"rate_date":"ເລດວັນທີ"
 }

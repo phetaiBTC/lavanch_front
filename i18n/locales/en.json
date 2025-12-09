@@ -210,5 +210,12 @@
     "shifts": {
       "title": "Shifts Management"
     }
-   }
+   },
+"currencies":"Currencies",
+"currency":"Currency",
+"currencyRate":"Currency Rate",
+"from_currency":"From Currency",
+"to_currency":"To Currency",
+"rate":"Rate",
+"rate_date":"Rate Date"
 }
