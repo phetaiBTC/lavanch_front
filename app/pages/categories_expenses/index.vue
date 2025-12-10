@@ -120,6 +120,7 @@ const query = reactive<IFindExpenseCategoryDto>({
   sort: (route.query.sort as sortType) ?? sortType.ASC,
   is_active: route.query.is_active === 'active' ? Status.ACTIVE : route.query.is_active === 'inactive' ? Status.INACTIVE : Status.ACTIVE,
   status: route.query.status === 'active' || route.query.status === 'inactive' || route.query.status === 'all' ? route.query.status : undefined,
+  deleted: route.query.deleted === 'true' ? true : route.query.deleted === 'false' ? false : false,
 });
 
 if (!route.query.page) {
@@ -155,9 +156,10 @@ const onQuery = {
     updateUrl();
     await load();
   },
-  checked: async (value: Status) => {
+  checked: async (value: { deleted: boolean }) => {
     // Map toggle to backend soft-delete filter `deleted`
-    query.deleted = value === Status.ACTIVE ? 'active' : 'inactive';
+    // deleted: true => show deleted records, deleted: false => show active records
+    query.deleted = value.deleted;
     query.page = 1;
     updateUrl();
     await load();

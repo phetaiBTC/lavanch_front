@@ -17,12 +17,8 @@ export const useImageUpload = () => {
         formData.append("files", file);
       });
 
-      const res = await useApi().post<IImageEntity[]>("/images", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
+      const res = await useApi().post<IImageEntity[]>("/files/upload-multi", formData);
+       console.log('Uploaded images response:', res);
       return res || [];
     } catch (error) {
       console.error('Failed to upload images:', error);

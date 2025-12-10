@@ -27,17 +27,13 @@
               @update:value="(val: sortType) => emit('onChangeSort', { sort: val })"
             />
             <ToggleButton
-              :value="checked"
-              @update:value="(val: Status) => {
-                emit('update:checked', val);
-                // Backend expects deleted=true|false for soft-deletes
-                emit('onChangeActive', {
-                  deleted: val === Status.INACTIVE,
-                });
+              v-model="toggleDeleted"
+              @update:modelValue="(val: boolean) => {
+                emit('onChangeActive', { deleted: val });
               }"
               onIcon="pi pi-trash"
-              :off-label="$t('inactive')"
-              :on-label="$t('active')"
+              :off-label="$t('active')"
+              :on-label="$t('inactive')"
               offIcon="pi pi-check"
               class="w-full sm:w-auto"
             />
@@ -215,16 +211,13 @@
             "
           />
           <ToggleButton
-            :value="checked"
-            @update:value="(val: Status) => {
-              emit('update:checked', val);
-              emit('onChangeActive', {
-                deleted: val === Status.ACTIVE ? 'active' : 'inactive',
-              });
+            v-model="toggleDeleted"
+            @update:modelValue="(val: boolean) => {
+              emit('onChangeActive', { deleted: val });
             }"
             onIcon="pi pi-trash"
-            :off-label="$t('inactive')"
-            :on-label="$t('active')"
+            :off-label="$t('active')"
+            :on-label="$t('inactive')"
             offIcon="pi pi-check"
             class="flex-1"
           />
@@ -411,6 +404,8 @@ import type { IFindExpenseCategoryDto } from "~/types/dto/find-expense-category.
 const search = ref("");
 // Matches backend `status` filter: 'active' | 'inactive' | 'all'
 const selectedActiveFilter = ref<'active' | 'inactive' | 'all' | null>(null);
+// Toggle for soft-delete filter: false = active records, true = deleted records
+const toggleDeleted = ref<boolean>(false);
 
 const props = defineProps<{
   data: PaginatedResponse<IExpenseCategoryEntity>;
@@ -462,6 +457,11 @@ watch(selection, (val) => {
 // Initialize filter from query using `status`
 watch(() => props.query.status, (val) => {
   selectedActiveFilter.value = val === undefined ? null : val;
+}, { immediate: true });
+
+// Initialize toggleDeleted from query
+watch(() => props.query.deleted, (val) => {
+  toggleDeleted.value = val === true;
 }, { immediate: true });
 </script>
 
