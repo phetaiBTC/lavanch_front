@@ -29,7 +29,7 @@
               optionLabel="label"
               optionValue="value"
               :placeholder="$t('status')"
-              @change="handleFilterChange"
+              @change="handleStatusChange"
             />
 
             <!-- Category -->
@@ -40,7 +40,7 @@
               optionValue="name"
               :placeholder="$t('branchExpenses.fields.category')"
               :filter="true"
-              @change="handleFilterChange"
+              @change="handleCategoryChange"
             />
 
             <!-- Date From -->
@@ -218,7 +218,7 @@
         optionLabel="label"
         optionValue="value"
         class="w-full"
-        @change="handleFilterChange"
+        @change="handleStatusChange"
       />
 
       <Select
@@ -228,7 +228,7 @@
         optionLabel="name"
         optionValue="name"
         class="w-full"
-        @change="handleFilterChange"
+        @change="handleCategoryChange"
       />
 
       <Calendar
@@ -415,11 +415,14 @@ const props = defineProps<{
 
 const selection = defineModel<IBranchExpenseEntity[]>("value", { default: [] });
 const emit = defineEmits<{
-  onSearch: [value: string];
-  onChangePage: [value: { page: number; limit: number }];
-  onApprove: [value: IBranchExpenseEntity];
-  onReject: [value: IBranchExpenseEntity];
-  onFilterChange: [filters: any];
+  (e: 'onSearch', value: string): void;
+  (e: 'onChangePage', value: { page: number; limit: number }): void;
+  (e: 'onApprove', value: IBranchExpenseEntity): void;
+  (e: 'onReject', value: IBranchExpenseEntity): void;
+  (e: 'onFilterStatus', value: string | null): void;
+  (e: 'onFilterCategory', value: string | null): void;
+  (e: 'onFilterDateFrom', value: string | null): void;
+  (e: 'onFilterDateTo', value: string | null): void;
 }>();
 
 const dt = ref();
@@ -475,38 +478,20 @@ const formatDate = (date: Date | Date[] | (Date | null)[] | null | undefined): s
   return `${year}-${month}-${day}`;
 };
 
-const handleDateFromChange = (value: Date | null) => {
-  dateFrom.value = value;
-  handleFilterChange();
+const handleStatusChange = () => {
+  emit('onFilterStatus', statusFilter.value === 'ALL' ? null : statusFilter.value);
 };
 
-const handleDateToChange = (value: Date | null) => {
-  dateTo.value = value;
-  handleFilterChange();
+const handleCategoryChange = () => {
+  emit('onFilterCategory', categoryFilter.value || null);
 };
 
-const handleFilterChange = () => {
-  const filters: any = {
-    expenseStatus: statusFilter.value,
-    expenseCategoryName: categoryFilter.value,
-  };
-  
-  if (dateFrom.value) {
-    filters.createdFrom = formatDate(dateFrom.value);
-  }
-  
-  if (dateTo.value) {
-    filters.createdTo = formatDate(dateTo.value);
-  }
-  
-  // Remove empty string values
-  Object.keys(filters).forEach(key => {
-    if (filters[key] === '' || filters[key] === null || filters[key] === undefined) {
-      delete filters[key];
-    }
-  });
-  
-  emit('onFilterChange', filters);
+const handleDateFromChange = (value: Date | Date[] | (Date | null)[] | null | undefined) => {
+  emit('onFilterDateFrom', formatDate(value));
+};
+
+const handleDateToChange = (value: Date | Date[] | (Date | null)[] | null | undefined) => {
+  emit('onFilterDateTo', formatDate(value));
 };
 
 const clearFilters = () => {
@@ -515,7 +500,13 @@ const clearFilters = () => {
   dateFrom.value = null;
   dateTo.value = null;
   search.value = "";
-  handleFilterChange();
+  
+  // Emit all filters as cleared
+  emit('onFilterStatus', null);
+  emit('onFilterCategory', null);
+  emit('onFilterDateFrom', null);
+  emit('onFilterDateTo', null);
+  emit('onSearch', '');
 };
 
 const onPageChange = (event: any) => {

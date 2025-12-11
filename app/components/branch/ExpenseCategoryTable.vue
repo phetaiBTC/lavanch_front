@@ -413,7 +413,6 @@ const props = defineProps<{
   title: string;
   loading: boolean;
   sort?: sortType;
-  checked?: Status;
   query: IFindExpenseCategoryDto;
 }>();
 
@@ -461,7 +460,7 @@ watch(() => props.query.status, (val) => {
 
 // Initialize toggleDeleted from query
 watch(() => props.query.deleted, (val) => {
-  toggleDeleted.value = val === true;
+  toggleDeleted.value = val === 'true';
 }, { immediate: true });
 </script>
 

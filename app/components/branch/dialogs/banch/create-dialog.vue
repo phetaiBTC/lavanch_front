@@ -100,25 +100,37 @@
         <label for="village" class="font-semibold text-gray-700 text-sm sm:text-base">
           {{ $t("village") }}
         </label>
-        <Select
-          id="village"
-          v-model="selectedVillageId"
-          :options="villages"
-          optionLabel="name_en"
-          optionValue="id"
-          filter
-          :filterFields="['name_en','name']"
-          :placeholder="$t('select') + ' ' + $t('village')"
-          :disabled="!selectedDistrictId || villages.length === 0"
-          class="w-full"
-        >
-          <template #option="slotProps">
-            <div class="flex items-center gap-2">
-              <i class="pi pi-home text-blue-600 text-xs"></i>
-              <span>{{ slotProps.option.name_en || slotProps.option.name }}</span>
-            </div>
-          </template>
-        </Select>
+       <Select
+  id="village"
+  v-model="selectedVillageId"
+  :options="villages"
+  optionLabel="name_en"
+  optionValue="id"
+  filter
+  :filterFields="['name_en','name']"
+  :placeholder="$t('select') + ' ' + $t('village')"
+  :disabled="!selectedDistrictId || villages.length === 0"
+  class="w-full"
+>
+  <!-- option template -->
+  <template #option="slotProps">
+    <div class="flex items-center gap-2">
+      <i class="pi pi-home text-blue-600 text-xs"></i>
+      <span>{{ slotProps.option.name_en || slotProps.option.name }}</span>
+    </div>
+  </template>
+
+  <!-- value template (IMPORTANT FIX) -->
+  <template #value="slotProps">
+    <div v-if="slotProps.value">
+      {{
+        villages.find(v => v.id === slotProps.value)?.name_en ||
+        villages.find(v => v.id === slotProps.value)?.name
+      }}
+    </div>
+    <span v-else>{{ $t("select") + " " + $t("village") }}</span>
+  </template>
+</Select>
       </div>
 
       <!-- Phone -->

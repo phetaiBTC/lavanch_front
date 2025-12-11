@@ -10,8 +10,8 @@
               <span class="text-primary text-xl font-medium mr-2">{{ formatCurrency(summary?.total_amount_all || 0) }}</span>
             </div>
             <div
-              class="flex items-center justify-center rounded-border border-2 text-primary bg-gradient-to-r from-blue-500 to-blue-600 text-white"
-              style="width: 2.5rem; height: 2.5rem"
+               class="flex items-center justify-center rounded-border border-2 text-primary"
+          style="width: 2.5rem; height: 2.5rem"
             >
               <i class="pi pi-wallet text-xl"></i>
             </div>
@@ -25,20 +25,16 @@
           :count="summary?.total_count || 0"
           :type="$t('items')"
           icon="pi pi-list text-xl"
-          class="from-purple-500 to-purple-600 text-white"
         />
       </div>
       
       <div class="col-span-12 sm:col-span-6 lg:col-span-3">
-        
-         <UiStats
+        <UiStats
           :title="$t('branchExpenses.summary.pending')"
           :count="summary?.count_pending || 0"
           :type="$t('items')"
           icon="pi pi-clock text-xl"
-          class="from-yellow-500 to-yellow-600 text-white"
         />
-       
       </div>
       
       <div class="col-span-12 sm:col-span-6 lg:col-span-3">
@@ -47,7 +43,6 @@
           :count="summary?.count_approved || 0"
           :type="$t('items')"
           icon="pi pi-check text-xl"
-          class="from-green-500 to-green-600 text-white"
         />
       </div>
       
@@ -57,7 +52,6 @@
           :count="summary?.count_rejected || 0"
           :type="$t('items')"
           icon="pi pi-times text-xl"
-          class="from-red-500 to-red-600 text-white"
         />
       </div>
     </div>
@@ -93,7 +87,10 @@
           :query="query"
           @on-search="onQuery.search($event)"
           @on-change-page="onQuery.page($event.page, $event.limit)"
-          @on-filter-change="onQuery.filter($event)"
+          @on-filter-status="onQuery.filterStatus($event)"
+          @on-filter-category="onQuery.filterCategory($event)"
+          @on-filter-date-from="onQuery.filterDateFrom($event)"
+          @on-filter-date-to="onQuery.filterDateTo($event)"
           @on-view="handleView"
           @on-approve="handleApprove"
           @on-reject="handleReject"
@@ -204,12 +201,26 @@ const onQuery = {
     updateUrl();
     await load();
   },
-  filter: async (filters: any) => {
-    // Assign filters, converting empty strings to undefined
-    Object.keys(filters).forEach(key => {
-      query[key] = (filters[key] === '' || filters[key] === null) ? undefined : filters[key];
-    });
-    
+  filterStatus: async (value: string | null) => {
+    query.expenseStatus = value || 'ALL';
+    query.page = 1;
+    updateUrl();
+    await load();
+  },
+  filterCategory: async (value: string | null) => {
+    query.expenseCategoryName = value || undefined;
+    query.page = 1;
+    updateUrl();
+    await load();
+  },
+  filterDateFrom: async (value: string | null) => {
+    query.createdFrom = value || undefined;
+    query.page = 1;
+    updateUrl();
+    await load();
+  },
+  filterDateTo: async (value: string | null) => {
+    query.createdTo = value || undefined;
     query.page = 1;
     updateUrl();
     await load();

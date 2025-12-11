@@ -43,12 +43,11 @@
             :loading="store.loading"
             :data="store.expenseCategoryList"
             :sort="query.sort"
-            :checked="query.is_active"
             v-model:value="selectedCategories"
             :query="query"
             @on-search="onQuery.search($event)"
             @on-change-sort="onQuery.sort($event.sort)"
-            @on-change-active="onQuery.checked($event.is_active)"
+            @on-change-active="onQuery.checked($event)"
             @on-filter-active-status="onQuery.filterActiveStatus($event)"
             @on-change-page="onQuery.page($event.page, $event.limit)"
             @on-edit="openEditDialog"
@@ -118,9 +117,8 @@ const query = reactive<IFindExpenseCategoryDto>({
   limit: Number(route.query.limit ?? 10),
   search: String(route.query.search ?? ""),
   sort: (route.query.sort as sortType) ?? sortType.ASC,
-  is_active: route.query.is_active === 'active' ? Status.ACTIVE : route.query.is_active === 'inactive' ? Status.INACTIVE : Status.ACTIVE,
-  status: route.query.status === 'active' || route.query.status === 'inactive' || route.query.status === 'all' ? route.query.status : undefined,
-  deleted: route.query.deleted === 'true' ? true : route.query.deleted === 'false' ? false : false,
+  status: route.query.status === 'active' || route.query.status === 'inactive' || route.query.status === 'all' ? route.query.status as 'active' | 'inactive' | 'all' : undefined,
+  deleted: route.query.deleted === 'true' ? 'true' : route.query.deleted === 'false' ? 'false' : undefined,
 });
 
 if (!route.query.page) {
@@ -158,8 +156,8 @@ const onQuery = {
   },
   checked: async (value: { deleted: boolean }) => {
     // Map toggle to backend soft-delete filter `deleted`
-    // deleted: true => show deleted records, deleted: false => show active records
-    query.deleted = value.deleted;
+    // deleted: 'true' => show deleted records, deleted: 'false' => show active records
+    query.deleted = value.deleted ? 'true' : 'false';
     query.page = 1;
     updateUrl();
     await load();
