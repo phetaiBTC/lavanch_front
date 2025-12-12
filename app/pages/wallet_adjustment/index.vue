@@ -17,18 +17,12 @@
               <Button
                 :label="$t('add') + ' ' + $t('branches.sidebar.wallet_adjustment_label')"
                 icon="pi pi-plus"
-                severity="secondary"
+          
                 class="mr-2"
                 @click="openCreateDialog"
               />
             </template>
-            <template #end>
-              <Button
-                label="Export"
-                icon="pi pi-upload"
-                severity="secondary"
-              />
-            </template>
+           
           </Toolbar>
 
           <BranchWalletAdjustmentTable

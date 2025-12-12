@@ -70,7 +70,7 @@
               <Button 
                 icon="pi pi-search" 
                 @click="emit('onSearch', search)"
-                class="bg-blue-600 hover:bg-blue-700 border-blue-600"
+              
               />
             </div>
           </div>

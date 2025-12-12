@@ -16,13 +16,7 @@
             <template #start>
               <h4 class="m-0">{{ $t("branches.sidebar.wallet_transactions_label") }}</h4>
             </template>
-            <template #end>
-              <Button
-                label="Export"
-                icon="pi pi-upload"
-                severity="secondary"
-              />
-            </template>
+            
           </Toolbar>
 
           <BranchWalletTransactionTable
@@ -59,6 +53,7 @@ import { useBranch } from "~/composables/branch";
 const route = useRoute();
 const router = useRouter();
 const store = useWalletTransactionStore();
+console.log("store3333333333333333", store);
 const { findAll } = useWalletTransaction();
 const { findAll: findAllBranches } = useBranch();
 

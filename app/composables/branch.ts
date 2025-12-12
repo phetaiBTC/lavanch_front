@@ -72,6 +72,7 @@ export const useBranch = () => {
   const getSummary = async () => {
     return await run(async () => {
       const res = await useApi().get<IBranchSummaryResponse>("/branches/summary");
+      console.log('Branch summary response:', res);
       return res;
     }, setLoading);
   };

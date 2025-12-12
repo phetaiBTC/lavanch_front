@@ -186,9 +186,10 @@
             mode="basic"
             accept="image/*"
             :maxFileSize="5000000"
+            :multiple="true"
             @select="handleFileSelect"
             :auto="false"
-            :chooseLabel="$t('branchExpenses.actions.choose_image')"
+            :chooseLabel="$t('branchExpenses.actions.choose_images')"
             class="w-full"
           />
           
@@ -197,20 +198,38 @@
             <span class="text-sm">{{ $t('branchExpenses.messages.uploading') }}</span>
           </div>
           
-          <div v-if="imagePreview" class="relative">
-            <img 
-              :src="imagePreview" 
-              alt="Receipt Preview" 
-              class="w-full h-auto rounded border max-h-80 object-contain" 
-            />
-            <Button
-              icon="pi pi-times"
-              severity="danger"
-              size="small"
-              rounded
-              class="absolute top-2 right-2"
-              @click="removeImage"
-            />
+         <div
+  v-if="imagePreviews.length > 0"
+  :class="imagePreviews.length > 1 
+    ? 'flex gap-4 overflow-x-auto pb-2 scroll-smooth' 
+    : ''"
+>
+  <div
+    v-for="(preview, index) in imagePreviews"
+    :key="index"
+    class="relative shrink-0 cursor-pointer"
+    :class="imagePreviews.length > 1 ? 'w-40 ' : 'w-full h-auto'"
+    @click="openLightbox(index)"
+  >
+              <img v-if="imagePreviews.length > 1" 
+                :src="preview" 
+                :alt="`Receipt Preview ${index + 1}`" 
+                class="w-full h-78 rounded  object-cover hover:opacity-30 transition-opacity"
+              />
+              <img v-if="imagePreviews.length <= 1" 
+                :src="preview" 
+                :alt="`Receipt Preview ${index + 1}`" 
+                class="w-full h-130 rounded  object-cover hover:opacity-30 transition-opacity"
+              />
+              <Button
+                icon="pi pi-times"
+                severity="danger"
+                size="small"
+                rounded
+                class="!absolute !top-2 !right-2 !p-2 shadow-md bg-white/80 hover:bg-white"
+                @click.stop="removeImage(index)"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -236,6 +255,71 @@
         />
       </div>
     </template>
+  </Dialog>
+
+  <!-- Image Lightbox Modal -->
+  <Dialog
+    v-model:visible="showLightbox"
+    modal
+    :closable="false"
+    :showHeader="false"
+    :dismissableMask="true"
+    :style="{ width: '90vw', maxWidth: '1200px' }"
+    :pt="{
+      root: { class: 'bg-transparent border-none shadow-none' },
+      mask: { class: 'backdrop-blur-sm', style: 'background-color: rgba(0, 0, 0, 0.85)' },
+      content: { class: 'bg-transparent p-0' }
+    }"
+  >
+    <div class="relative flex items-center justify-center">
+      <!-- Close Button -->
+      <Button
+        icon="pi pi-times"
+        severity="secondary"
+        size="large"
+        rounded
+        class="!absolute !top-0 !right-0 !z-10 bg-white/90 hover:bg-white"
+        @click="closeLightbox"
+      />
+      
+      <!-- Large Image Preview -->
+      <img
+        v-if="currentImageIndex !== null"
+        :src="imagePreviews[currentImageIndex]"
+        :alt="`Receipt ${currentImageIndex + 1}`"
+        class="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl"
+      />
+      
+      <!-- Navigation Arrows (if multiple images) -->
+      <Button
+        v-if="imagePreviews.length > 1"
+        icon="pi pi-chevron-left"
+        severity="secondary"
+        size="large"
+        rounded
+        class="!absolute !left-4 bg-white/90 hover:bg-white"
+        @click="previousImage"
+        :disabled="currentImageIndex === 0"
+      />
+      <Button
+        v-if="imagePreviews.length > 1"
+        icon="pi pi-chevron-right"
+        severity="secondary"
+        size="large"
+        rounded
+        class="!absolute !right-4 bg-white/90 hover:bg-white"
+        @click="nextImage"
+        :disabled="currentImageIndex === imagePreviews.length - 1"
+      />
+      
+      <!-- Image Counter -->
+      <div
+        v-if="imagePreviews.length > 1 && currentImageIndex !== null"
+        class="!absolute !bottom-4 bg-black/70 text-white px-4 py-2 rounded-full text-sm"
+      >
+        {{ currentImageIndex + 1 }} / {{ imagePreviews.length }}
+      </div>
+    </div>
   </Dialog>
 </template>
 
@@ -289,7 +373,11 @@ const branchError = ref("");
 const categoryOptions = ref<IExpenseCategoryEntity[]>([]);
 const currencyOptions = ref<ICurrencyEntity[]>([]);
 const branchOptions = ref<IBranchEntity[]>([]);
-const imagePreview = ref("");
+const imagePreviews = ref<string[]>([]);
+
+// Lightbox state
+const showLightbox = ref(false);
+const currentImageIndex = ref<number | null>(null);
 
 // Address selections
 const districts = ref<IDistrictEntity[]>([]);
@@ -307,7 +395,11 @@ const form = ref<Partial<IBranchExpenseEntity>>({
   notes: "",
   receipt_image: "",
 });
-
+const imageGridClass = computed(() => {
+  if (imagePreviews.value.length === 1) return ""; // no grid
+  const cols = Math.min(imagePreviews.value.length, 2); 
+  return `grid grid-cols-${cols} gap-4`;
+});
 const expenseDate = computed<Date | null>({
   get() {
     return form.value.expense_date ? new Date(form.value.expense_date) : null;
@@ -490,43 +582,48 @@ const loadBranches = async () => {
 };
 
 const handleFileSelect = async (event: { files: File[] }) => {
-  const file = event.files[0];
-  if (!file) return;
+  const files = event.files;
+  if (!files || files.length === 0) return;
 
   try {
     uploading.value = true;
     
-    // Create preview immediately
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      imagePreview.value = e.target?.result as string;
-    };
-    reader.readAsDataURL(file);
-    
-    // Upload image
-    const uploadedImages = await uploadImage(file);
-    console.log('Uploaded image:', uploadedImages);
-    
-    // Handle the response - it should be a string URL
-    if (typeof uploadedImages === 'string') {
-      form.value.receipt_image = uploadedImages;
-    } else {
-      form.value.receipt_image = uploadedImages;
+    // Upload all images
+    for (const file of files) {
+      // Create preview immediately
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        imagePreviews.value.push(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+      
+      // Upload image
+      const uploadedImage = await uploadImage(file);
+      console.log('Uploaded image:', uploadedImage);
+      
+      // Handle the response - it should be a string URL
+      const imageUrl = typeof uploadedImage === 'string' ? uploadedImage : uploadedImage;
+      
+      // Add to array (stored as comma-separated string for now)
+      if (form.value.receipt_image) {
+        form.value.receipt_image += ',' + imageUrl;
+      } else {
+        form.value.receipt_image = imageUrl;
+      }
     }
     
     toast.add({
       severity: "success",
       summary: "Success",
-      detail: "Image uploaded successfully",
+      detail: `${files.length} image(s) uploaded successfully`,
       life: 3000,
     });
   } catch (error) {
-    console.error("Failed to upload image:", error);
-    imagePreview.value = "";
+    console.error("Failed to upload images:", error);
     toast.add({
       severity: "error",
       summary: "Error",
-      detail: "Failed to upload image. Please try again.",
+      detail: "Failed to upload images. Please try again.",
       life: 3000,
     });
   } finally {
@@ -534,9 +631,14 @@ const handleFileSelect = async (event: { files: File[] }) => {
   }
 };
 
-const removeImage = () => {
-  form.value.receipt_image = "";
-  imagePreview.value = "";
+const removeImage = (index: number) => {
+  // Remove from preview array
+  imagePreviews.value.splice(index, 1);
+  
+  // Remove from form data (comma-separated string)
+  const images = form.value.receipt_image?.split(',').filter(Boolean) || [];
+  images.splice(index, 1);
+  form.value.receipt_image = images.join(',');
 };
 
 const handleClose = () => {
@@ -563,7 +665,30 @@ const resetForm = () => {
   selectedVillageId.value = null;
   districts.value = [];
   villages.value = [];
-  imagePreview.value = "";
+  imagePreviews.value = [];
+};
+
+// Lightbox methods
+const openLightbox = (index: number) => {
+  currentImageIndex.value = index;
+  showLightbox.value = true;
+};
+
+const closeLightbox = () => {
+  showLightbox.value = false;
+  currentImageIndex.value = null;
+};
+
+const previousImage = () => {
+  if (currentImageIndex.value !== null && currentImageIndex.value > 0) {
+    currentImageIndex.value--;
+  }
+};
+
+const nextImage = () => {
+  if (currentImageIndex.value !== null && currentImageIndex.value < imagePreviews.value.length - 1) {
+    currentImageIndex.value++;
+  }
 };
 
 const handleSave = async () => {

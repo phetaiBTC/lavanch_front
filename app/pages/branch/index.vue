@@ -4,17 +4,19 @@
       <!-- Summary Cards using UiStats -->
     <div class="grid grid-cols-12 gap-6 mb-8">
       <!-- Total Wallet Balance -->
+     
       <UiStats
         :title="$t('branches.summary.total_wallet_balance')"
-        :count="Number(summaryTotalWalletBalance) || 0" 
+        :count="summaryTotalWalletBalance || 0" 
         icon="pi pi-wallet text-xl"
       />
+
       
       <!-- Active Branches -->
       <UiStats
         :title="$t('branches.summary.active_branches')"
         :count="summary?.active_count || 0"
-        type="active"
+        :type="$t('branches.summary.active')"
         icon="pi pi-check-circle text-xl"
       />
       
@@ -22,7 +24,7 @@
       <UiStats
         :title="$t('branches.summary.inactive_branches')"
         :count="summary?.inactive_count || 0"
-        type="inactive"
+        :type="$t('branches.summary.inactive')"
         icon="pi pi-times-circle text-xl"
       />
       
@@ -30,7 +32,7 @@
       <UiStats
         :title="$t('branches.summary.total_branches')"
         :count="(summary?.active_count || 0) + (summary?.inactive_count || 0)"
-        type="total"
+        :type="$t('branches.summary.total')"
         icon="pi pi-sitemap text-xl"
       />
     </div>
@@ -60,7 +62,7 @@
                       <Button
                         :label="$t('add') + ' ' + $t('branches.branch')"
                         icon="pi pi-plus"
-                        severity="secondary"
+                      
                         class="bg-blue-600 hover:bg-blue-700 border-blue-600 text-white w-full sm:w-auto"
                         @click="openCreateDialog"
                       />
@@ -74,15 +76,7 @@
                       />
                     </div>
                   </template>
-                  <template #end>
-                    <Button
-                      label="Export"
-                      icon="pi pi-upload"
-                      severity="secondary"
-                      outlined
-                      class="w-full sm:w-auto"
-                    />
-                  </template>
+                  
                 </Toolbar>
 
                 <BranchTable
@@ -112,7 +106,7 @@
                     <Button
                       :label="$t('add') + ' ' + $t('branches.shifts.title')"
                       icon="pi pi-plus"
-                      severity="secondary"
+                     
                       @click="openShiftDialog"
                     />
                   </template>
@@ -198,6 +192,7 @@ const { showSuccess } = useFormHandler();
 
 // Summary data
 const summary = ref<IBranchSummaryResponse | null>(null);
+
 const summaryTotalWalletBalance = computed(() => 
   formatCurrency(summary.value?.total_wallet_balance_all_branches || 0)
 );
@@ -250,7 +245,9 @@ const load = async () => {
 
 const loadSummary = async () => {
   const result = await getSummary();
+  console.log('Branch summary data222:', result);
   summary.value = result || null;
+  console.log('Branch summary data updated333:', summary.value);
 };
 
 const loadShifts = async () => {

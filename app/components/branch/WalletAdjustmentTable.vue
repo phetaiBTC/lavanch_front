@@ -175,7 +175,9 @@ import type { IWalletAdjustmentEntity } from "~/types/entities/wallet-adjustment
 import type { PaginatedResponse } from "~/shared/entities/paginate.entity";
 import type { IFindWalletAdjustmentDto } from "~/types/dto/find-wallet-adjustment.dto";
 import { AdjustmentTypeFilter, AdjustmentStatusFilter } from "~/types/dto/find-wallet-adjustment.dto";
+import {useI18n} from "vue-i18n";
 
+const { t } = useI18n();
 const search = ref("");
 const selectedAdjustmentType = ref<AdjustmentTypeFilter | null>(null);
 const selectedStatus = ref<AdjustmentStatusFilter | null>(null);
@@ -202,14 +204,14 @@ const emit = defineEmits([
 const selection = ref<IWalletAdjustmentEntity[]>(props.value);
 
 const adjustmentTypeOptions = [
-  { label: "Add", value: AdjustmentTypeFilter.ADD },
-  { label: "Deduct", value: AdjustmentTypeFilter.DEDUCT },
+  { label: t("wallet_adjustments.adjustment_type.add"), value: AdjustmentTypeFilter.ADD },
+  { label: t("wallet_adjustments.adjustment_type.deduct"), value: AdjustmentTypeFilter.DEDUCT },
 ];
 
 const statusOptions = [
-  { label: "Pending", value: AdjustmentStatusFilter.PENDING },
-  { label: "Approved", value: AdjustmentStatusFilter.APPROVED },
-  { label: "Rejected", value: AdjustmentStatusFilter.REJECTED },
+  { label: t("wallet_adjustments.status.pending"), value: AdjustmentStatusFilter.PENDING },
+  { label: t("wallet_adjustments.status.approved"), value: AdjustmentStatusFilter.APPROVED },
+  { label: t("wallet_adjustments.status.rejected"), value: AdjustmentStatusFilter.REJECTED },
 ];
 
 watch(selection, (val) => {

@@ -21,18 +21,7 @@
           </h4>
 
           <!-- FILTER ROW -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-            <!-- Status -->
-            <Select
-              v-model="statusFilter"
-              :options="statusOptions"
-              optionLabel="label"
-              optionValue="value"
-              :placeholder="$t('status')"
-              @change="handleStatusChange"
-            />
-
-            <!-- Category -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-2">
             <Select
               v-model="categoryFilter"
               :options="categoryOptions"
@@ -41,50 +30,62 @@
               :placeholder="$t('branchExpenses.fields.category')"
               :filter="true"
               @change="handleCategoryChange"
+             
             />
+          
+          
+ <div class="flex items-center gap-2">
+                 <IconField class="flex-1">
+             <InputIcon><i class="pi pi-search" /></InputIcon>
+             <InputText
+               v-model="search"
+               :placeholder="$t('search_placeholder')"
+               @keydown.enter="emit('onSearch', search)"
+             />
+           </IconField>
+              
+         
+            </div>
 
-            <!-- Date From -->
-            <Calendar
+          <div class="flex items-center gap-2">
+              <Calendar
               v-model="dateFrom"
-              :placeholder="$t('Date From')"
+              :placeholder="$t('start_date')"
               dateFormat="yy-mm-dd"
               :showClear="true"
               @update:modelValue="handleDateFromChange"
             />
             
-            <!-- Date To -->
+    
             <Calendar
               v-model="dateTo"
-              :placeholder="$t('Date To')"
+              :placeholder="$t('end_date')"
               dateFormat="yy-mm-dd"
               :showClear="true"
               @update:modelValue="handleDateToChange"
             />
-          <Button
+             <div class="flex items-center gap-2">
+            <!-- Status -->
+             <Select
+              v-model="statusFilter"
+              :options="statusOptions "
+              optionLabel="label"
+              optionValue="value"
+              :placeholder="$t('branchExpenses.filters.status.label')"
+              @change="handleStatusChange"
+            />
+        <Button
               icon="pi pi-filter-slash"
               :label="$t('clear_filters')"
               outlined
               @click="clearFilters"
             />
-            <!-- Search -->
-            <!-- <div class="flex-start gap-2 lg:col-span-2"> -->
-              <IconField class="flex-1">
-                <InputIcon><i class="pi pi-search" /></InputIcon>
-                <InputText
-                  v-model="search"
-                  :placeholder="$t('search_placeholder')"
-                  @keydown.enter="emit('onSearch', search)"
-                />
-              </IconField>
-
-              <!-- <Button
-                icon="pi pi-search"
-                @click="emit('onSearch', search)"
-                class="bg-blue-600 hover:bg-blue-700 border-blue-600"
-              /> -->
-            <!-- </div> -->
-
-            <!-- Clear Filters -->
+          
+            
+            </div>
+          </div>
+          
+         
          
           </div>
         </div>
@@ -201,8 +202,51 @@
           </div>
         </template>
       </Column>
+      <Column :exportable="false" frozen alignFrozen="right">
+      <template #body="slotProps">
+        <div class="flex flex-row gap-2">
+          <Button
+            icon="pi pi-eye"
+            outlined
+            rounded
+            @click="handleViewImages(slotProps.data)"
+          />
+        </div>
+      </template>
+    </Column>
     </DataTable>
   </div>
+
+  <!-- Receipt Images Dialog -->
+  <Dialog
+    v-model:visible="showImagesDialog"
+    modal
+    :header="$t('branchExpenses.fields.receipt_images')"
+    :style="{ width: '80vw', maxWidth: '1000px' }"
+    :breakpoints="{ '1199px': '85vw', '575px': '95vw' }"
+  >
+    <div v-if="loadingImages" class="flex justify-center items-center py-8">
+      <ProgressSpinner style="width: 50px; height: 50px" strokeWidth="4" />
+    </div>
+
+    <div v-else-if="receiptImages.length === 0" class="text-center py-8 text-gray-500">
+      {{ $t('branchExpenses.messages.no_receipt_images') }}
+    </div>
+
+    <div v-else :class="gridClass">
+      <div
+        v-for="(image, index) in receiptImages"
+        :key="index"
+        class="relative"
+      >
+        <img
+          :src="image"
+          :alt="`Receipt ${index + 1}`"
+          class="w-full h-64 object-cover rounded border border-gray-300"
+        />
+      </div>
+    </div>
+  </Dialog>
 
   <!-- MOBILE VIEW -->
   <div class="md:hidden">
@@ -401,7 +445,11 @@ import { ref, computed } from "vue";
 import type { IPaginateDto } from "~/types/dto/paginate.dto";
 import type { IBranchExpenseEntity } from "~/types/entities/branch-expense.entity";
 import type { IExpenseCategoryEntity } from "~/types/entities/expense-category.entity";
+import { useI18n } from "vue-i18n";
+import { useBranchExpense } from "~/composables/branch-expense";
 
+const { t } = useI18n();
+const { getReceiptImages } = useBranchExpense();
 const props = defineProps<{
   title: string;
   loading: boolean;
@@ -425,18 +473,32 @@ const emit = defineEmits<{
   (e: 'onFilterDateTo', value: string | null): void;
 }>();
 
-const dt = ref();
+
 const search = ref("");
 const statusFilter = ref("ALL");
 const categoryFilter = ref("");
 const dateFrom = ref<Date | null>(null);
 const dateTo = ref<Date | null>(null);
 
+// Receipt images dialog
+const showImagesDialog = ref(false);
+const loadingImages = ref(false);
+const receiptImages = ref<string[]>([]);
+
+const gridClass = computed(() => {
+  const imageCount = receiptImages.value.length;
+  if (imageCount === 1) {
+    return '';
+  }
+  const cols = Math.min(imageCount, 4);
+  return `grid grid-cols-${cols} gap-4`;
+});
+
 const statusOptions = ref([
-  { label: "all", value: "ALL" },
-  { label: "pending", value: "PENDING" },
-  { label: "approved", value: "APPROVED" },
-  { label: "rejected", value: "REJECTED" },
+  { label: `${t('branchExpenses.filters.status.all')}`, value: "ALL" },
+  { label: `${t('branchExpenses.filters.status.pending')}`, value: "PENDING" },
+  { label: `${t('branchExpenses.filters.status.approved')}`, value: "APPROVED" },
+  { label: `${t('branchExpenses.filters.status.rejected')}`, value: "REJECTED" },
 ]);
 
 const categoryOptions = computed(() => {
@@ -514,6 +576,24 @@ const onPageChange = (event: any) => {
     page: event.page + 1,
     limit: event.rows,
   });
+};
+
+const handleViewImages = async (expense: IBranchExpenseEntity) => {
+  try {
+    loadingImages.value = true;
+    showImagesDialog.value = true;
+    receiptImages.value = [];
+    
+    const response = await getReceiptImages(expense.id);
+    if (response && response.receipt_images) {
+      receiptImages.value = response.receipt_images;
+    }
+  } catch (error) {
+    console.error('Failed to load receipt images:', error);
+    receiptImages.value = [];
+  } finally {
+    loadingImages.value = false;
+  }
 };
 </script>
 

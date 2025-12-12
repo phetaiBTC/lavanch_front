@@ -42,7 +42,7 @@
               :options="activeFilterOptions"
               optionLabel="label"
               optionValue="value"
-              :placeholder="$t('Active Status')"
+              :placeholder="$t('expense_categories.status.label')"
               :showClear="true"
               @update:modelValue="(value) => emit('onFilterActiveStatus', value ?? 'all')"
               class="w-full sm:w-44"
@@ -227,7 +227,7 @@
           :options="activeFilterOptions"
           optionLabel="label"
           optionValue="value"
-          :placeholder="$t('Active Status')"
+          :placeholder="$t('expense_categories.status.label')"
           :showClear="true"
           @update:modelValue="(value) => emit('onFilterActiveStatus', value ?? 'all')"
           class="w-full"
@@ -400,7 +400,9 @@ import type { IExpenseCategoryEntity } from "~/types/entities/expense-category.e
 import type { PaginatedResponse } from "~/shared/entities/paginate.entity";
 import { sortType, Status } from "~/types/enum/paginate.enum";
 import type { IFindExpenseCategoryDto } from "~/types/dto/find-expense-category.dto";
+import {useI18n} from "vue-i18n";
 
+const { t } = useI18n();
 const search = ref("");
 // Matches backend `status` filter: 'active' | 'inactive' | 'all'
 const selectedActiveFilter = ref<'active' | 'inactive' | 'all' | null>(null);
@@ -435,9 +437,9 @@ const emit = defineEmits([
 const selection = ref<IExpenseCategoryEntity[]>(props.value);
 
 const activeFilterOptions = [
-  { label: "Active", value: 'active' },
-  { label: "Inactive", value: 'inactive' },
-  { label: "All", value: 'all' },
+  { label: t("expense_categories.status.active"), value: 'active' },
+  { label: t("expense_categories.status.inactive"), value: 'inactive' },
+  { label: t("expense_categories.status.all"), value: 'all' },
 ];
 
 const toggleSelection = (item: IExpenseCategoryEntity) => {

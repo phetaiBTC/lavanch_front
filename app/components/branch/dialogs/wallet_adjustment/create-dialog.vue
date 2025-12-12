@@ -8,39 +8,39 @@
   >
     <div class="flex flex-col gap-6">
       <div class="flex flex-col gap-2">
-        <label for="branch">{{ $t('branch') }} *</label>
+        <label for="branch">{{ $t('wallet_adjustments.dialog.create.branch') }} *</label>
         <Select
           id="branch"
           v-model="form.branch_id"
           :options="branches"
           optionLabel="name"
           optionValue="id"
-          :placeholder="$t('select') + ' ' + $t('branch')"
+          :placeholder="$t('wallet_adjustments.dialog.create.placeholder_branch')"
           class="w-full"
         />
       </div>
 <!-- Show receiver branch only for TRANSFER type -->
       <div v-if="form.adjustment_type === 'TRANSFER'" class="flex flex-col gap-2">
-        <label for="receiver_branch">{{ $t('to_branch') }} *</label>
+        <label for="receiver_branch">{{ $t('wallet_adjustments.dialog.create.to_branch') }} *</label>
         <Select
           id="receiver_branch"
           v-model="form.receiver_branch_id"
           :options="availableReceiverBranches"
           optionLabel="name"
           optionValue="id"
-          :placeholder="$t('select') + ' ' + $t('branch')"
+          :placeholder="$t('wallet_adjustments.dialog.create.placeholder_branch')"
           class="w-full"
         />
       </div>
       <div class="flex flex-col gap-2">
-        <label for="adjustment_type">{{ $t('type') }} *</label>
+        <label for="adjustment_type">{{ $t('wallet_adjustments.dialog.create.type_name') }} *</label>
         <Select
           id="adjustment_type"
           v-model="form.adjustment_type"
           :options="adjustmentTypes"
           optionLabel="label"
           optionValue="value"
-          :placeholder="$t('select') + ' ' + $t('type')"
+          :placeholder="$t('wallet_adjustments.dialog.create.placeholder_type')"
           class="w-full"
         />
       </div>
@@ -48,11 +48,11 @@
       
 
       <div class="flex flex-col gap-2">
-        <label for="amount">{{ $t('amount') }} *</label>
+        <label for="amount">{{ $t('wallet_adjustments.dialog.create.amount') }} *</label>
         <InputNumber
           id="amount"
           v-model="form.amount"
-          :placeholder="$t('amount')"
+          :placeholder="$t('wallet_adjustments.dialog.create.amount')"
           mode="currency"
           currency="LAK"
           locale="lo-LA"
@@ -61,11 +61,11 @@
       </div>
 
       <div class="flex flex-col gap-2">
-        <label for="description">{{ $t('description') }}</label>
+        <label for="description">{{ $t('wallet_adjustments.dialog.create.description') }}</label>
         <Textarea
           id="description"
           v-model="form.description"
-          :placeholder="$t('description')"
+          :placeholder="$t('wallet_adjustments.dialog.create.description') + '...'"
           rows="3"
           class="w-full"
         />
@@ -87,7 +87,8 @@
 import { ref, computed } from "vue";
 import type { IBranchEntity } from "~/types/entities/branch.entity";
 import { useToast } from "primevue/usetoast";
-
+import { useI18n } from "vue-i18n";
+const { t } = useI18n();
 const toast = useToast();
 
 interface Props {
@@ -99,11 +100,11 @@ const props = defineProps<Props>();
 const emit = defineEmits(["update:visible", "save"]);
 
 const adjustmentTypes = [
-  { label: "Deposit", value: "DEPOSIT" },
-  { label: "Withdraw", value: "WITHDRAW" },
-  { label: "Found", value: "FOUND" },
-  { label: "Lost", value: "LOST" },
-  { label: "Transfer", value: "TRANSFER" },
+  { label: t("wallet_adjustments.dialog.create.type.deposit"), value: "DEPOSIT" },
+  { label: t("wallet_adjustments.dialog.create.type.withdraw"), value: "WITHDRAW" },
+  { label: t("wallet_adjustments.dialog.create.type.found"), value: "FOUND" },
+  { label: t("wallet_adjustments.dialog.create.type.lost"), value: "LOST" },
+  { label: t("wallet_adjustments.dialog.create.type.transfer"), value: "TRANSFER" },
 ];
 
 const form = ref<{

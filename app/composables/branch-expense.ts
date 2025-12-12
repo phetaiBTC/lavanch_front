@@ -62,5 +62,14 @@ export const useBranchExpense = () => {
     }, setLoading);
   };
 
-  return { findAll, getSummary, findOne, create, approve, reject };
+  const getReceiptImages = async (id: number) => {
+    return await run(async () => {
+      const res = await useApi().get<{ id: number; receipt_images: string[] }>(
+        `/branch-expenses/${id}/receipt-images`
+      );
+      return res;
+    }, setLoading);
+  };
+
+  return { findAll, getSummary, findOne, create, approve, reject, getReceiptImages };
 };

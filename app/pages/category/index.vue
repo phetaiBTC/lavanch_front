@@ -24,8 +24,7 @@
                   <template #start>
                     <Button
                       :label="$t('add') + $t('new')"
-                      icon="pi pi-plus"
-                      severity="secondary"
+                      icon="pi pi-plus"                      
                       class="mr-2"
                       @click="is_manage()"
                     />
@@ -37,13 +36,7 @@
                     />
                   </template>
 
-                  <template #end>
-                    <Button
-                      label="Export"
-                      icon="pi pi-upload"
-                      severity="secondary"
-                    />
-                  </template>
+                 
                 </Toolbar>
 
                 <CategoryTable

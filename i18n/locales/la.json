@@ -11,6 +11,9 @@
   "signup": "ສ້າງບັນຊີ",
   "signin": "ເຂົ້າສູ່ລະບົບ",
   "save": "ບັນທຶກ",
+   "district": "ເມືອງ",
+  "province": "ແຂວງ",
+  "village": "ບ້ານ",
   "cancel": "ຍົກເລີກ",
   "edit": "ແກ້ໄຂ",
   "update": "ອັບເດດ",
@@ -80,8 +83,8 @@
   "notes":"ໝາຍເຫດ",
   "no_data":"ບໍ່ມີຂໍ້ມູນ",
   "clear_filters":"ລຶບຕົວກອງ",
-  "date_from":"ຈາກວັນທີ",
-  "date_to":"ຫາວັນທີ",
+  "start_date": "ຈາກວັນທີ",
+  "end_date": "ຫາວັນທີ",
   "date_range":"ຊ່ວງວັນທີ",
   "search_placeholder":"ຄົ້ນຫາດ້ວຍເລກທີ ຫຼື ຊື່ສາຂາ...",
   "view":"ເບິ່ງ",
@@ -92,6 +95,7 @@
       "expense_no": "ເລກທີລາຍຈ່າຍ",
       "category": "ປະເພດລາຍຈ່າຍ",
       "amount": "ຈຳນວນເງິນ",
+      "currency": "ປະເພດເງິນ",
       "expense_date": "ວັນທີລາຍຈ່າຍ",
       "description": "ລາຍລະອຽດ",
       "notes": "ໝາຍເຫດ"
@@ -121,12 +125,24 @@
       "no_categories": "ບໍ່ມີປະເພດລາຍຈ່າຍ",
       "drag_drop": "ລາກແລະວາງໄຟລ໌ທີ່ນີ້",
       "or_click": "ຫຼືຄລິກເພື່ອເລືອກ",
-      "uploading": "ກຳລັງອັບໂຫລດ..."
+      "uploading": "ກຳລັງອັບໂຫລດ...",
+      "no_receipt_images": "ບໍ່ມີຮູບໃບບິນ"
     },
     "actions": {
       "create_category": "ສ້າງປະເພດລາຍຈ່າຍ",
-      "choose_image": "ເລືອກຮູບພາບ"
+      "choose_image": "ເລືອກຮູບພາບ",
+      "choose_images": "ເລືອກຮູບພາບ"
+    },
+    "filters": {
+      "status": {
+        "label": "ກອງຕາມສະຖານະ",
+        "all": "ທັງໝົດ",
+        "pending": "ລໍຖ້າອະນຸມັດ",
+        "approved": "ອະນຸມັດແລ້ວ",
+        "rejected": "ປະຕິເສດແລ້ວ"
+      }
     }
+
   },
   "branches": {
     "branch": "ສາຂາ",
@@ -194,7 +210,10 @@
      "total_wallet_balance": "ຍອດກະເປົາເງິນທັງໝົດ",
      "active_branches": "ສາຂາທີ່ໃຊ້ງານ",
      "inactive_branches": "ສາຂາທີ່ປິດໃຊ້ງານ",
-     "total_branches": "ສາຂາທັງໝົດ"
+     "total_branches": "ສາຂາທັງໝົດ",
+     "active": "ກຳລັງໃຊ້ງານ",
+     "inactive": "ປິດການໃຊ້ງານ",
+     "total": "ທັງໝົດ"
     },
     "transaction_type": {
       "deposit": "ຝາກເງິນ",
@@ -208,8 +227,74 @@
       "transfer_in": "ໂອນເຂົ້າ",
       "transfer_out": "ໂອນອອກ"
     },
+    "reference_type": {
+      "wallet_adjustment": "ປັບປຸງ",
+      "expense": "ລາຍຈ່າຍ",
+      "sale": "ຂາຍ",
+      "deposit": "ຝາກເງິນ",
+      "withdraw": "ຖອນເງິນ",
+      "wallet_transfer": "ໂອນເງິນ",
+      "refund": "ຄືນເງິນ"
+    },
     "shifts": {
       "title": "ຈັດການເວລາ"
     }
-   }
+   },
+   "transaction_type": {
+      "deposit": "ຝາກເງິນ",
+      "withdraw": "ຖອນເງິນ",
+      "debit": "ຫັກ",
+      "sale": "ຂາຍ",
+      "expense": "ລາຍຈ່າຍ",
+      "adjustment": "ປັບປຸງ",
+      "found": "ພົບເງິນ",
+      "lost": "ສູນເສຍ",
+      "transfer_in": "ໂອນເຂົ້າ",
+      "transfer_out": "ໂອນອອກ"
+    }, "walletTransactions": {
+      "status": {
+        "pending": "ລໍຖ້າອະນຸມັດ",
+        "completed": "ສຳເລັດ",
+        "cancelled": "ຍົກເລີກ"
+      }
+    },
+    "expense_categories": {
+      "status": {
+        "label": "ສະຖານະ",
+        "active": "ໃຊ້ງານ",
+        "inactive": "ປິດໃຊ້ງານ",
+        "all": "ທັງໝົດ"
+      }
+    },
+    "wallet_adjustments": {
+      "status": {
+        "pending": "ລໍຖ້າອະນຸມັດ",
+        "approved": "ອະນຸມັດແລ້ວ",
+        "rejected": "ປະຕິເສດ"
+      },
+      "adjustment_type": {
+        "add": "ເພີ່ມ",
+        "deduct": "ຫຼຸດ"
+      },
+       "dialog": {
+        "create":{
+          "branch": "ສາຂາ",
+          "type_name": "ປະເພດ",
+          "placeholder_branch": "ເລືອກສາຂາ",
+          "placeholder_type": "ເລືອກປະເພດ",
+          "to_branch": "ໂອນໄປທີ່ສາຂາ",
+          "adjustment_type": "ປະເພດ",
+          "amount": "ຈຳນວນ",
+          "description": "ລາຍລະອຽດ",
+           "type": {
+       "deposit": "ຝາກເງິນ",
+       "withdraw": "ຖອນເງິນ",
+       "found": "ພົບເງິນ",
+        "lost": "ສູນເສຍ",
+        "transfer": "ໂອນເງິນອອກ"
+      
+      }
+        }
+      }
+    }
 }

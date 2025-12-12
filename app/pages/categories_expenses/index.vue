@@ -17,7 +17,7 @@
               <Button
                 :label="$t('add') + ' ' + $t('branches.sidebar.categories_expenses_label')"
                 icon="pi pi-plus"
-                severity="secondary"
+                
                 class="mr-2"
                 @click="openCreateDialog"
               />
@@ -29,13 +29,7 @@
                 @click="handleDeleteMultiple"
               />
             </template>
-            <template #end>
-              <Button
-                label="Export"
-                icon="pi pi-upload"
-                severity="secondary"
-              />
-            </template>
+           
           </Toolbar>
 
             <BranchExpenseCategoryTable

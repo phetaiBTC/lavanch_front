@@ -32,7 +32,12 @@
   "is_verified": "Is verified",
   "people": "People",
   "manage": "Manage",
+  "district": "district",
+  "province": "province",
+  "village": "village",
   "search": "Search",
+  "start_date": "Start date",
+  "end_date": "End date",
   "deletedAt": "Deleted at",
   "inactive": "Inactive",
   "active": "Active",
@@ -80,8 +85,7 @@
   "notes":"Notes",
   "no_data":"No data available",
   "clear_filters":"Clear Filters",
-  "date_from":"From Date",
-  "date_to":"To Date",
+  
   "date_range":"Date Range",
   "search_placeholder":"Search by expense no. or branch name...",
   "view":"View",
@@ -92,6 +96,7 @@
       "expense_no": "Expense No.",
       "category": "Category",
       "amount": "Amount",
+      "currency": "Currency",
       "expense_date": "Expense Date",
       "description": "Description",
       "notes": "Notes"
@@ -120,11 +125,13 @@
       "no_categories": "No categories available",
       "drag_drop": "Drag and drop files here",
       "or_click": "or click to select",
-      "uploading": "Uploading..."
+      "uploading": "Uploading...",
+      "no_receipt_images": "No receipt images available"
     },
     "actions": {
       "create_category": "Create Category",
-      "choose_image": "Choose Image"
+      "choose_image": "Choose Image",
+      "choose_images": "Choose Images"
     }
   },
   "branches": {
@@ -188,13 +195,17 @@
      "total_wallet_balance": "Total Wallet Balance",
      "active_branches": "Active Branches",
      "inactive_branches": "Inactive Branches",
-     "total_branches": "Total Branches"
+     "total_branches": "Total Branches",
+     "active": "active",
+     "inactive": "inactive",
+     "total": "total"
     },
     "adjustment_type": {
      
       "add" :"Add",
       "deduct":"Deduct"
     },
+    
     "transaction_type": {
       "deposit": "Deposit",
       "withdraw": "Withdrawal",
@@ -207,8 +218,78 @@
       "transfer_in": "Transfer In",
       "transfer_out": "Transfer Out"
     },
+    "reference_type": {
+      "wallet_adjustment": "Adjustment",
+      "expense": "Expense",
+      "sale": "Sale",
+      "deposit": "Deposit",
+      "withdraw": "Withdrawal",
+      "wallet_transfer": "Transfer",
+      "refund": "Refund"
+    },
     "shifts": {
       "title": "Shifts Management"
     }
-   }
+   },
+   "transaction_type": {
+      "deposit": "Deposit",
+      "withdraw": "Withdrawal",
+      "credit": "Credit",
+      "debit": "Debit",
+      "found": "Found",
+      "sale": "Sale",
+      "lost": "Lost",
+      "expense": "Expense",
+      "adjustment": "Adjustment",
+      "transfer_in": "Transfer In",
+      "transfer_out": "Transfer Out"
+    },
+    "walletTransactions": {
+      "status": {
+        "pending": "Pending",
+        "completed": "Completed",
+        "cancelled": "Cancelled"
+      }
+    },
+    "expense_categories": {
+      "status": {
+        "label": "Status",
+        "active": "Active",
+        "inactive": "Inactive",
+        "all": "All"
+      }
+    },
+    "wallet_adjustments": {
+      "status": {
+        "pending": "Pending",
+        "approved": "Approved",
+        "rejected": "Rejected"
+      },
+      "adjustment_type": {
+        "add": "Add",
+        "deduct": "Deduct"
+      },
+      "dialog": {
+        "create":{
+          "branch": "branch",
+          "type_name": "type",
+          "placeholder_branch": "choose branch",
+          "placeholder_type": "choose type",
+          "to_branch": "transfer to branch",
+          "adjustment_type": "type",
+          "amount": "amount",
+          "description": "description",
+           "type": {
+       "deposit": "Deposit",
+       "withdraw": "Withdraw",
+       "found": "Found Money",
+        "lost": "Lost Money",
+        "transfer": "Transfer"
+      
+      }
+        }
+      }
+     
+    }
+
 }

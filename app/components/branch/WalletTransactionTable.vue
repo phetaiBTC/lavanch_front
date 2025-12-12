@@ -13,7 +13,30 @@
     <template #header>
       <div class="flex flex-wrap gap-2 items-center justify-between">
         <h4 class="m-0">{{ $t("manage") + " " + $t(title) }}</h4>
+         
+ <div>
+   <DatePicker
+    v-model="dateFrom"
+    :placeholder="$t('start_date')"
+    dateFormat="yy-mm-dd"
+    :showClear="true"
+    @update:modelValue="handleDateFromChange"
+    class="w-44 rounded-r-none border-r-0"
+  />
+ </div>
+  
+
+
+ <DatePicker
+      v-model="dateTo"
+      :placeholder="$t('end_date')"
+      dateFormat="yy-mm-dd"
+      :showClear="true"
+      @update:modelValue="handleDateToChange"
+      class="w-44 rounded-l-none"
+    />
         <div class="flex flex-wrap gap-2">
+            
           <Select
             v-model="selectedBranch"
             :options="branches"
@@ -44,24 +67,7 @@
             @update:modelValue="(value) => emit('onFilterStatus', value)"
             class="w-40"
           />
-         <div class="flex gap-0 items-center">
-  <DatePicker
-    v-model="dateFrom"
-    :placeholder="$t('Date From')"
-    dateFormat="yy-mm-dd"
-    :showClear="true"
-    @update:modelValue="handleDateFromChange"
-    class="w-44 rounded-r-none border-r-0"
-  />
-  <DatePicker
-    v-model="dateTo"
-    :placeholder="$t('Date To')"
-    dateFormat="yy-mm-dd"
-    :showClear="true"
-    @update:modelValue="handleDateToChange"
-    class="w-44 rounded-l-none"
-  />
-</div>
+     
           <IconField>
             <InputIcon>
               <i class="pi pi-search" />
@@ -138,7 +144,10 @@
       sortable
     >
       <template #body="{ data }">
-        {{ data.reference_type || "-" }}
+        <span v-if="data.reference_type">
+          {{ $t(`branches.reference_type.${data.reference_type.toLowerCase()}`) }}
+        </span>
+        <span v-else>-</span>
       </template>
     </Column>
     <Column
@@ -214,7 +223,9 @@ import type { PaginatedResponse } from "~/shared/entities/paginate.entity";
 import type { IFindWalletTransactionDto } from "~/types/dto/find-wallet-transaction.dto";
 import { TransactionTypeFilter, TransactionStatusFilter } from "~/types/dto/find-wallet-transaction.dto";
 import type { IBranchEntity } from "~/types/entities/branch.entity";
+import { useI18n } from "vue-i18n";
 
+const { t } = useI18n();
 const search = ref("");
 const selectedBranch = ref<number | null>(null);
 const selectedTransactionType = ref<TransactionTypeFilter | null>(null);
@@ -246,20 +257,20 @@ const emit = defineEmits([
 const selection = ref<IWalletTransactionEntity[]>(props.value);
 
 const transactionTypeOptions = [
-  { label: "Deposit", value: TransactionTypeFilter.DEPOSIT },
-  { label: "Withdraw", value: TransactionTypeFilter.WITHDRAW },
-  { label: "Transfer In", value: TransactionTypeFilter.TRANSFER_IN },
-  { label: "Transfer Out", value: TransactionTypeFilter.TRANSFER_OUT },
-  { label: "Adjustment", value: TransactionTypeFilter.ADJUSTMENT },
-  { label: "Sale", value: TransactionTypeFilter.SALE },
-  { label: "Expense", value: TransactionTypeFilter.EXPENSE },
-  { label: "Refund", value: TransactionTypeFilter.REFUND },
+  { label: t("transaction_type.deposit"), value: TransactionTypeFilter.DEPOSIT },
+  { label: t("transaction_type.withdraw"), value: TransactionTypeFilter.WITHDRAW },
+  { label: t("transaction_type.transfer_in"), value: TransactionTypeFilter.TRANSFER_IN },
+  { label: t("transaction_type.transfer_out"), value: TransactionTypeFilter.TRANSFER_OUT },
+  { label: t("transaction_type.adjustment"), value: TransactionTypeFilter.ADJUSTMENT },
+  { label: t("transaction_type.sale"), value: TransactionTypeFilter.SALE },
+  { label: t("transaction_type.expense"), value: TransactionTypeFilter.EXPENSE },
+  { label: t("transaction_type.found"), value: TransactionTypeFilter.REFUND },
 ];
 
 const statusOptions = [
-  { label: "Pending", value: TransactionStatusFilter.PENDING },
-  { label: "Completed", value: TransactionStatusFilter.COMPLETED },
-  { label: "Cancelled", value: TransactionStatusFilter.CANCELLED },
+  { label: t("walletTransactions.status.pending"), value: TransactionStatusFilter.PENDING },
+  { label: t("walletTransactions.status.completed"), value: TransactionStatusFilter.COMPLETED },
+  { label: t("walletTransactions.status.cancelled"), value: TransactionStatusFilter.CANCELLED },
 ];
 
 const formatDate = (date: Date | Date[] | (Date | null)[] | null | undefined): string | null => {
