@@ -19,7 +19,7 @@
 <script setup lang="ts">
 const props = defineProps<{
   visible: boolean;
-  id: number;
+  id: number[];
 }>();
 const emit = defineEmits(["update:visible"]);
 const value = ref("Soft Delete");

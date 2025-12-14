@@ -13,7 +13,6 @@
     :rowsPerPageOptions="[5, 10, 25]"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
   >
-
     <template #header>
       <div class="flex flex-wrap gap-2 items-center justify-between">
         <h4>{{ $t("manage") + " " + $t(title) }}</h4>
@@ -130,8 +129,8 @@ import { type PaginatedResponse } from "../../shared/entities/paginate.entity";
 import { sortType, Status } from "~/types/enum/paginate.enum";
 import type { IPaginateDto } from "~/types/dto/paginate.dto";
 const search = ref("");
-const deteleData = ref({
-  id: 0,
+const deteleData = ref<{ id: number[]; visible: boolean }>({
+  id: [],
   visible: false,
 });
 const props = defineProps<{
@@ -157,7 +156,7 @@ const emit = defineEmits([
 ]);
 const selection = ref<IUserEntity[]>(props.value);
 const onDelete = (id: number) => {
-  deteleData.value.id = id;
+  deteleData.value.id = [id];
   deteleData.value.visible = true;
 };
 watch(selection, (val) => {
