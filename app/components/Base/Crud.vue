@@ -1,4 +1,9 @@
 <template>
+  <BaseTool
+    @add="navigateTo('/role/from')"
+    @delete-all="onDeleteAll()"
+    :is_active="query.is_active"
+  ></BaseTool>
   <DataTable
     ref="dt"
     v-model:selection="selection"
@@ -94,7 +99,10 @@
     </Column>
     <Column :exportable="false" frozen alignFrozen="right">
       <template #body="slotProps">
-        <div class="flex flex-row gap-2">
+        <div
+          class="flex flex-row gap-2"
+          v-show="query.is_active === Status.ACTIVE"
+        >
           <Button
             icon="pi pi-pencil"
             outlined
@@ -107,13 +115,26 @@
             outlined
             rounded
             severity="danger"
-            @click="onDelete(slotProps.data.id)"
+            @click="onDelete([slotProps.data.id])"
           />
         </div>
+        <Button
+          v-show="query.is_active == Status.INACTIVE"
+          icon="pi pi-replay"
+          outlined
+          rounded
+          severity="primary"
+          @click="onDelete([slotProps.data.id])"
+        />
       </template>
     </Column>
   </DataTable>
-  <BaseDelete v-model:visible="deteleData.visible" :id="deteleData.id" />
+  <BaseDelete
+    v-model:visible="deteleData.visible"
+    :id="deteleData.id"
+    :endpoint="endpoint"
+    @fetch-data="emit('fetchData')"
+  />
   <Paginator
     :first="(query.page! - 1) * query.limit!"
     :rows="query.limit"
@@ -141,6 +162,7 @@ const props = defineProps<{
   sort?: sortType;
   checked?: Status;
   query: IPaginateDto;
+  endpoint: string;
 }>();
 
 const emit = defineEmits([
@@ -152,11 +174,16 @@ const emit = defineEmits([
   "onChangePage",
   "onSearch",
   "onEdit",
-  "onDelete",
+  // "onDelete",
+  "fetchData",
 ]);
-const selection = ref<IUserEntity[]>(props.value);
-const onDelete = (id: number) => {
-  deteleData.value.id = [id];
+const selection = ref(props.value);
+const onDelete = (id: number[]) => {
+  deteleData.value.id = id;
+  deteleData.value.visible = true;
+};
+const onDeleteAll = () => {
+  deteleData.value.id = selection.value.map((item) => item.id);
   deteleData.value.visible = true;
 };
 watch(selection, (val) => {

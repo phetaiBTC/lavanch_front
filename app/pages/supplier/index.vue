@@ -10,8 +10,8 @@
     </template>
     <div class="col-span-12">
       <div class="card">
-        <BaseTool @add="navigateTo('/role/from')" @delete-all=""></BaseTool>
         <BaseCrud
+          endpoint="suppliers"
           title="role"
           :loading="store.loading"
           :data="store.supplierList"
@@ -24,7 +24,7 @@
           @on-change-active="onQuery.checked($event.is_active)"
           @on-change-page="onQuery.page($event.page, $event.limit)"
           @on-edit="navigateTo(`/role/from/${$event}`)"
-          @on-delete=""
+          @fetch-data="findAll(query)"
         >
           <template #columns>
             <Column
@@ -116,9 +116,11 @@ watch(
   () => ({ ...query }),
   () => router.replace({ query: { ...query } })
 );
-
 useAsyncData("supplier", async () => {
-  await findProvince();
-  return await findAll({ ...query });
+  const [provinceList, supplierList] = await Promise.all([
+    findProvince(),
+    findAll({ ...query }),
+  ]);
+  return { provinceList, supplierList };
 });
 </script>
