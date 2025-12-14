@@ -117,7 +117,7 @@ watch(
   () => router.replace({ query: { ...query } })
 );
 
-useAsyncData("role", async () => {
+useAsyncData("supplier", async () => {
   await findProvince();
   return await findAll({ ...query });
 });
