@@ -2,10 +2,10 @@
   <BaseCrudLayout>
     <template #stats>
       <UiStats
-        title="roles"
+        title="suppliers"
         :count="store.supplierList.pagination.count"
-        :type="$t('roles')"
-        icon="pi pi-shield text-xl"
+        :type="$t('suppliers')"
+        icon="pi pi-user-plus text-xl"
       />
     </template>
     <div class="col-span-12">
@@ -28,29 +28,11 @@
         >
           <template #columns>
             <Column
+              v-for="item in table"
               style="min-width: 150px"
-              field="name"
-              frozen
-              :header="$t('name')"
-              :sortable="true"
-            />
-            <Column
-              style="min-width: 150px"
-              field="email"
-              frozen
-              :header="$t('email')"
-              :sortable="true"
-            />
-            <Column
-              style="min-width: 150px"
-              field="phone"
-              :header="$t('phone')"
-              :sortable="true"
-            />
-            <Column
-              style="min-width: 150px"
-              field="contact_person"
-              :header="$t('contact_person')"
+              :field="item.field"
+              :frozen="item.frozen"
+              :header="$t(item.field)"
               :sortable="true"
             />
             <Column
@@ -99,6 +81,12 @@ const route = useRoute();
 const router = useRouter();
 const store = useSupplierStore();
 const { findAll } = useSupplier();
+const table = ref<{ field: string; frozen?: boolean }[]>([
+  { field: "name", frozen: true },
+  { field: "email" },
+  { field: "phone" },
+  { field: "contact_person" },
+]);
 const selectedUsers = ref([]);
 const query = reactive<IPaginateDto>({
   page: Number(route.query.page ?? 1),

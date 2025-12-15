@@ -99,16 +99,22 @@
     </Column>
     <Column :exportable="false" frozen alignFrozen="right">
       <template #body="slotProps">
-        <div
-          class="flex flex-row gap-2"
-          v-show="query.is_active === Status.ACTIVE"
-        >
+        <div class="flex flex-row gap-2">
           <Button
+            v-show="query.is_active === Status.ACTIVE"
             icon="pi pi-pencil"
             outlined
             rounded
             class="mr-2"
             @click="emit('onEdit', slotProps.data.id)"
+          />
+          <Button
+            v-show="query.is_active == Status.INACTIVE"
+            icon="pi pi-replay"
+            outlined
+            rounded
+            severity="primary"
+            @click="onDelete([slotProps.data.id])"
           />
           <Button
             icon="pi pi-trash"
@@ -118,14 +124,6 @@
             @click="onDelete([slotProps.data.id])"
           />
         </div>
-        <Button
-          v-show="query.is_active == Status.INACTIVE"
-          icon="pi pi-replay"
-          outlined
-          rounded
-          severity="primary"
-          @click="onDelete([slotProps.data.id])"
-        />
       </template>
     </Column>
   </DataTable>
