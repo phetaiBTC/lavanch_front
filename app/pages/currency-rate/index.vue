@@ -13,18 +13,19 @@
         <BaseTool @add="navigateTo('/role/from')" @delete-all=""></BaseTool>
         <BaseCrud
           title="currencyRate"
+          v-model:value="selectedUsers"
           :loading="store.loading"
           :data="store.currencyRateList"
           :sort="query.sort"
           :checked="query.is_active"
-          v-model:value="selectedUsers"
           :query="query"
+          endpoint="currencyrates"
           @on-search="onQuery.search($event)"
           @on-change-sort="onQuery.sort($event.sort)"
           @on-change-active="onQuery.checked($event.is_active)"
           @on-change-page="onQuery.page($event.page, $event.limit)"
           @on-edit="navigateTo(`/role/from/${$event}`)"
-          @on-delete=""
+
         >
           <template #columns>
             <Column
@@ -91,5 +92,5 @@ watch(
   () => router.replace({ query: { ...query } })
 );
 
-useAsyncData("currency", () => findAll({ ...query }));
+useAsyncData("currency-rate", () => findAll({ ...query }));
 </script>

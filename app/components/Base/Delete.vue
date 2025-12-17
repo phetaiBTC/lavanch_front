@@ -48,12 +48,12 @@ const setLoading = (value: boolean) => {
 };
 const handleDelete = async () => {
   await run(async () => {
-    await Promise.all(
-      props.id.map(async (id) => {
-        return await useApi().delete<{ message: string }>(
-          `/${props.endpoint}/${value.value}/${id}`
-        );
-      })
+    await useApi().delete<{ message: string }>(
+      `/${props.endpoint}/${value.value}`,{
+        body: {
+          ids: props.id
+        }
+      }
     );
     toast.add({
       severity: "success",

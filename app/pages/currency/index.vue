@@ -19,6 +19,7 @@
           :checked="query.is_active"
           v-model:value="selectedUsers"
           :query="query"
+          endpoint="currencies"
           @on-search="onQuery.search($event)"
           @on-change-sort="onQuery.sort($event.sort)"
           @on-change-active="onQuery.checked($event.is_active)"
