@@ -223,6 +223,7 @@
       "expense": "Expense",
       "sale": "Sale",
       "deposit": "Deposit",
+      "adjustment": "Adjustment",
       "withdraw": "Withdrawal",
       "wallet_transfer": "Transfer",
       "refund": "Refund"

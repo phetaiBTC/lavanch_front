@@ -196,14 +196,14 @@
     />
     <Column :exportable="false" frozen alignFrozen="right">
       <template #body="slotProps">
-        <div class="flex flex-row gap-2">
-          <Button
+        <!-- <div class="flex flex-row gap-2"> -->
+          <!-- <Button
             icon="pi pi-eye"
             outlined
             rounded
             @click="emit('onView', slotProps.data)"
           />
-        </div>
+        </div> -->
       </template>
     </Column>
   </DataTable>

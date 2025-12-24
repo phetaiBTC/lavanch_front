@@ -150,12 +150,12 @@
             severity="danger"
             @click="emit('onReject', slotProps.data)"
           />
-          <Button
+          <!-- <Button
             icon="pi pi-eye"
             outlined
             rounded
             @click="emit('onView', slotProps.data)"
-          />
+          /> -->
         </div>
       </template>
     </Column>
