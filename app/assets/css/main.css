@@ -1,0 +1,34 @@
+@import "tailwindcss";
+@import "tailwindcss-primeui";
+
+@font-face {
+  font-family: "Flao";
+  src: url("/fonts/NotoSansLao-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "FEn";
+  src: url("/fonts/MadimiOne-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+* {
+  font-family: "FEn", "Flao", sans-serif;
+}
+
+.pi {
+  font-family: "PrimeIcons" !important; /* บังคับให้ PrimeIcons ใช้ฟอนต์ของมัน */
+}
+
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
