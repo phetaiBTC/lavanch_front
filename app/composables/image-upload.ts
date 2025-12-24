@@ -20,9 +20,60 @@ export const useImageUpload = () => {
       const res = await useApi().post<IImageEntity[]>("/files/upload-multi", formData);
        console.log('Uploaded images response:', res);
       return res || [];
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to upload images:', error);
-      throw error;
+      
+      // Re-throw with enhanced error information
+      if (error?.response?.data) {
+        const errorData = error.response.data;
+        
+        // Check if it's an invalid file type error
+        if (errorData.error === 'INVALID_FILE_TYPE' && errorData.details) {
+          throw {
+            type: 'INVALID_FILE_TYPE',
+            message: errorData.message,
+            fileName: errorData.details.fileName,
+            fileType: errorData.details.fileType,
+            allowedTypes: errorData.details.allowedTypes,
+            allowedMimeTypes: errorData.details.allowedMimeTypes,
+          };
+        }
+        
+        // Check if it's an image processing error
+        if (errorData.error === 'IMAGE_PROCESSING_ERROR' && errorData.details) {
+          throw {
+            type: 'IMAGE_PROCESSING_ERROR',
+            message: errorData.message,
+            fileName: errorData.details.fileName,
+            reason: errorData.details.reason,
+          };
+        }
+        
+        // Check if it's a file size error
+        if (errorData.error === 'FILE_TOO_LARGE' && errorData.details) {
+          throw {
+            type: 'FILE_TOO_LARGE',
+            message: errorData.message,
+            fileName: errorData.details.fileName,
+            fileSize: errorData.details.fileSize,
+            maxSize: errorData.details.maxSize,
+            fileSizeBytes: errorData.details.fileSizeBytes,
+            maxSizeBytes: errorData.details.maxSizeBytes,
+          };
+        }
+        
+        // Handle other API errors
+        throw {
+          type: 'UPLOAD_ERROR',
+          message: errorData.message || 'Failed to upload image',
+        };
+      }
+      
+      // Handle network or unknown errors
+      throw {
+        type: 'UNKNOWN_ERROR',
+        message: 'Failed to upload image. Please check your connection and try again.',
+      };
     } finally {
       loading.value = false;
     }

@@ -184,7 +184,7 @@
         <div class="flex flex-col gap-4">
           <FileUpload
             mode="basic"
-            accept="image/*"
+            accept="image/jpeg,image/jpg,image/png"
             :maxFileSize="5000000"
             :multiple="true"
             @select="handleFileSelect"
@@ -192,6 +192,10 @@
             :chooseLabel="$t('branchExpenses.actions.choose_images')"
             class="w-full"
           />
+          
+          <p class="text-xs text-gray-500 mt-1">
+            Accepted: JPEG, PNG, JPG only (Max: 5MB each)
+          </p>
           
           <div v-if="uploading" class="flex items-center gap-2">
             <ProgressSpinner style="width: 20px; height: 20px" strokeWidth="4" />
@@ -207,26 +211,32 @@
   <div
     v-for="(preview, index) in imagePreviews"
     :key="index"
-    class="relative shrink-0 cursor-pointer"
+    class="relative shrink-0 cursor-pointer group"
     :class="imagePreviews.length > 1 ? 'w-40 ' : 'w-full h-auto'"
     @click="openLightbox(index)"
   >
               <img v-if="imagePreviews.length > 1" 
                 :src="preview" 
                 :alt="`Receipt Preview ${index + 1}`" 
-                class="w-full h-78 rounded  object-cover hover:opacity-30 transition-opacity"
+                class="w-full h-78 rounded object-cover transition-all duration-300 group-hover:brightness-50"
               />
               <img v-if="imagePreviews.length <= 1" 
                 :src="preview" 
                 :alt="`Receipt Preview ${index + 1}`" 
-                class="w-full h-130 rounded  object-cover hover:opacity-30 transition-opacity"
+                class="w-full h-130 rounded object-cover transition-all duration-300 group-hover:brightness-50"
               />
+              
+              <!-- Eye icon overlay on hover -->
+              <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                <i class="pi pi-eye text-white text-4xl drop-shadow-lg"></i>
+              </div>
+              
               <Button
                 icon="pi pi-times"
                 severity="danger"
                 size="small"
                 rounded
-                class="!absolute !top-2 !right-2 !p-2 shadow-md bg-white/80 hover:bg-white"
+                class="!absolute !top-2 !right-2 !p-2 shadow-md bg-white/80 hover:bg-white z-10"
                 @click.stop="removeImage(index)"
               />
             </div>
@@ -585,6 +595,36 @@ const handleFileSelect = async (event: { files: File[] }) => {
   const files = event.files;
   if (!files || files.length === 0) return;
 
+  // Client-side validation
+  const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+  const maxSize = 5 * 1024 * 1024; // 5MB
+
+  for (const file of files) {
+    // Validate file type
+    if (!allowedTypes.includes(file.type)) {
+      toast.add({
+        severity: "error",
+        summary: "Invalid File Type",
+        detail: `File: ${file.name}\nFile type: ${file.type}\nAccepted types: JPEG, PNG, JPG only`,
+        life: 6000,
+      });
+      return;
+    }
+
+    // Validate file size
+    if (file.size > maxSize) {
+      const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+      const maxSizeMB = (maxSize / (1024 * 1024)).toFixed(2);
+      toast.add({
+        severity: "error",
+        summary: "File Too Large",
+        detail: `File: ${file.name}\nFile size: ${fileSizeMB}MB\nMaximum allowed: ${maxSizeMB}MB`,
+        life: 6000,
+      });
+      return;
+    }
+  }
+
   try {
     uploading.value = true;
     
@@ -598,17 +638,65 @@ const handleFileSelect = async (event: { files: File[] }) => {
       reader.readAsDataURL(file);
       
       // Upload image
-      const uploadedImage = await uploadImage(file);
-      console.log('Uploaded image:', uploadedImage);
-      
-      // Handle the response - it should be a string URL
-      const imageUrl = typeof uploadedImage === 'string' ? uploadedImage : uploadedImage;
-      
-      // Add to array (stored as comma-separated string for now)
-      if (form.value.receipt_image) {
-        form.value.receipt_image += ',' + imageUrl;
-      } else {
-        form.value.receipt_image = imageUrl;
+      try {
+        const uploadedImage = await uploadImage(file);
+        console.log('Uploaded image:', uploadedImage);
+        
+        // Handle the response - it should be a string URL
+        const imageUrl = typeof uploadedImage === 'string' ? uploadedImage : uploadedImage;
+        
+        // Add to array (stored as comma-separated string for now)
+        if (form.value.receipt_image) {
+          form.value.receipt_image += ',' + imageUrl;
+        } else {
+          form.value.receipt_image = imageUrl;
+        }
+      } catch (uploadError: any) {
+        // Remove the preview that was just added since upload failed
+        if (imagePreviews.value.length > 0) {
+          imagePreviews.value.pop();
+        }
+        
+        // Handle specific error types
+        if (uploadError.type === 'INVALID_FILE_TYPE') {
+          toast.add({
+            severity: "error",
+            summary: "Invalid File Type",
+            detail: `Image upload failed.\nFile: ${uploadError.fileName}\nFile type: ${uploadError.fileType}\nAccepted types: ${uploadError.allowedTypes}`,
+            life: 6000,
+          });
+        } else if (uploadError.type === 'IMAGE_PROCESSING_ERROR') {
+          toast.add({
+            severity: "error",
+            summary: "Image Processing Failed",
+            detail: `File: ${uploadError.fileName}\n${uploadError.reason}`,
+            life: 6000,
+          });
+        } else if (uploadError.type === 'FILE_TOO_LARGE') {
+          toast.add({
+            severity: "error",
+            summary: "File Too Large",
+            detail: `Image upload failed.\nFile: ${uploadError.fileName}\nFile size: ${uploadError.fileSize}\nMaximum allowed: ${uploadError.maxSize}`,
+            life: 6000,
+          });
+        } else if (uploadError.type === 'UPLOAD_ERROR') {
+          toast.add({
+            severity: "error",
+            summary: "Upload Failed",
+            detail: uploadError.message || "Failed to upload image. Please try again.",
+            life: 4000,
+          });
+        } else {
+          toast.add({
+            severity: "error",
+            summary: "Error",
+            detail: uploadError.message || "Failed to upload image. Please check your connection and try again.",
+            life: 4000,
+          });
+        }
+        
+        // Don't continue with other files if one fails
+        throw uploadError;
       }
     }
     
@@ -620,12 +708,7 @@ const handleFileSelect = async (event: { files: File[] }) => {
     });
   } catch (error) {
     console.error("Failed to upload images:", error);
-    toast.add({
-      severity: "error",
-      summary: "Error",
-      detail: "Failed to upload images. Please try again.",
-      life: 3000,
-    });
+    // Error already handled in the inner try-catch
   } finally {
     uploading.value = false;
   }
