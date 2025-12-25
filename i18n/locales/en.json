@@ -44,9 +44,10 @@
   "all": "All",
   "activate": "Activate",
   "deactivate": "Deactivate",
-  "status":"Status",
+  "status": "Status",
   "is_required": "is required",
   "confirm_password": "Confirm password",
+<<<<<<< HEAD
   "forgot_password":"Forgot password",
   "reset_password":"Reset password",
   "verify":"Verify",
@@ -91,6 +92,53 @@
   "view":"View",
   "approve":"Approve",
   "reject":"Reject",
+=======
+  "forgot_password": "Forgot password",
+  "reset_password": "Reset password",
+  "verify": "Verify",
+  "sendVerify": "Send verify",
+  "send": "Send",
+  "confirm": "Confirm",
+  "retry": "Retry",
+  "confirm_delete": "Are you sure you want to delete?",
+  "delete_message": "Are you sure you want to delete {name}?",
+  "delete_multiple_message": "Are you sure you want to delete {count} selected branches?",
+  "selected_items": "Selected items",
+  "permissions": "Permissions",
+  "permission": "Permission",
+  "changePassword": "Change password",
+  "product": "Product",
+  "products": "Products",
+  "units": "Units",
+  "items": "Items",
+  "categories": "Categories",
+  "category": "Category",
+  "points": "Points",
+  "point": "Point",
+  "customers": "Customers",
+  "customer": "Customer",
+  "Dashboard": "Dashboard",
+  "new": "New",
+  "add": "Add",
+  "home": "Home",
+  "error": "Error",
+  "invalid credentials": "Invalid credentials",
+  "success": "Success",
+  "variants": "Variants",
+  "log": "Log",
+  "card": "Card",
+  "select": "Select",
+  "notes": "Notes",
+  "no_data": "No data available",
+  "clear_filters": "Clear Filters",
+  "date_from": "From Date",
+  "date_to": "To Date",
+  "date_range": "Date Range",
+  "search_placeholder": "Search by expense no. or branch name...",
+  "view": "View",
+  "approve": "Approve",
+  "reject": "Reject",
+>>>>>>> 5bca1a365c315987f448575007a227808d33c7ed
   "branchExpenses": {
     "fields": {
       "expense_no": "Expense No.",
@@ -192,6 +240,7 @@
       "completed": "Completed"
     },
     "summary": {
+<<<<<<< HEAD
      "total_wallet_balance": "Total Wallet Balance",
      "active_branches": "Active Branches",
      "inactive_branches": "Inactive Branches",
@@ -199,11 +248,16 @@
      "active": "active",
      "inactive": "inactive",
      "total": "total"
+=======
+      "total_wallet_balance": "Total Wallet Balance",
+      "active_branches": "Active Branches",
+      "inactive_branches": "Inactive Branches",
+      "total_branches": "Total Branches"
+>>>>>>> 5bca1a365c315987f448575007a227808d33c7ed
     },
     "adjustment_type": {
-     
-      "add" :"Add",
-      "deduct":"Deduct"
+      "add": "Add",
+      "deduct": "Deduct"
     },
     
     "transaction_type": {
@@ -231,6 +285,7 @@
     "shifts": {
       "title": "Shifts Management"
     }
+<<<<<<< HEAD
    },
    "transaction_type": {
       "deposit": "Deposit",
@@ -292,5 +347,22 @@
       }
      
     }
+=======
+  },
+  "currencies": "Currencies",
+  "currency": "Currency",
+  "currencyRate": "Currency Rate",
+  "from_currency": "From Currency",
+  "to_currency": "To Currency",
+  "rate": "Rate",
+  "rate_date": "Rate Date",
+  "phone": "Phone",
+  "is_active": "Active",
+  "address": "Address",
+  "contact_person": "Contact Person",
+  "procurement": "Procurement",
+  "suppliers": "Suppliers",
+  "supplier": "Supplier"
+>>>>>>> 5bca1a365c315987f448575007a227808d33c7ed
 
 }

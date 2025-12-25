@@ -8,14 +8,13 @@ export const useUser = () => {
   const store = useUserStore();
   const toast = useToast();
 
-  const findAll = async (query: IPaginateDto) => {
+  const findAll = async (query: IPaginateDto):Promise<void> => {
     try {
       store.setLoading(true);
       const res = await useApi().get<PaginatedResponse<IUserEntity>>("/user", {
         query,
       });
       store.setUserList(res);
-      return res;
     } catch (err: any) {
       toast.add({
         severity: "error",

@@ -2,49 +2,62 @@
   <BaseCrudLayout>
     <template #stats>
       <UiStats
-        title="roles"
-        :count="store.roleList.pagination.count"
-        :type="$t('roles')"
-        icon="pi pi-shield text-xl"
+        title="currencyRate"
+        :count="store.currencyRateList.pagination.count"
+        :type="$t('currencyRate')"
+        icon="pi pi-fw pi-money-bill text-xl"
       />
     </template>
     <div class="col-span-12">
       <div class="card">
         <BaseTool @add="navigateTo('/role/from')" @delete-all=""></BaseTool>
         <BaseCrud
-          title="role"
+          title="currencyRate"
+          v-model:value="selectedUsers"
           :loading="store.loading"
-          :data="store.roleList"
+          :data="store.currencyRateList"
           :sort="query.sort"
           :checked="query.is_active"
-          v-model:value="selectedUsers"
           :query="query"
+          endpoint="currencyrates"
           @on-search="onQuery.search($event)"
           @on-change-sort="onQuery.sort($event.sort)"
           @on-change-active="onQuery.checked($event.is_active)"
           @on-change-page="onQuery.page($event.page, $event.limit)"
           @on-edit="navigateTo(`/role/from/${$event}`)"
-          @on-delete=""
+
         >
           <template #columns>
             <Column
               style="min-width: 150px"
-              field="code"
+              field="from_currency.name"
               frozen
-              :header="$t('name')"
+              :header="$t('from_currency')"
               :sortable="true"
             ></Column>
             <Column
               style="min-width: 150px"
-              field="code"
+              field="to_currency.name"
               frozen
-              :header="$t('permission')"
+              :header="$t('to_currency')"
               :sortable="true"
             >
-              <template #body="{ data }">
-                <i class="pi pi-user-edit mr-1"></i
-                >{{ data.permissions.length }}
-              </template>
+            </Column>
+            <Column
+              style="min-width: 150px"
+              field="rate"
+              frozen
+              :header="$t('rate')"
+              :sortable="true"
+            >
+            </Column>
+            <Column
+              style="min-width: 150px"
+              field="rate_date"
+              frozen
+              :header="$t('rate_date')"
+              :sortable="true"
+            >
             </Column>
           </template>
         </BaseCrud>
@@ -59,8 +72,8 @@ import type { IPaginateDto } from "~/types/dto/paginate.dto";
 import { sortType, Status } from "~/types/enum/paginate.enum";
 const route = useRoute();
 const router = useRouter();
-const store = useRoleStore();
-const { findAll } = useRole();
+const store = useCurrencyRateStore();
+const { findAll } = useCurrencyRate();
 const selectedUsers = ref([]);
 const query = reactive<IPaginateDto>({
   page: Number(route.query.page ?? 1),
@@ -79,5 +92,5 @@ watch(
   () => router.replace({ query: { ...query } })
 );
 
-useAsyncData("role", () => findAll({ ...query }));
+useAsyncData("currency-rate", () => findAll({ ...query }));
 </script>

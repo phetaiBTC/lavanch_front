@@ -521,6 +521,7 @@ function getPresetExt() {
 }
 
 function updateColors(type: "primary" | "surface", color: Preset) {
+  
   if (type === "primary") {
     layoutConfig.primary = color.name;
   } else if (type === "surface") {

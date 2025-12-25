@@ -7,6 +7,7 @@ export default defineNuxtConfig({
 =======
 import tailwindcss from "@tailwindcss/vite";
 import Aura from "@primeuix/themes/aura";
+import { semantic } from "@primeuix/themes/aura/base";
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   ssr: true,
@@ -27,7 +28,9 @@ export default defineNuxtConfig({
   // },
   runtimeConfig: {
     public: {
-      apiBase: process.env.API_BASE_URL || "https://lavanchback-production.up.railway.app/api",
+      apiBase:
+        process.env.API_BASE_URL ||
+        "https://lavanchback-production.up.railway.app/api",
     },
     // apiKey: process.env.API_KEY || "",
   },

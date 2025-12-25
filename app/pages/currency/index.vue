@@ -2,23 +2,24 @@
   <BaseCrudLayout>
     <template #stats>
       <UiStats
-        title="roles"
-        :count="store.roleList.pagination.count"
-        :type="$t('roles')"
-        icon="pi pi-shield text-xl"
+        title="currencies"
+        :count="store.currencyList.pagination.count"
+        :type="$t('currencies')"
+        icon="pi pi-fw pi-money-bill text-xl"
       />
     </template>
     <div class="col-span-12">
       <div class="card">
         <BaseTool @add="navigateTo('/role/from')" @delete-all=""></BaseTool>
         <BaseCrud
-          title="role"
+          title="currency"
           :loading="store.loading"
-          :data="store.roleList"
+          :data="store.currencyList"
           :sort="query.sort"
           :checked="query.is_active"
           v-model:value="selectedUsers"
           :query="query"
+          endpoint="currencies"
           @on-search="onQuery.search($event)"
           @on-change-sort="onQuery.sort($event.sort)"
           @on-change-active="onQuery.checked($event.is_active)"
@@ -29,7 +30,7 @@
           <template #columns>
             <Column
               style="min-width: 150px"
-              field="code"
+              field="name"
               frozen
               :header="$t('name')"
               :sortable="true"
@@ -38,13 +39,25 @@
               style="min-width: 150px"
               field="code"
               frozen
-              :header="$t('permission')"
+              :header="$t('code')"
               :sortable="true"
             >
-              <template #body="{ data }">
-                <i class="pi pi-user-edit mr-1"></i
-                >{{ data.permissions.length }}
-              </template>
+            </Column>
+            <Column
+              style="min-width: 150px"
+              field="symbol"
+              frozen
+              :header="$t('symbol')"
+              :sortable="true"
+            >
+            </Column>
+            <Column
+              style="min-width: 150px"
+              field="is_active"
+              frozen
+              :header="$t('is_active')"
+              :sortable="true"
+            >
             </Column>
           </template>
         </BaseCrud>
@@ -59,8 +72,8 @@ import type { IPaginateDto } from "~/types/dto/paginate.dto";
 import { sortType, Status } from "~/types/enum/paginate.enum";
 const route = useRoute();
 const router = useRouter();
-const store = useRoleStore();
-const { findAll } = useRole();
+const store = useCurrencyStore();
+const { findAll } = useCurrency();
 const selectedUsers = ref([]);
 const query = reactive<IPaginateDto>({
   page: Number(route.query.page ?? 1),
@@ -79,5 +92,5 @@ watch(
   () => router.replace({ query: { ...query } })
 );
 
-useAsyncData("role", () => findAll({ ...query }));
+useAsyncData("currency", () => findAll({ ...query }));
 </script>

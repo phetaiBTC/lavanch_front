@@ -49,6 +49,7 @@
   "reset_password": "ປ່ຽນລະຫັດຜ່ານ",
   "verify": "ຢືນຢັນ",
   "sendVerify": "ສົ່ງຄຳຢືນຢັນ",
+<<<<<<< HEAD
   "send":"ສົ່ງ",
   "confirm":"ຢືນຢັນ",
   "retry":"ລອງໃໝ່",
@@ -90,6 +91,49 @@
   "view":"ເບິ່ງ",
   "approve":"ອະນຸມັດ",
   "reject":"ປະຕິເສດ",
+=======
+  "send": "ສົ່ງ",
+  "confirm": "ຢືນຢັນ",
+  "retry": "ລອງໃໝ່",
+  "confirm_delete": "ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລຶບ?",
+  "delete_message": "ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລຶບ {name}?",
+  "delete_multiple_message": "ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລຶບ {count} ສາຂາທີ່ເລືອກ?",
+  "selected_items": "ລາຍການທີ່ເລືອກ",
+  "permissions": "ສິດການນຳໃຊ້",
+  "permission": "ສິດການນຳໃຊ້",
+  "changePassword": "ປ່ຽນລະຫັດຜ່ານ",
+  "product": "ສິນຄ້າ",
+  "products": "ສິນຄ້າ",
+  "units": "ຫົວໜ່ວຍ",
+  "items": "ລາຍການ",
+  "categories": "ໝວດໝູ່",
+  "category": "ໝວດໝູ່",
+  "points": "ຄະແນນ",
+  "point": "ຄະແນນ",
+  "customers": "ລູກຄ້າ",
+  "customer": "ລູກຄ້າ",
+  "Dashboard": "ແຜນລາຍງານ",
+  "new": "ໃໝ່",
+  "add": "ເພີ່ມ",
+  "home": "ໜ້າຫຼັກ",
+  "error": "ຜິດພາດ",
+  "invalid credentials": "ລະຫັດຜ່ານ ຫຼື ອີເມວ ບໍ່ຖືກຕ້ອງ",
+  "success": "ສຳເລັດ",
+  "variants": "ຕົວເລືອກ",
+  "log": "ບັນທຶກ",
+  "card": "ບັດ",
+  "select": "ເລືອກ",
+  "notes": "ໝາຍເຫດ",
+  "no_data": "ບໍ່ມີຂໍ້ມູນ",
+  "clear_filters": "ລຶບຕົວກອງ",
+  "date_from": "ຈາກວັນທີ",
+  "date_to": "ຫາວັນທີ",
+  "date_range": "ຊ່ວງວັນທີ",
+  "search_placeholder": "ຄົ້ນຫາດ້ວຍເລກທີ ຫຼື ຊື່ສາຂາ...",
+  "view": "ເບິ່ງ",
+  "approve": "ອະນຸມັດ",
+  "reject": "ປະຕິເສດ",
+>>>>>>> 5bca1a365c315987f448575007a227808d33c7ed
   "branchExpenses": {
     "fields": {
       "expense_no": "ເລກທີລາຍຈ່າຍ",
@@ -150,7 +194,7 @@
       "branch_label": "ຈັດການສາຂາ",
       "branch_expenses_label": "ລາຍຈ່າຍສາຂາ",
       "categories_expenses_label": "ໝວດໝູ່ລາຍຈ່າຍ",
-      "wallet_adjustment_label": "ການປັບປຸງກະເປົາເງິນ",
+      "wallet_adjustment_label": "ຈັດການກະເປົາເງີນ",
       "wallet_transactions_label": "ປະຫັວດທຸລະກຳ"
     },
     "fields": {
@@ -202,11 +246,11 @@
       "completed": "ສຳເລັດ"
     },
     "adjustment_type": {
-      
-      "add" :"ເພີ່ມ",
-      "deduct":"ຫຼຸດ"
+      "add": "ເພີ່ມ",
+      "deduct": "ຫຼຸດ"
     },
     "summary": {
+<<<<<<< HEAD
      "total_wallet_balance": "ຍອດກະເປົາເງິນທັງໝົດ",
      "active_branches": "ສາຂາທີ່ໃຊ້ງານ",
      "inactive_branches": "ສາຂາທີ່ປິດໃຊ້ງານ",
@@ -214,6 +258,12 @@
      "active": "ກຳລັງໃຊ້ງານ",
      "inactive": "ປິດການໃຊ້ງານ",
      "total": "ທັງໝົດ"
+=======
+      "total_wallet_balance": "ຍອດກະເປົາເງິນທັງໝົດ",
+      "active_branches": "ສາຂາທີ່ໃຊ້ງານ",
+      "inactive_branches": "ສາຂາທີ່ປິດໃຊ້ງານ",
+      "total_branches": "ສາຂາທັງໝົດ"
+>>>>>>> 5bca1a365c315987f448575007a227808d33c7ed
     },
     "transaction_type": {
       "deposit": "ຝາກເງິນ",
@@ -240,6 +290,7 @@
     "shifts": {
       "title": "ຈັດການເວລາ"
     }
+<<<<<<< HEAD
    },
    "transaction_type": {
       "deposit": "ຝາກເງິນ",
@@ -298,4 +349,22 @@
         }
       }
     }
+=======
+  },
+  "currencies": "ສະກຸນເງິນ",
+  "currency": "ສະກຸນເງິນ",
+  "currencyRate": "ເລດເງິນ",
+  "from_currency": "ຈາກ",
+  "to_currency": "ໄປເປັນ",
+  "rate": "ເລດ",
+  "rate_date": "ເລດວັນທີ",
+  "phone": "ເບີໂທລະສັບ",
+  "is_active": "ໃຊ້ງານ",
+  "address": "ທີ່ຢູ່",
+  "contact_person": "ຜູ້ຕິດຕໍ່",
+  "procurement": "ການນຳເຂົ້າ",
+  "suppliers":"ຜູ້ສະຫນອງ",
+  "supplier": "ຜູ້ສະຫນອງ"
+
+>>>>>>> 5bca1a365c315987f448575007a227808d33c7ed
 }

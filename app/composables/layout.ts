@@ -8,7 +8,7 @@ const layoutConfig = reactive<{
   menuMode: "static" | "overlay";
 }>({
   preset: "Aura",
-  primary: "emerald",
+  primary: "pink",
   surface: null as string | null,
   darkTheme: false,
   menuMode: "static",

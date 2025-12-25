@@ -1,34 +1,9 @@
+import type {
+  IDistrictEntity,
+  IProvinceEntity,
+  IVillageEntity,
+} from "~/types/entities/address.entity";
 import { useApi } from "./useApi";
-import { ref } from "vue";
-
-export interface IProvinceEntity {
-  id: number;
-  name_en: string;
-  name_kh: string;
-}
-
-export interface IDistrictEntity {
-  id: number;
-  province_id: number;
-  name_en: string;
-  name_kh: string;
-}
-
-export interface IVillageEntity {
-  id: number;
-  name: string;
-  name_en: string;
-  district?: {
-    id: number;
-    name: string;
-    name_en: string;
-    province?: {
-      id: number;
-      name: string;
-      name_en: string;
-    };
-  };
-}
 
 export interface IAddressOption {
   village_id: number;
@@ -43,6 +18,53 @@ let addressCache: IAddressOption[] | null = null;
 let addressCachePromise: Promise<IAddressOption[]> | null = null;
 
 export const useAddress = () => {
+  const store = useAddressStore();
+
+  const { run } = useFormHandler();
+
+  const findProvince = async (): Promise<void> => {
+    await run(async () => {
+      const res = await useApi().get<IProvinceEntity[]>("/address/province");
+      store.setProvinceList(res);
+      const mapperOptions = res.map((item) => {
+        return {
+          label: item.name,
+          value: item.id,
+        };
+      });
+      store.setProvinceOptions(mapperOptions);
+    }, store.setLoading);
+  };
+  const findDistrict = async (id: number): Promise<void> => {
+    await run(async () => {
+      const res = await useApi().get<IDistrictEntity[]>(
+        `/address/district/${id}`
+      );
+      store.setDistrictList(res);
+      const mapperOptions = res.map((item) => {
+        return {
+          label: item.name,
+          value: item.id,
+        };
+      });
+      store.setDistrictOptions(mapperOptions);
+    }, store.setLoading);
+  };
+  const findVillage = async (id: number): Promise<void> => {
+    await run(async () => {
+      const res = await useApi().get<IVillageEntity[]>(
+        `/address/village/${id}`
+      );
+      store.setVillageList(res);
+      const mapperOptions = res.map((item) => {
+        return {
+          label: item.name,
+          value: item.id,
+        };
+      });
+      store.setVillageOptions(mapperOptions);
+    }, store.setLoading);
+  };
   const getProvinces = async (): Promise<IProvinceEntity[]> => {
     try {
       const res = await useApi().get<IProvinceEntity[]>("/address/province");
@@ -53,9 +75,13 @@ export const useAddress = () => {
     }
   };
 
-  const getDistricts = async (provinceId: number): Promise<IDistrictEntity[]> => {
+  const getDistricts = async (
+    provinceId: number
+  ): Promise<IDistrictEntity[]> => {
     try {
-      const res = await useApi().get<IDistrictEntity[]>(`/address/district/${provinceId}`);
+      const res = await useApi().get<IDistrictEntity[]>(
+        `/address/district/${provinceId}`
+      );
       return res || [];
     } catch (error) {
       console.error("Failed to fetch districts:", error);
@@ -65,7 +91,9 @@ export const useAddress = () => {
 
   const getVillages = async (districtId: number): Promise<IVillageEntity[]> => {
     try {
-      const res = await useApi().get<IVillageEntity[]>(`/address/village/${districtId}`);
+      const res = await useApi().get<IVillageEntity[]>(
+        `/address/village/${districtId}`
+      );
       return res || [];
     } catch (error) {
       console.error("Failed to fetch villages:", error);
@@ -99,30 +127,32 @@ export const useAddress = () => {
           // Fallback: aggregate via provinces -> districts -> villages
           const provinces = await getProvinces();
           const districtLists = await Promise.all(
-            provinces.map(p => getDistricts(p.id))
+            provinces.map((p) => getDistricts(p.id))
           );
           const districts = districtLists.flat();
           const villageLists = await Promise.all(
-            districts.map(d => getVillages(d.id))
+            districts.map((d) => getVillages(d.id))
           );
           villages = villageLists.flat();
         }
 
-        const addresses: IAddressOption[] = (villages || []).map(village => {
+        const addresses: IAddressOption[] = (villages || []).map((village) => {
           const district = village.district;
           const province = district?.province;
           const villageName = village.name_en || village.name || "";
-            return {
-              village_id: village.id,
-              village_name: villageName,
-              district_name: district?.name_en || district?.name || "",
-              province_name: province?.name_en || province?.name || "",
-              full_address: [
-                villageName,
-                district?.name_en || district?.name,
-                province?.name_en || province?.name,
-              ].filter(Boolean).join(', '),
-            };
+          return {
+            village_id: village.id,
+            village_name: villageName,
+            district_name: district?.name_en || district?.name || "",
+            province_name: province?.name_en || province?.name || "",
+            full_address: [
+              villageName,
+              district?.name_en || district?.name,
+              province?.name_en || province?.name,
+            ]
+              .filter(Boolean)
+              .join(", "),
+          };
         });
 
         addressCache = addresses;
@@ -147,11 +177,14 @@ export const useAddress = () => {
     addressCachePromise = null;
   };
 
-  return { 
-    getProvinces, 
-    getDistricts, 
-    getVillages, 
+  return {
+    getProvinces,
+    getDistricts,
+    getVillages,
     getAllAddresses,
     clearAddressCache,
+    findProvince,
+    findDistrict,
+    findVillage,
   };
 };

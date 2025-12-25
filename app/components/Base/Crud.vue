@@ -1,4 +1,9 @@
 <template>
+  <BaseTool
+    @add="navigateTo('/role/from')"
+    @delete-all="onDeleteAll()"
+    :is_active="query.is_active"
+  ></BaseTool>
   <DataTable
     ref="dt"
     v-model:selection="selection"
@@ -13,15 +18,9 @@
     :rowsPerPageOptions="[5, 10, 25]"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
   >
-    <template #loading>
-      <div class="flex flex-column align-items-center justify-content-center h-full">
-        <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
-        <span class="mt-2">{{ $t("loading") }}...</span>
-      </div>
-    </template>
     <template #header>
       <div class="flex flex-wrap gap-2 items-center justify-between">
-        <h4 class="m-0">{{ $t("manage") + " " + $t(title) }}</h4>
+        <h4>{{ $t("manage") + " " + $t(title) }}</h4>
         <div class="flex gap-2">
           <ToggleButton
             :value="sort"
@@ -75,34 +74,7 @@
         {{ slotProps.index + 1 }}
       </template>
     </Column>
-    <Column
-      style="min-width: 150px"
-      field="username"
-      frozen
-      :header="$t('username')"
-      :sortable="true"
-    ></Column>
-    <Column
-      style="min-width: 150px"
-      field="email"
-      :header="$t('email')"
-      :sortable="true"
-    >
-    </Column>
-    <Column
-      style="min-width: 150px"
-      field="is_verified"
-      :header="$t('is_verified')"
-      :sortable="true"
-    >
-      <template #body="{ data }">
-        <Tag
-          icon="pi pi-check"
-          :severity="data.is_verified ? 'success' : 'danger'"
-          :value="data.is_verified ? $t('verified') : $t('unverified')"
-        ></Tag>
-      </template>
-    </Column>
+    <slot name="columns"></slot>
     <Column
       style="min-width: 150px"
       field="createdAt"
@@ -128,19 +100,39 @@
     <Column :exportable="false" frozen alignFrozen="right">
       <template #body="slotProps">
         <div class="flex flex-row gap-2">
-          <Button icon="pi pi-pencil" outlined rounded class="mr-2" @click="" />
+          <Button
+            v-show="query.is_active === Status.ACTIVE"
+            icon="pi pi-pencil"
+            outlined
+            rounded
+            class="mr-2"
+            @click="emit('onEdit', slotProps.data.id)"
+          />
+          <Button
+            v-show="query.is_active == Status.INACTIVE"
+            icon="pi pi-replay"
+            outlined
+            rounded
+            severity="primary"
+            @click="onDelete([slotProps.data.id])"
+          />
           <Button
             icon="pi pi-trash"
             outlined
             rounded
             severity="danger"
-            @click=""
+            @click="onDelete([slotProps.data.id])"
           />
         </div>
       </template>
     </Column>
   </DataTable>
-
+  <BaseDelete
+    v-model:visible="deteleData.visible"
+    :id="deteleData.id"
+    :endpoint="endpoint"
+    @fetch-data="emit('fetchData')"
+  />
   <Paginator
     :first="(query.page! - 1) * query.limit!"
     :rows="query.limit"
@@ -156,14 +148,19 @@ import { type PaginatedResponse } from "../../shared/entities/paginate.entity";
 import { sortType, Status } from "~/types/enum/paginate.enum";
 import type { IPaginateDto } from "~/types/dto/paginate.dto";
 const search = ref("");
+const deteleData = ref<{ id: number[]; visible: boolean }>({
+  id: [],
+  visible: false,
+});
 const props = defineProps<{
-  data: PaginatedResponse<IUserEntity>;
+  data: PaginatedResponse<any>;
   value: IUserEntity[];
   title: string;
   loading: boolean;
   sort?: sortType;
   checked?: Status;
   query: IPaginateDto;
+  endpoint: string;
 }>();
 
 const emit = defineEmits([
@@ -174,9 +171,19 @@ const emit = defineEmits([
   "onChangeActive",
   "onChangePage",
   "onSearch",
+  "onEdit",
+  // "onDelete",
+  "fetchData",
 ]);
-const selection = ref<IUserEntity[]>(props.value);
-
+const selection = ref(props.value);
+const onDelete = (id: number[]) => {
+  deteleData.value.id = id;
+  deteleData.value.visible = true;
+};
+const onDeleteAll = () => {
+  deteleData.value.id = selection.value.map((item) => item.id);
+  deteleData.value.visible = true;
+};
 watch(selection, (val) => {
   emit("update:value", val);
 });

@@ -2,19 +2,19 @@
   <BaseCrudLayout>
     <template #stats>
       <UiStats
-        title="roles"
-        :count="store.roleList.pagination.count"
-        :type="$t('roles')"
-        icon="pi pi-shield text-xl"
+        title="suppliers"
+        :count="store.supplierList.pagination.count"
+        :type="$t('suppliers')"
+        icon="pi pi-user-plus text-xl"
       />
     </template>
     <div class="col-span-12">
       <div class="card">
-        <BaseTool @add="navigateTo('/role/from')" @delete-all=""></BaseTool>
         <BaseCrud
+          endpoint="suppliers"
           title="role"
           :loading="store.loading"
-          :data="store.roleList"
+          :data="store.supplierList"
           :sort="query.sort"
           :checked="query.is_active"
           v-model:value="selectedUsers"
@@ -24,26 +24,35 @@
           @on-change-active="onQuery.checked($event.is_active)"
           @on-change-page="onQuery.page($event.page, $event.limit)"
           @on-edit="navigateTo(`/role/from/${$event}`)"
-          @on-delete=""
+          @fetch-data="findAll(query)"
         >
           <template #columns>
             <Column
+              v-for="item in table"
               style="min-width: 150px"
-              field="code"
-              frozen
-              :header="$t('name')"
+              :field="item.field"
+              :frozen="item.frozen"
+              :header="$t(item.field)"
               :sortable="true"
-            ></Column>
+            />
             <Column
-              style="min-width: 150px"
-              field="code"
-              frozen
-              :header="$t('permission')"
+              style="min-width: 100px"
+              field="is_active"
+              :header="$t('is_active')"
               :sortable="true"
             >
               <template #body="{ data }">
-                <i class="pi pi-user-edit mr-1"></i
-                >{{ data.permissions.length }}
+                <UiTagBool :value="data.is_active"></UiTagBool>
+              </template>
+            </Column>
+            <Column
+              style="min-width: 250px"
+              field="address"
+              :header="$t('address')"
+              :sortable="true"
+            >
+              <template #body="{ data }">
+                {{ formatAddress(data.village) }}
               </template>
             </Column>
           </template>
@@ -51,16 +60,33 @@
       </div>
     </div>
   </BaseCrudLayout>
+  <UiInput
+    label="province"
+    type="select"
+    :options="provinceOptions"
+    v-model="province"
+    option-value="value"
+    option-label="label"
+  ></UiInput>
 </template>
 
 <script setup lang="ts">
 import { ref, watch, reactive } from "vue";
 import type { IPaginateDto } from "~/types/dto/paginate.dto";
 import { sortType, Status } from "~/types/enum/paginate.enum";
+const { findProvince } = useAddress();
+const province = ref();
+const { provinceList, provinceOptions } = useAddressStore();
 const route = useRoute();
 const router = useRouter();
-const store = useRoleStore();
-const { findAll } = useRole();
+const store = useSupplierStore();
+const { findAll } = useSupplier();
+const table = ref<{ field: string; frozen?: boolean }[]>([
+  { field: "name", frozen: true },
+  { field: "email" },
+  { field: "phone" },
+  { field: "contact_person" },
+]);
 const selectedUsers = ref([]);
 const query = reactive<IPaginateDto>({
   page: Number(route.query.page ?? 1),
@@ -78,6 +104,11 @@ watch(
   () => ({ ...query }),
   () => router.replace({ query: { ...query } })
 );
-
-useAsyncData("role", () => findAll({ ...query }));
+useAsyncData("supplier", async () => {
+  const [provinceList, supplierList] = await Promise.all([
+    findProvince(),
+    findAll({ ...query }),
+  ]);
+  return { provinceList, supplierList };
+});
 </script>
