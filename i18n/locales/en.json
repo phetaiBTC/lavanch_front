@@ -1,98 +1,67 @@
 {
   "welcome": "Welcome",
   "users": "Users",
-  "email": "Email",
-  "password": "Password",
-  "login": "Login",
-  "logout": "Logout",
   "user": "User",
   "username": "Username",
+  "email": "Email",
+  "password": "Password",
+  "confirm_password": "Confirm password",
+
+  "login": "Login",
+  "logout": "Logout",
   "register": "Register",
   "signup": "Sign up",
   "signin": "Sign in",
+
   "save": "Save",
   "cancel": "Cancel",
   "edit": "Edit",
   "update": "Update",
   "delete": "Delete",
   "remove": "Remove",
+
   "softDelete": "Soft delete",
-  "no": "No",
-  "createdAt": "Created at",
-  "updatedAt": "Updated at",
   "hardDelete": "Hard delete",
   "restore": "Restore",
-  "table": "Table",
-  "name": "Name",
-  "actions": "Actions",
-  "deleteAt": "Deleted at",
+
+  "yes": "Yes",
+  "no": "No",
+
+  "createdAt": "Created at",
+  "updatedAt": "Updated at",
+  "deletedAt": "Deleted at",
+
   "roles": "Roles",
+  "permissions": "Permissions",
+  "permission": "Permission",
+
   "verified": "Verified",
   "unverified": "Unverified",
   "is_verified": "Is verified",
+  "is_active": "Active",
+  "active": "Active",
+  "inactive": "Inactive",
+  "status": "Status",
+  "all": "All",
+
   "people": "People",
   "manage": "Manage",
-  "district": "district",
-  "province": "province",
-  "village": "village",
+
+  "province": "Province",
+  "district": "District",
+  "village": "Village",
+  "address": "Address",
+  "phone": "Phone",
+
   "search": "Search",
+  "search_placeholder": "Search by expense no. or branch name...",
+
   "start_date": "Start date",
   "end_date": "End date",
-  "deletedAt": "Deleted at",
-  "inactive": "Inactive",
-  "active": "Active",
-  "all": "All",
-  "activate": "Activate",
-  "deactivate": "Deactivate",
-  "status": "Status",
-  "is_required": "is required",
-  "confirm_password": "Confirm password",
-<<<<<<< HEAD
-  "forgot_password":"Forgot password",
-  "reset_password":"Reset password",
-  "verify":"Verify",
-  "sendVerify":"Send verify",
-  "send":"Send",
-  "confirm":"Confirm",
-  "retry":"Retry",
-  "confirm_delete":"Are you sure you want to delete?",
-  "delete_message":"Are you sure you want to delete {name}?",
-  "delete_multiple_message":"Are you sure you want to delete {count} selected branches?",
-  "selected_items":"Selected items",
-  "permissions":"Permissions",
-  "permission":"Permission",
-  "changePassword":"Change password",
-  "product":"Product",
-  "products":"Products",
-  "units":"Units",
-  "items":"Items",
-  "categories":"Categories",
-  "category":"Category",
-  "points":"Points",
-  "point":"Point",
-  "customers":"Customers",
-  "customer":"Customer",
-  "Dashboard":"Dashboard",
-  "new":"New",
-  "add":"Add",
-  "home":"Home",
-  "error":"Error",
-  "invalid credentials":"Invalid credentials",
-  "success":"Success",
-  "variants":"Variants",
-  "log":"Log",
-  "card":"Card",
-  "select":"Select",
-  "notes":"Notes",
-  "no_data":"No data available",
-  "clear_filters":"Clear Filters",
-  
-  "date_range":"Date Range",
-  "search_placeholder":"Search by expense no. or branch name...",
-  "view":"View",
-  "approve":"Approve",
-  "reject":"Reject",
-=======
+  "date_from": "From Date",
+  "date_to": "To Date",
+  "date_range": "Date Range",
+
   "forgot_password": "Forgot password",
   "reset_password": "Reset password",
   "verify": "Verify",
@@ -100,88 +69,48 @@
   "send": "Send",
   "confirm": "Confirm",
   "retry": "Retry",
+
   "confirm_delete": "Are you sure you want to delete?",
   "delete_message": "Are you sure you want to delete {name}?",
   "delete_multiple_message": "Are you sure you want to delete {count} selected branches?",
   "selected_items": "Selected items",
-  "permissions": "Permissions",
-  "permission": "Permission",
+
   "changePassword": "Change password",
+
   "product": "Product",
   "products": "Products",
-  "units": "Units",
-  "items": "Items",
-  "categories": "Categories",
   "category": "Category",
-  "points": "Points",
-  "point": "Point",
-  "customers": "Customers",
+  "categories": "Categories",
+  "item": "Item",
+  "items": "Items",
+  "unit": "Unit",
+  "units": "Units",
+
   "customer": "Customer",
-  "Dashboard": "Dashboard",
+  "customers": "Customers",
+
+  "dashboard": "Dashboard",
+  "home": "Home",
   "new": "New",
   "add": "Add",
-  "home": "Home",
+
   "error": "Error",
-  "invalid credentials": "Invalid credentials",
   "success": "Success",
+  "invalid_credentials": "Invalid credentials",
+
   "variants": "Variants",
   "log": "Log",
   "card": "Card",
   "select": "Select",
   "notes": "Notes",
+
   "no_data": "No data available",
   "clear_filters": "Clear Filters",
-  "date_from": "From Date",
-  "date_to": "To Date",
-  "date_range": "Date Range",
-  "search_placeholder": "Search by expense no. or branch name...",
+
   "view": "View",
   "approve": "Approve",
   "reject": "Reject",
->>>>>>> 5bca1a365c315987f448575007a227808d33c7ed
-  "branchExpenses": {
-    "fields": {
-      "expense_no": "Expense No.",
-      "category": "Category",
-      "amount": "Amount",
-      "currency": "Currency",
-      "expense_date": "Expense Date",
-      "description": "Description",
-      "notes": "Notes"
-    },
-    "summary": {
-      "total_amount": "Total Amount",
-      "total_records": "Total Records",
-      "pending": "Pending",
-      "approved": "Approved",
-      "rejected": "Rejected"
-    },
-    "sections": {
-      "form_data": "Expense Information",
-      "receipt_images": "Receipt Images"
-    },
-    "placeholders": {
-      "search_branch": "Search branch name...",
-      "select_category": "Select category",
-      "loading_categories": "Loading categories...",
-      "enter_amount": "Enter amount",
-      "select_date": "Select date",
-      "enter_description": "Enter description",
-      "enter_notes": "Enter notes"
-    },
-    "messages": {
-      "no_categories": "No categories available",
-      "drag_drop": "Drag and drop files here",
-      "or_click": "or click to select",
-      "uploading": "Uploading...",
-      "no_receipt_images": "No receipt images available"
-    },
-    "actions": {
-      "create_category": "Create Category",
-      "choose_image": "Choose Image",
-      "choose_images": "Choose Images"
-    }
-  },
+
   "branches": {
     "branch": "Branch",
     "sidebar": {
@@ -193,176 +122,77 @@
     },
     "fields": {
       "name": "Name",
-      "address": "Address",
       "phone": "Phone",
-      "phone_hint": "10-11 digits only",
       "email": "Email",
-      "facebook": "Facebook",
-      "tiktok": "Tiktok",
-      "village": "Village",
-      "social_media": "Social Media",
+      "address": "Address",
       "wallet_balance": "Wallet Balance",
-      "code": "Code",
-      "description": "Description",
-      "notes": "Notes",
-      "receipt_image": "Receipt Image",
+      "status": "Status"
+    }
+  },
+
+  "branchExpenses": {
+    "fields": {
       "expense_no": "Expense No.",
-      "branch": "Branch",
-      "expense_category": "Category",
-      "category_name": "Category Name",
+      "category": "Category",
       "amount": "Amount",
+      "currency": "Currency",
       "expense_date": "Expense Date",
-      "adjustment_no": "Adjustment No.",
-      "adjustment_type": "Adjustment Type",
-      "reason": "Reason",
-      "adjustment_date": "Adjustment Date",
-      "transaction_type": "Transaction Type",
-      "balance_before": "Balance Before",
-      "balance_after": "Balance After",
-      "reference_type": "Reference Type",
-      "reference_no": "Reference No.",
-      "transaction_date": "Transaction Date",
-      "shift": "Shift",
-      "shift_name": "Shift Name",
-      "start_time": "Start Time",
-      "end_time": "End Time",
-      "status": "Status",
+      "description": "Description",
+      "notes": "Notes"
+    }
+  },
+
+  "transaction_type": {
+    "deposit": "Deposit",
+    "withdraw": "Withdrawal",
+    "credit": "Credit",
+    "debit": "Debit",
+    "found": "Found",
+    "lost": "Lost",
+    "expense": "Expense",
+    "adjustment": "Adjustment",
+    "transfer_in": "Transfer In",
+    "transfer_out": "Transfer Out"
+  },
+
+  "walletTransactions": {
+    "status": {
+      "pending": "Pending",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    }
+  },
+
+  "expense_categories": {
+    "status": {
+      "label": "Status",
       "active": "Active",
-      "deposit": "Deposit",
-      "withdraw": "Withdraw",
-      "found": "Found Money",
-      "lost": "Lost Money"
-    },
+      "inactive": "Inactive",
+      "all": "All"
+    }
+  },
+
+  "wallet_adjustments": {
     "status": {
       "pending": "Pending",
       "approved": "Approved",
-      "rejected": "Rejected",
-      "completed": "Completed"
-    },
-    "summary": {
-<<<<<<< HEAD
-     "total_wallet_balance": "Total Wallet Balance",
-     "active_branches": "Active Branches",
-     "inactive_branches": "Inactive Branches",
-     "total_branches": "Total Branches",
-     "active": "active",
-     "inactive": "inactive",
-     "total": "total"
-=======
-      "total_wallet_balance": "Total Wallet Balance",
-      "active_branches": "Active Branches",
-      "inactive_branches": "Inactive Branches",
-      "total_branches": "Total Branches"
->>>>>>> 5bca1a365c315987f448575007a227808d33c7ed
+      "rejected": "Rejected"
     },
     "adjustment_type": {
       "add": "Add",
       "deduct": "Deduct"
-    },
-    
-    "transaction_type": {
-      "deposit": "Deposit",
-      "withdraw": "Withdrawal",
-      "credit": "Credit",
-      "debit": "Debit",
-      "found": "Found",
-      "lost": "Lost",
-      "expense": "Expense",
-      "adjustment": "Adjustment",
-      "transfer_in": "Transfer In",
-      "transfer_out": "Transfer Out"
-    },
-    "reference_type": {
-      "wallet_adjustment": "Adjustment",
-      "expense": "Expense",
-      "sale": "Sale",
-      "deposit": "Deposit",
-      "adjustment": "Adjustment",
-      "withdraw": "Withdrawal",
-      "wallet_transfer": "Transfer",
-      "refund": "Refund"
-    },
-    "shifts": {
-      "title": "Shifts Management"
     }
-<<<<<<< HEAD
-   },
-   "transaction_type": {
-      "deposit": "Deposit",
-      "withdraw": "Withdrawal",
-      "credit": "Credit",
-      "debit": "Debit",
-      "found": "Found",
-      "sale": "Sale",
-      "lost": "Lost",
-      "expense": "Expense",
-      "adjustment": "Adjustment",
-      "transfer_in": "Transfer In",
-      "transfer_out": "Transfer Out"
-    },
-    "walletTransactions": {
-      "status": {
-        "pending": "Pending",
-        "completed": "Completed",
-        "cancelled": "Cancelled"
-      }
-    },
-    "expense_categories": {
-      "status": {
-        "label": "Status",
-        "active": "Active",
-        "inactive": "Inactive",
-        "all": "All"
-      }
-    },
-    "wallet_adjustments": {
-      "status": {
-        "pending": "Pending",
-        "approved": "Approved",
-        "rejected": "Rejected"
-      },
-      "adjustment_type": {
-        "add": "Add",
-        "deduct": "Deduct"
-      },
-      "dialog": {
-        "create":{
-          "branch": "branch",
-          "type_name": "type",
-          "placeholder_branch": "choose branch",
-          "placeholder_type": "choose type",
-          "to_branch": "transfer to branch",
-          "adjustment_type": "type",
-          "amount": "amount",
-          "description": "description",
-           "type": {
-       "deposit": "Deposit",
-       "withdraw": "Withdraw",
-       "found": "Found Money",
-        "lost": "Lost Money",
-        "transfer": "Transfer"
-      
-      }
-        }
-      }
-     
-    }
-=======
   },
-  "currencies": "Currencies",
+
   "currency": "Currency",
+  "currencies": "Currencies",
   "currencyRate": "Currency Rate",
   "from_currency": "From Currency",
   "to_currency": "To Currency",
   "rate": "Rate",
   "rate_date": "Rate Date",
-  "phone": "Phone",
-  "is_active": "Active",
-  "address": "Address",
-  "contact_person": "Contact Person",
-  "procurement": "Procurement",
-  "suppliers": "Suppliers",
-  "supplier": "Supplier"
->>>>>>> 5bca1a365c315987f448575007a227808d33c7ed
 
+  "supplier": "Supplier",
+  "suppliers": "Suppliers",
+  "procurement": "Procurement"
 }
