@@ -506,7 +506,7 @@ import type { IBranchEntity } from "~/types/entities/branch.entity";
 import type { PaginatedResponse } from "~/shared/entities/paginate.entity";
 import { sortType, Status } from "~/types/enum/paginate.enum";
 import type { IPaginateDto } from "~/types/dto/paginate.dto";
-
+import {useI18n} from "vue-i18n";
 const { t } = useI18n();
 const search = ref("");
 const statusFilter = ref("all");

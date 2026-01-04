@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { MenuItem } from "~/shared/interface/MenuItem";
+import { useI18n } from "vue-i18n";
 const { t } = useI18n();
 const model = ref<MenuItem[]>([
   {
